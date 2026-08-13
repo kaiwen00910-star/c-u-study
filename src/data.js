@@ -20,9 +20,11 @@ export const syllabus = parse(syllabusCsv).map((item) => ({
   point_order: Number(item.point_order),
 }))
 
-export const resources = parse(resourcesCsv)
+export const fallbackResources = parse(resourcesCsv)
   .filter((item) => item.status === 'active')
   .map((item) => ({ ...item, priority: Number(item.priority), tags: item.topic_tags.split('|') }))
+
+export const resources = fallbackResources
 
 export const subjectNames = {
   'advanced-math': '高等数学', english: '英语', 'c-language': 'C语言程序设计',
@@ -49,6 +51,6 @@ export function schoolSyllabus(slug) {
   return syllabus.filter((item) => item.school_slug === 'common' || item.school_slug === slug)
 }
 
-export function resourcesForTopic(topic) {
-  return resources.filter((resource) => resource.tags.includes(topic)).sort((a, b) => a.priority - b.priority)
+export function resourcesForTopic(topic, items = resources) {
+  return items.filter((resource) => resource.tags.includes(topic)).sort((a, b) => a.priority - b.priority).slice(0, 3)
 }

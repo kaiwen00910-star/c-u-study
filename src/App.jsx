@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useParams } from 'react-router-dom'
-import { resources, resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNames, syllabus } from './data'
+import { resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNames, syllabus } from './data'
+import { AdminDashboard, AdminLogin } from './Admin'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
+import { useContent } from './useContent'
 import './App.css'
 
 const schools = schoolGroups()
@@ -10,7 +12,7 @@ function Logo() {
   return <Link className="logo" to="/" aria-label="升本导航首页"><span>升</span><strong>升本导航</strong></Link>
 }
 
-function Layout({ children, favoritesCount }) {
+function Layout({ children, favoritesCount, announcement }) {
   return <div className="site-shell">
     <header className="topbar">
       <div className="topbar-inner">
@@ -23,6 +25,7 @@ function Layout({ children, favoritesCount }) {
         </nav>
       </div>
     </header>
+    {announcement && <aside className="site-announcement" role="status"><strong>{announcement.title}</strong><span>{announcement.content}</span></aside>}
     <main>{children}</main>
     <footer>
       <div><Logo /><p>把分散的考纲和课程，整理成一条清楚的备考路径。</p></div>
@@ -31,7 +34,7 @@ function Layout({ children, favoritesCount }) {
   </div>
 }
 
-function SearchBox() {
+function SearchBox({ resources }) {
   const [query, setQuery] = useState('')
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -41,7 +44,7 @@ function SearchBox() {
     const resourceMatches = resources.filter((item) => `${item.title}${item.creator}${item.platform}`.toLowerCase().includes(q))
       .slice(0, 3).map((item) => ({ type: '课程', title: item.title, detail: `${item.platform} · ${item.creator}`, url: item.url }))
     return [...pointMatches, ...resourceMatches]
-  }, [query])
+  }, [query, resources])
 
   return <div className="search-wrap">
     <label htmlFor="home-search" className="sr-only">搜索知识点或课程</label>
@@ -56,13 +59,13 @@ function SearchBox() {
   </div>
 }
 
-function Home() {
+function Home({ resources }) {
   return <>
     <section className="hero-section">
       <div className="eyebrow">ANHUI · 2026 · 专升本</div>
       <h1>按考纲找课程，<br/><em>备考不再绕远路。</em></h1>
       <p className="hero-copy">从目标院校的考试科目出发，把考纲拆成知识点，再为每个知识点匹配值得学的公开课程。</p>
-      <SearchBox />
+      <SearchBox resources={resources} />
       <div className="hero-actions"><Link className="primary-btn" to="/anhui">开始规划学习 <span>→</span></Link><Link className="text-btn" to="/anhui/2026/computer-science">先对比院校</Link></div>
       <div className="hero-stats" aria-label="当前收录概况"><div><strong>3</strong><span>试点院校</span></div><div><strong>6</strong><span>考试科目</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
     </section>
@@ -127,7 +130,7 @@ function ResourceCard({ resource, favorites, toggleFavorite }) {
   return <article className="resource-card"><div className="resource-top"><span className={resource.platform.includes('哔哩') ? 'platform bili' : 'platform mooc'}>{resource.platform}</span><button onClick={() => toggleFavorite(resource.resource_id)} aria-label={saved ? '取消收藏' : '收藏资源'} aria-pressed={saved}>{saved ? '★' : '☆'}</button></div><h4>{resource.title}</h4><p className="creator">{resource.creator}</p><div className="resource-meta"><span>{resource.difficulty}</span><span>{resource.duration_text}</span><span>{resource.resource_type}</span></div><p>{resource.recommendation_reason}</p><a href={resource.url} target="_blank" rel="noreferrer">前往官方平台学习 ↗</a></article>
 }
 
-function LearningMap({ favorites, toggleFavorite }) {
+function LearningMap({ favorites, toggleFavorite, resources }) {
   const { schoolSlug } = useParams()
   const school = schools.find((item) => item.school_slug === schoolSlug)
   const [progress, setProgress] = useState(getProgress)
@@ -156,7 +159,7 @@ function LearningMap({ favorites, toggleFavorite }) {
       const sections = [...new Set(subjectPoints.map((p) => p.section_name))]
       return <section className="subject-block" id={subjectSlug} key={subjectSlug}><div className="subject-title"><div><span>{school.professionalSubjects.includes(subjectNames[subjectSlug]) ? '专业课' : '公共课'}</span><h2>{subjectNames[subjectSlug]}</h2></div><small>{subjectPoints.length} 个知识点</small></div>{sections.map((section) => <div className="chapter" key={section}><h3>{section}</h3>{subjectPoints.filter((p) => p.section_name === section).map((point) => {
         const done = !!progress[progressKey(schoolSlug, point.point_id)]
-        const linked = resourcesForTopic(point.canonical_topic)
+        const linked = resourcesForTopic(point.canonical_topic, resources)
         return <div className={`knowledge-item ${done ? 'done' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point.point_id)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div><div className="resource-row">{linked.length ? linked.map((r) => <ResourceCard key={r.resource_id} resource={r} favorites={favorites} toggleFavorite={toggleFavorite} />) : <p className="empty-resource">资源整理中，建议先对照官方考纲和参考书学习。</p>}</div></div>})}</div>)}</section>
     })}</div></div>
     <div className="source-date">资料状态：{school.source_status} · 最后人工核验 {school.verified_at}。如与官方最新通知不一致，请以官方为准。</div>
@@ -171,6 +174,11 @@ function NotFound() { return <div className="page-wrap not-found"><span>404</spa
 
 export default function App() {
   const [favorites, setFavorites] = useState(getFavorites)
+  const content = useContent()
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
-  return <BrowserRouter><Layout favoritesCount={favorites.length}><Routes><Route path="/" element={<Home />} /><Route path="/anhui" element={<AnhuiHub />} /><Route path="/anhui/2026/computer-science" element={<Compare />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} />} /><Route path="/sources" element={<Sources />} /><Route path="*" element={<NotFound />} /></Routes></Layout></BrowserRouter>
+  return <BrowserRouter><Routes>
+    <Route path="/admin/login" element={<AdminLogin />} />
+    <Route path="/admin" element={<AdminDashboard />} />
+    <Route path="*" element={<Layout favoritesCount={favorites.length} announcement={content.announcement}><Routes><Route path="/" element={<Home resources={content.resources} />} /><Route path="/anhui" element={<AnhuiHub />} /><Route path="/anhui/2026/computer-science" element={<Compare />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} />} /><Route path="/sources" element={<Sources />} /><Route path="*" element={<NotFound />} /></Routes></Layout>} />
+  </Routes></BrowserRouter>
 }

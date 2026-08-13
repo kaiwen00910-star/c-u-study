@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
+import { validateAnnouncement, validateResource } from './resourceValidation'
 
 describe('招生内容', () => {
   it('仅包含计划中的三所院校', () => {
@@ -32,5 +33,20 @@ describe('招生内容', () => {
 
     const topics = new Set(resources.flatMap((resource) => resource.tags))
     topics.forEach((topic) => expect(resourcesForTopic(topic).length).toBeLessThanOrEqual(3))
+  })
+
+  it('后台拒绝非 HTTPS、搜索页和不规范的 B 站地址', () => {
+    const base = { ...resources[0], topic_tags: resources[0].tags, status: 'active' }
+    const topics = new Set(resources.flatMap((resource) => resource.tags))
+    expect(validateResource({ ...base, url: 'http://example.com' }, topics)).toContain('链接必须使用 HTTPS')
+    expect(validateResource({ ...base, url: 'https://search.bilibili.com/all?keyword=C语言' }, topics)
+      .some((error) => error.includes('搜索结果页'))).toBe(true)
+    expect(validateResource({ ...base, url: 'https://www.bilibili.com/' }, topics)
+      .some((error) => error.includes('具体视频链接'))).toBe(true)
+  })
+
+  it('公告结束时间必须晚于开始时间', () => {
+    expect(validateAnnouncement({ title: '通知', content: '内容', starts_at: '2026-08-13T10:00:00Z', ends_at: '2026-08-13T09:00:00Z' }))
+      .toContain('结束时间必须晚于开始时间')
   })
 })

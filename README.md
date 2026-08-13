@@ -15,7 +15,9 @@ npm run dev
 
 - `offerings.csv`：招生院校、培养点、科目与官方来源
 - `syllabus.csv`：考纲章节和知识点
-- `resources.csv`：知识点对应的推荐课程
+- `resources.csv`：12 条内置备用资源（Supabase 暂不可用时自动回退）
+
+院校、考纲和来源仍由 CSV 维护；线上学习资源和首页公告由 `/admin` 后台维护，保存后访客刷新页面即可看到。
 
 修改后先执行：
 
@@ -26,6 +28,16 @@ npm run build
 ```
 
 数据校验会检查必填字段、重复 ID、日期、HTTPS 链接、院校引用和主题引用。
+
+## Supabase 后台
+
+1. 将 `supabase/migrations` 中的迁移应用到 Supabase 项目。
+2. 运行 `supabase/seed.sql`，可重复导入内置资源而不产生重复记录。
+3. 在 Supabase Auth 预先创建管理员 `3130708522@qq.com`，再将其 `auth.users.id` 写入 `public.admin_users`。
+4. 复制 `.env.example` 为 `.env.local`，填写项目 URL 和 Publishable Key。
+5. 在 Supabase URL Configuration 中加入本地与线上 `/admin` 跳转地址。
+
+浏览器端只使用 Publishable Key，不得填写或提交 `service_role` 密钥。后台登录使用邮箱一次性链接，并禁用了自动注册。
 
 ## Netlify
 
@@ -45,4 +57,4 @@ npm run build
 - `zsb:v1:favorites`
 - `zsb:v1:lastSelection`
 
-首版无账号系统，清除浏览器数据或更换设备后不会同步。
+普通访客无需账号；清除浏览器数据或更换设备后，学习进度与收藏不会同步。管理员登录仅用于维护资源和公告。
