@@ -33,9 +33,9 @@ export const subjectNames = {
 }
 
 export const schoolTheme = {
-  hfnu: { short: '合师', color: '#0b6b61' },
-  aiit: { short: '安信', color: '#2658a6' },
-  wenda: { short: '文达', color: '#8a4b25' },
+  hfnu: { short: '合师', color: '#0869a6', logo: '/schools/school-hfnu.jpg' },
+  aiit: { short: '安信', color: '#164d89', logo: '/schools/school-aiit.png' },
+  wenda: { short: '文达', color: '#173d78', logo: '/schools/school-wenda.jpg' },
 }
 
 export function schoolGroups() {

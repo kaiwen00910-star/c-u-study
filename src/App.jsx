@@ -88,6 +88,13 @@ function SubjectTags({ school }) {
   return <div className="subject-groups"><div><small>公共课</small>{school.publicSubjects.map((s) => <span key={s}>{s}</span>)}</div><div><small>专业课</small>{school.professionalSubjects.map((s) => <span className="professional" key={s}>{s}</span>)}</div></div>
 }
 
+function SchoolLogo({ schoolSlug, large = false }) {
+  const theme = schoolTheme[schoolSlug]
+  return <span className={`school-logo school-logo-${schoolSlug}${large ? ' large' : ''}`}>
+    <img src={theme.logo} alt={`${theme.short}校徽`} />
+  </span>
+}
+
 function AnhuiHub() {
   return <div className="page-wrap">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
@@ -102,7 +109,7 @@ function AnhuiHub() {
 function SchoolCard({ school }) {
   const theme = schoolTheme[school.school_slug]
   return <article className="school-card" style={{ '--school-color': theme.color }}>
-    <div className="school-head"><div className="school-badge">{theme.short}</div><div><span className="type-tag">{school.school_type}</span><h3>{school.school_name}</h3></div></div>
+    <div className="school-head"><SchoolLogo schoolSlug={school.school_slug} /><div><span className="type-tag">{school.school_type}</span><h3>{school.school_name}</h3></div></div>
     <SubjectTags school={school} />
     <dl><div><dt>培养地点</dt><dd>{school.sites.join(' / ')}</dd></div><div><dt>招生范围</dt><dd>{school.eligible_major_categories}</dd></div><div><dt>计划数</dt><dd>{school.totalPlan} 人</dd></div></dl>
     <div className="school-card-foot"><span>核验于 {school.verified_at}</span><Link onClick={() => saveLastSelection({ year: 2026, major: 'computer-science', school: school.school_slug })} to={`/anhui/2026/computer-science/${school.school_slug}`}>打开学习地图 →</Link></div>
@@ -113,7 +120,7 @@ function Compare() {
   return <div className="page-wrap">
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>院校对比</div>
     <section className="page-hero"><div><span className="eyebrow">2026 · 计算机科学与技术</span><h1>三所院校，一页看清</h1><p>专业课差异是备考路线的关键。先选择院校，再按该校考纲学习。</p></div></section>
-    <div className="compare-scroll" tabIndex="0" aria-label="院校对比表，可横向滚动"><table><thead><tr><th>对比项</th>{schools.map((s) => <th key={s.school_slug}>{s.school_name}<small>{s.school_type}</small></th>)}</tr></thead><tbody>
+    <div className="compare-scroll" tabIndex="0" aria-label="院校对比表，可横向滚动"><table><thead><tr><th>对比项</th>{schools.map((s) => <th key={s.school_slug}><span className="compare-school"><SchoolLogo schoolSlug={s.school_slug} /><span>{s.school_name}<small>{s.school_type}</small></span></span></th>)}</tr></thead><tbody>
       <tr><th>培养地点</th>{schools.map((s) => <td key={s.school_slug}>{s.sites.map(x => <span className="table-line" key={x}>{x}</span>)}</td>)}</tr>
       <tr><th>招生范围</th>{schools.map((s) => <td key={s.school_slug}>{s.eligible_major_categories}</td>)}</tr>
       <tr><th>招生计划</th>{schools.map((s) => <td key={s.school_slug}><strong>{s.totalPlan}</strong> 人</td>)}</tr>
@@ -134,11 +141,11 @@ function LearningMap({ favorites, toggleFavorite, resources }) {
   const { schoolSlug } = useParams()
   const school = schools.find((item) => item.school_slug === schoolSlug)
   const [progress, setProgress] = useState(getProgress)
-  const [activeSubject, setActiveSubject] = useState('all')
+  const [activeSubject, setActiveSubject] = useState('advanced-math')
   if (!school) return <Navigate to="/anhui" replace />
   const points = schoolSyllabus(schoolSlug)
   const subjectOrder = ['advanced-math', 'english', ...Object.keys(subjectNames).filter((key) => school.professionalSubjects.includes(subjectNames[key]))]
-  const shownSubjects = activeSubject === 'all' ? subjectOrder : [activeSubject]
+  const shownSubjects = [activeSubject]
   const completed = points.filter((point) => progress[progressKey(schoolSlug, point.point_id)]).length
   const percent = Math.round(completed / points.length * 100)
 
@@ -150,24 +157,24 @@ function LearningMap({ favorites, toggleFavorite, resources }) {
 
   return <div className="page-wrap learning-page">
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>{school.school_name}</div>
-    <section className="school-title"><div className="school-badge large" style={{ background: schoolTheme[schoolSlug].color }}>{schoolTheme[schoolSlug].short}</div><div><span className="type-tag">{school.school_type} · 2026</span><h1>{school.school_name}</h1><p>计算机科学与技术 · {school.sites.join(' / ')}</p></div><div className="official-links"><a href={school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a></div></section>
+    <section className="school-title" style={{ '--school-color': schoolTheme[schoolSlug].color }}><SchoolLogo schoolSlug={schoolSlug} large /><div><span className="type-tag">{school.school_type} · 2026</span><h1>{school.school_name}</h1><p>计算机科学与技术 · {school.sites.join(' / ')}</p></div><div className="official-links"><a href={school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a></div></section>
     <SubjectTags school={school} />
     <section className="progress-panel"><div className="progress-copy"><span>学习进度</span><strong>{completed} / {points.length} 个知识点</strong></div><div className="progress-track"><span style={{ width: `${percent}%` }} /></div><b>{percent}%</b></section>
-    <div className="subject-tabs" role="tablist" aria-label="筛选考试科目"><button className={activeSubject === 'all' ? 'active' : ''} onClick={() => setActiveSubject('all')}>全部科目</button>{subjectOrder.map((slug) => <button className={activeSubject === slug ? 'active' : ''} onClick={() => setActiveSubject(slug)} key={slug}>{subjectNames[slug]}</button>)}</div>
-    <div className="map-layout"><aside><span>当前路线</span>{subjectOrder.map((slug, index) => <a href={`#${slug}`} key={slug}><i>{index + 1}</i>{subjectNames[slug]}</a>)}</aside><div className="syllabus-column">{shownSubjects.map((subjectSlug) => {
+    <div className="subject-tabs" role="tablist" aria-label="选择考试科目">{subjectOrder.map((slug) => <button type="button" role="tab" aria-selected={activeSubject === slug} className={activeSubject === slug ? 'active' : ''} onClick={() => setActiveSubject(slug)} key={slug}>{subjectNames[slug]}</button>)}</div>
+    <div className="syllabus-column">{shownSubjects.map((subjectSlug) => {
       const subjectPoints = points.filter((p) => p.subject_slug === subjectSlug)
       const sections = [...new Set(subjectPoints.map((p) => p.section_name))]
       return <section className="subject-block" id={subjectSlug} key={subjectSlug}><div className="subject-title"><div><span>{school.professionalSubjects.includes(subjectNames[subjectSlug]) ? '专业课' : '公共课'}</span><h2>{subjectNames[subjectSlug]}</h2></div><small>{subjectPoints.length} 个知识点</small></div>{sections.map((section) => <div className="chapter" key={section}><h3>{section}</h3>{subjectPoints.filter((p) => p.section_name === section).map((point) => {
         const done = !!progress[progressKey(schoolSlug, point.point_id)]
         const linked = resourcesForTopic(point.canonical_topic, resources)
         return <div className={`knowledge-item ${done ? 'done' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point.point_id)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div><div className="resource-row">{linked.length ? linked.map((r) => <ResourceCard key={r.resource_id} resource={r} favorites={favorites} toggleFavorite={toggleFavorite} />) : <p className="empty-resource">资源整理中，建议先对照官方考纲和参考书学习。</p>}</div></div>})}</div>)}</section>
-    })}</div></div>
+    })}</div>
     <div className="source-date">资料状态：{school.source_status} · 最后人工核验 {school.verified_at}。如与官方最新通知不一致，请以官方为准。</div>
   </div>
 }
 
 function Sources() {
-  return <div className="page-wrap sources-page"><div className="crumb"><Link to="/">首页</Link><span>/</span>资料来源</div><section className="page-hero"><div><span className="eyebrow">透明 · 可核验</span><h1>每条考试信息，都能回到官方来源</h1><p>我们优先采用正式招生章程；拟招生通知只作线索，不覆盖正式文件。</p></div></section><section className="source-rules"><article><b>01</b><h3>正式文件优先</h3><p>正式招生章程高于拟招生方案，后发布的官方更正高于旧版本。</p></article><article><b>02</b><h3>按年份隔离</h3><p>所有招生方案和知识点都标注适用年份，不将往年内容冒充最新考纲。</p></article><article><b>03</b><h3>人工复核</h3><p>展示最后核验日期；进入下一招生年度后逐校重新检查。</p></article></section><section className="source-list"><h2>2026 年试点院校</h2>{schools.map((school) => <article key={school.school_slug}><div className="school-badge" style={{ background: schoolTheme[school.school_slug].color }}>{schoolTheme[school.school_slug].short}</div><div><h3>{school.school_name}</h3><p>{school.source_status} · 核验于 {school.verified_at}</p></div><div><a href={school.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">专业课考纲 ↗</a></div></article>)}</section><section className="disclaimer"><h2>免责声明</h2><p>“升本导航”不是安徽省教育招生考试院或任何招生院校的官方网站，不提供报名、录取和成绩查询服务。课程推荐为编辑整理，不代表招生单位意见，也不保证单个课程覆盖全部考试内容。报名前务必打开官方来源复核。</p></section></div>
+  return <div className="page-wrap sources-page"><div className="crumb"><Link to="/">首页</Link><span>/</span>资料来源</div><section className="page-hero"><div><span className="eyebrow">透明 · 可核验</span><h1>每条考试信息，都能回到官方来源</h1><p>我们优先采用正式招生章程；拟招生通知只作线索，不覆盖正式文件。</p></div></section><section className="source-rules"><article><b>01</b><h3>正式文件优先</h3><p>正式招生章程高于拟招生方案，后发布的官方更正高于旧版本。</p></article><article><b>02</b><h3>按年份隔离</h3><p>所有招生方案和知识点都标注适用年份，不将往年内容冒充最新考纲。</p></article><article><b>03</b><h3>人工复核</h3><p>展示最后核验日期；进入下一招生年度后逐校重新检查。</p></article></section><section className="source-list"><h2>2026 年试点院校</h2>{schools.map((school) => <article key={school.school_slug}><SchoolLogo schoolSlug={school.school_slug} /><div><h3>{school.school_name}</h3><p>{school.source_status} · 核验于 {school.verified_at}</p></div><div><a href={school.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">专业课考纲 ↗</a></div></article>)}</section><section className="disclaimer"><h2>免责声明</h2><p>“升本导航”不是安徽省教育招生考试院或任何招生院校的官方网站，不提供报名、录取和成绩查询服务。课程推荐为编辑整理，不代表招生单位意见，也不保证单个课程覆盖全部考试内容。报名前务必打开官方来源复核。</p></section></div>
 }
 
 function NotFound() { return <div className="page-wrap not-found"><span>404</span><h1>这个页面还没整理好</h1><p>回到安徽专区，继续选择院校和学习路线。</p><Link className="primary-btn" to="/anhui">返回安徽专区</Link></div> }

@@ -89,9 +89,14 @@ main { min-height: 70vh; }
 .exam-structure b { color: #9d7722; }
 .exam-structure p { margin: 0; color: var(--muted); font-size: 13px; }
 .school-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-.school-card { --school-color: var(--green); padding: 24px; border: 1px solid var(--line); border-top: 3px solid var(--school-color); border-radius: 12px; background: white; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(23,51,46,.04); }
+.school-card { --school-color: var(--green); padding: 24px; border: 1px solid var(--line); border-top: 3px solid var(--school-color); border-radius: 15px; background: white; display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(23,51,46,.055); transition: transform .2s, box-shadow .2s; }
+.school-card:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(23,51,46,.09); }
 .school-head { display: flex; align-items: center; gap: 14px; }
-.school-badge { width: 49px; height: 49px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 12px 12px 17px 12px; background: var(--school-color); color: white; font: 700 16px 'Noto Serif SC',serif; }
+.school-logo { width: 58px; height: 58px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--school-color, #d6ded9) 22%, #d6ded9); border-radius: 50%; background: white; box-shadow: 0 5px 14px rgba(23,51,46,.09); }
+.school-logo img { width: 88%; height: 88%; display: block; object-fit: contain; }
+.school-logo-hfnu img { width: 94px; height: auto; max-width: none; transform: translateY(-21px); }
+.school-logo.large { width: 82px; height: 82px; }
+.school-logo-hfnu.large img { width: 132px; transform: translateY(-29px); }
 .school-head h3 { margin: 4px 0 0; font-size: 18px; }
 .type-tag { padding: 2px 7px; color: var(--school-color); background: color-mix(in srgb, var(--school-color) 10%, white); border-radius: 3px; font-size: 10px; font-weight: 700; }
 .subject-groups { display: grid; gap: 11px; margin: 23px 0; }
@@ -119,6 +124,9 @@ th:last-child, td:last-child { border-right: 0; }
 thead th { color: var(--ink); background: #f0f4ee; font-size: 15px; }
 thead th:first-child { width: 120px; color: var(--muted); font-size: 12px; }
 thead small { display: block; margin-top: 5px; color: var(--muted); font-weight: 400; }
+.compare-school { display: flex; align-items: center; gap: 10px; }
+.compare-school .school-logo { width: 42px; height: 42px; }
+.compare-school .school-logo-hfnu img { width: 68px; transform: translateY(-15px); }
 tbody th { color: var(--muted); background: #fafbf8; font-weight: 500; }
 td a { display: block; margin-bottom: 7px; color: var(--green-2); font-weight: 600; }
 td small { display: block; color: var(--muted); font-size: 10px; }
@@ -128,7 +136,6 @@ td small { display: block; color: var(--muted); font-size: 10px; }
 .small-primary { padding: 8px 11px; font-size: 11px; }
 
 .school-title { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
-.school-badge.large { width: 70px; height: 70px; border-radius: 17px 17px 24px 17px; font-size: 22px; }
 .school-title h1 { margin: 5px 0; font: 700 clamp(28px,4vw,42px) 'Noto Serif SC',serif; }
 .school-title p { margin: 0; color: var(--muted); font-size: 13px; }
 .official-links { margin-left: auto; display: flex; gap: 9px; }
@@ -141,16 +148,12 @@ td small { display: block; color: var(--muted); font-size: 10px; }
 .progress-track { height: 8px; background: rgba(255,255,255,.2); border-radius: 10px; overflow: hidden; }
 .progress-track span { display: block; height: 100%; background: var(--yellow); border-radius: inherit; transition: width .25s; }
 .progress-panel > b { text-align: right; font: 700 18px 'Noto Serif SC',serif; }
-.subject-tabs { display: flex; gap: 8px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 3px; }
-.subject-tabs button { flex: 0 0 auto; padding: 8px 13px; border: 1px solid var(--line); border-radius: 7px; background: #fafbf8; cursor: pointer; font-size: 12px; }
-.subject-tabs button.active { color: white; border-color: var(--green); background: var(--green); }
-.map-layout { display: grid; grid-template-columns: 180px 1fr; gap: 30px; }
-.map-layout aside { position: sticky; top: 100px; align-self: start; padding: 17px; border-left: 2px solid #cedbd2; display: grid; gap: 5px; }
-.map-layout aside > span { margin-bottom: 8px; color: var(--muted); font-size: 10px; }
-.map-layout aside a { display: flex; align-items: center; gap: 9px; padding: 7px 0; font-size: 12px; }
-.map-layout aside i { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: #e8eee8; color: var(--green); font-style: normal; font-size: 10px; }
+.subject-tabs { display: flex; gap: 9px; margin-bottom: 24px; overflow-x: auto; padding: 2px 2px 7px; scrollbar-width: thin; }
+.subject-tabs button { flex: 0 0 auto; min-height: 42px; padding: 0 17px; border: 1px solid #d5ded8; border-radius: 999px; background: #fff; color: #52665f; cursor: pointer; font-size: 12px; font-weight: 600; transition: color .18s, background .18s, border-color .18s, transform .18s; }
+.subject-tabs button:hover { border-color: #9eb9ae; transform: translateY(-1px); }
+.subject-tabs button.active { color: white; border-color: var(--green); background: var(--green); box-shadow: 0 6px 15px rgba(8,86,77,.16); }
 .syllabus-column { min-width: 0; }
-.subject-block { margin-bottom: 25px; border: 1px solid var(--line); border-radius: 11px; overflow: hidden; background: white; scroll-margin-top: 95px; }
+.subject-block { margin-bottom: 25px; border: 1px solid var(--line); border-radius: 15px; overflow: hidden; background: white; box-shadow: 0 12px 30px rgba(23,51,46,.05); scroll-margin-top: 95px; }
 .subject-title { padding: 21px 24px; display: flex; justify-content: space-between; align-items: center; color: white; background: var(--green); }
 .subject-title span { font-size: 10px; opacity: .7; }
 .subject-title h2 { margin: 2px 0 0; font: 700 22px 'Noto Serif SC',serif; }
@@ -277,8 +280,6 @@ footer strong { font-size: 12px; }
   .school-card-foot { grid-column: 1 / -1; }
   .page-hero.compact { align-items: stretch; }
   .filter-box { width: 280px; }
-  .map-layout { grid-template-columns: 1fr; }
-  .map-layout aside { display: none; }
   .admin-main { grid-template-columns: 1fr; }
 }
 
@@ -311,7 +312,8 @@ footer strong { font-size: 12px; }
   .exam-structure > div { white-space: normal; flex-wrap: wrap; }
   .school-card { display: flex; }
   .school-title { align-items: flex-start; flex-wrap: wrap; }
-  .school-badge.large { width: 55px; height: 55px; font-size: 17px; }
+  .school-logo.large { width: 62px; height: 62px; }
+  .school-logo-hfnu.large img { width: 100px; transform: translateY(-22px); }
   .school-title > div:nth-child(2) { flex: 1; }
   .school-title h1 { font-size: 25px; }
   .official-links { width: 100%; margin-left: 0; }
