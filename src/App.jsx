@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNames, syllabus } from './data'
 import { AdminDashboard, AdminLogin, AdminResetPassword } from './Admin'
@@ -9,7 +9,7 @@ import './App.css'
 const schools = schoolGroups()
 
 function Logo() {
-  return <Link className="logo" to="/" aria-label="升本导航首页"><span>升</span><strong>升本导航</strong></Link>
+  return <Link className="logo" to="/" aria-label="安徽升本导航首页"><span>皖</span><strong>安徽升本导航</strong></Link>
 }
 
 function Layout({ children, favoritesCount, announcement }) {
@@ -18,7 +18,7 @@ function Layout({ children, favoritesCount, announcement }) {
       <div className="topbar-inner">
         <Logo />
         <nav aria-label="主导航">
-          <NavLink to="/anhui">安徽专区</NavLink>
+          <NavLink to="/anhui">院校与专业</NavLink>
           <NavLink to="/anhui/2026/computer-science">院校对比</NavLink>
           <NavLink to="/sources">资料来源</NavLink>
           <span className="favorite-pill" title="已收藏资源">★ {favoritesCount}</span>
@@ -28,7 +28,7 @@ function Layout({ children, favoritesCount, announcement }) {
     {announcement && <aside className="site-announcement" role="status"><strong>{announcement.title}</strong><span>{announcement.content}</span></aside>}
     <main>{children}</main>
     <footer>
-      <div><Logo /><p>把分散的考纲和课程，整理成一条清楚的备考路径。</p></div>
+      <div><Logo /><p>专注安徽专升本，把分散的考纲和课程整理成一条清楚的备考路径。</p></div>
       <div><strong>重要说明</strong><p>本站为非官方学习导航，不组织招生与考试。报考前请以省考试院和招生院校最新通知为准。</p></div>
     </footer>
   </div>
@@ -59,6 +59,35 @@ function SearchBox({ resources }) {
   </div>
 }
 
+const COUNTDOWN_STORAGE_KEY = 'zsb:v1:countdownTarget'
+
+function Countdown() {
+  const [target, setTarget] = useState(() => localStorage.getItem(COUNTDOWN_STORAGE_KEY) || '2027-04-18')
+  const [today, setToday] = useState(() => new Date())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setToday(new Date()), 60 * 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const targetDate = new Date(`${target}T00:00:00+08:00`)
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const days = Math.max(0, Math.ceil((targetDate.getTime() - todayStart.getTime()) / 86400000))
+  const formattedTarget = targetDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+
+  function changeTarget(event) {
+    const value = event.target.value
+    setTarget(value)
+    localStorage.setItem(COUNTDOWN_STORAGE_KEY, value)
+  }
+
+  return <section className="countdown-section" aria-label="安徽专升本备考倒计时">
+    <div className="countdown-heading"><span className="countdown-icon">⏳</span><div><span>安徽专升本 · 个人备考提醒</span><h2>{days > 0 ? <>距离目标日还有 <strong>{days}</strong> 天</> : '目标日已到，加油！'}</h2></div></div>
+    <div className="countdown-progress"><span style={{ width: `${Math.min(100, Math.max(3, (1 - days / 365) * 100))}%` }} /></div>
+    <div className="countdown-settings"><p>当前目标：<strong>{formattedTarget}</strong><small>此日期为个人备考目标，并非安徽省考试院公布的正式考试时间。</small></p><label>修改目标日期<input type="date" value={target} min={new Date().toISOString().slice(0, 10)} onChange={changeTarget} /></label></div>
+  </section>
+}
+
 function Home({ resources }) {
   return <>
     <section className="hero-section">
@@ -69,15 +98,12 @@ function Home({ resources }) {
       <div className="hero-actions"><Link className="primary-btn" to="/anhui">开始规划学习 <span>→</span></Link><Link className="text-btn" to="/anhui/2026/computer-science">先对比院校</Link></div>
       <div className="hero-stats" aria-label="当前收录概况"><div><strong>3</strong><span>试点院校</span></div><div><strong>6</strong><span>考试科目</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
     </section>
-    <section className="content-section province-section">
-      <div className="section-heading"><div><span className="section-number">01</span><h2>从省份开始</h2></div><p>不同省份的考试政策和科目并不相同，我们按官方体系分别整理。</p></div>
-      <div className="province-grid">
-        <Link className="province-card active-card" to="/anhui"><div className="province-mark">皖</div><div><span className="status-dot">已上线</span><h3>安徽省</h3><p>2026 · 计算机科学与技术</p></div><b>进入专区 →</b></Link>
-        {['江苏省','浙江省','河南省'].map((name) => <div className="province-card disabled" key={name}><div className="province-mark">{name[0]}</div><div><span>筹备中</span><h3>{name}</h3><p>等待资料整理</p></div></div>)}
-      </div>
+    <section className="content-section countdown-wrap"><Countdown /></section>
+    <section className="content-section anhui-focus-section">
+      <div className="anhui-focus-card"><div className="province-mark">皖</div><div><span className="status-dot">专注安徽</span><h2>只做安徽专升本，把资料做深、做准</h2><p>持续补充安徽院校、招生专业、考试大纲和优质学习资源，不再扩展其他省份。</p></div><Link className="primary-btn" to="/anhui">进入安徽专区 <span>→</span></Link></div>
     </section>
     <section className="content-section method-section">
-      <div className="section-heading"><div><span className="section-number">02</span><h2>三步找到学习路径</h2></div></div>
+      <div className="section-heading"><div><span className="section-number">01</span><h2>三步找到学习路径</h2></div></div>
       <div className="step-grid"><article><i>1</i><h3>选择目标院校</h3><p>先确认培养点、招生范围和四门考试科目。</p></article><article><i>2</i><h3>拆解考纲知识点</h3><p>按照章节逐项学习，完成一项就打一个勾。</p></article><article><i>3</i><h3>跟着精选课程学</h3><p>跳转原平台学习，收藏适合自己的讲解。</p></article></div>
     </section>
     <section className="notice-strip"><strong>非官方网站</strong><span>本站仅提供信息整理与学习资源导航，所有招生信息请以官方最新发布为准。</span><Link to="/sources">查看资料来源 →</Link></section>
