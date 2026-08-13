@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { offerings, schoolGroups, schoolSyllabus } from './data'
+import { offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
 
 describe('招生内容', () => {
   it('仅包含计划中的三所院校', () => {
@@ -23,5 +23,14 @@ describe('招生内容', () => {
     expect(hfnu.some((point) => point.subject_slug === 'computer-basics')).toBe(false)
     expect(aiit.some((point) => point.subject_slug === 'computer-basics')).toBe(true)
     expect(aiit.some((point) => point.subject_slug === 'advanced-math')).toBe(true)
+  })
+
+  it('资源使用具体课程或视频入口且每个知识点不超过三条推荐', () => {
+    expect(resources.some((resource) => /\/search(?:\.htm)?[?/]/.test(resource.url))).toBe(false)
+    expect(resources.filter((resource) => resource.platform === '哔哩哔哩')
+      .every((resource) => /^https:\/\/www\.bilibili\.com\/video\/(?:BV[\w]+|av\d+)\/?$/.test(resource.url))).toBe(true)
+
+    const topics = new Set(resources.flatMap((resource) => resource.tags))
+    topics.forEach((topic) => expect(resourcesForTopic(topic).length).toBeLessThanOrEqual(3))
   })
 })

@@ -49,6 +49,14 @@ const topics = new Set(syllabus.map((row) => row.canonical_topic))
 resources.forEach((row, index) => row.topic_tags.split('|').forEach((tag) => {
   if (!topics.has(tag)) errors.push(`resources.csv 第 ${index + 2} 行引用了未知主题 ${tag}`)
 }))
+resources.forEach((row, index) => {
+  if (/\/search(?:\.htm)?[?/]/.test(row.url)) {
+    errors.push(`resources.csv 第 ${index + 2} 行必须链接到具体课程或视频，不能使用搜索结果页`)
+  }
+  if (row.platform === '哔哩哔哩' && !/^https:\/\/www\.bilibili\.com\/video\/(?:BV[\w]+|av\d+)\/?$/.test(row.url)) {
+    errors.push(`resources.csv 第 ${index + 2} 行不是规范的哔哩哔哩视频链接`)
+  }
+})
 const forbidden = ['安徽建筑大学', 'ahjzu.edu.cn']
 for (const file of ['offerings.csv','syllabus.csv','resources.csv']) {
   const text = fs.readFileSync(path.join(root, 'content', file), 'utf8')
