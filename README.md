@@ -37,7 +37,7 @@ npm run build
 4. 复制 `.env.example` 为 `.env.local`，填写项目 URL 和 Publishable Key。
 5. 在 Supabase URL Configuration 中加入本地与线上 `/admin` 跳转地址。
 
-浏览器端只使用 Publishable Key，不得填写或提交 `service_role` 密钥。后台登录使用邮箱一次性链接，并禁用了自动注册。
+浏览器端只使用 Publishable Key，不得填写或提交 `service_role` 密钥。后台使用固定管理员邮箱和密码登录，不开放注册；首次使用或忘记密码时通过管理员邮箱设置新密码。
 
 ## Netlify
 

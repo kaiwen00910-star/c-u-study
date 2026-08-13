@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNames, syllabus } from './data'
-import { AdminDashboard, AdminLogin } from './Admin'
+import { AdminDashboard, AdminLogin, AdminResetPassword } from './Admin'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
 import './App.css'
@@ -178,6 +178,7 @@ export default function App() {
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
   return <BrowserRouter><Routes>
     <Route path="/admin/login" element={<AdminLogin />} />
+    <Route path="/admin/reset-password" element={<AdminResetPassword />} />
     <Route path="/admin" element={<AdminDashboard />} />
     <Route path="*" element={<Layout favoritesCount={favorites.length} announcement={content.announcement}><Routes><Route path="/" element={<Home resources={content.resources} />} /><Route path="/anhui" element={<AnhuiHub />} /><Route path="/anhui/2026/computer-science" element={<Compare />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} />} /><Route path="/sources" element={<Sources />} /><Route path="*" element={<NotFound />} /></Routes></Layout>} />
   </Routes></BrowserRouter>
