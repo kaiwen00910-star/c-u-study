@@ -2,26 +2,25 @@
 
 :root {
   font-family: 'Noto Sans SC', system-ui, sans-serif;
-  color: #17332e;
-  background: #f7f8f2;
+  color: #17263c;
+  background: #f6f9fd;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --ink: #17332e;
-  --muted: #65736f;
-  --green: #0b5c53;
-  --green-2: #0d776a;
-  --cream: #f7f8f2;
-  --line: #dfe5dc;
-  --yellow: #efd47b;
+  --ink: #17263c;
+  --muted: #66758a;
+  --green: #1556a6;
+  --green-2: #2372cd;
+  --cream: #f6f9fd;
+  --line: #dfe8f3;
+  --yellow: #f2c94c;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--cream); }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: linear-gradient(180deg, #f8fbff 0%, var(--cream) 32%, #f8fafc 100%); }
 button, input, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
 button { color: inherit; }
 img { max-width: 100%; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-

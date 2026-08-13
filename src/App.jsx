@@ -4,6 +4,7 @@ import { resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNa
 import { AdminDashboard, AdminLogin, AdminResetPassword } from './Admin'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
+import { anhuiAdmissionSchools, schoolWallTracks } from './schoolWallData'
 import './App.css'
 
 const schools = schoolGroups()
@@ -88,23 +89,66 @@ function Countdown() {
   </section>
 }
 
+function SchoolWallCard({ school }) {
+  const [imageFailed, setImageFailed] = useState(false)
+  return <Link className="wall-school-card" to={school.href} title={school.name}>
+    <span className="wall-school-emblem" aria-hidden="true">
+      {school.logo && !imageFailed
+        ? <img src={school.logo} alt="" onError={() => setImageFailed(true)} />
+        : <b>{school.shortName}</b>}
+    </span>
+    <span className="wall-school-info"><strong>{school.name}</strong><small>{school.hasDetails ? '学习地图已上线' : '院校资料持续整理中'}</small><span>查看院校 →</span></span>
+  </Link>
+}
+
+function SchoolLogoWall() {
+  return <div className="school-wall" aria-label="安徽普通专升本招生院校">
+    <div className="school-wall-head"><span><i />安徽招生院校</span><b>42 所院校持续更新</b></div>
+    <div className="school-wall-window">
+      {schoolWallTracks.map((track, index) => <div className={`logo-track track-${index + 1}`} key={index}>
+        <div className="logo-track-inner">
+          <div className="logo-track-group">{track.map((school) => <SchoolWallCard key={school.id} school={school} />)}</div>
+          <div className="logo-track-group" aria-hidden="true">{track.map((school) => <SchoolWallCard key={`${school.id}-copy`} school={school} />)}</div>
+        </div>
+      </div>)}
+      <div className="school-wall-static">{anhuiAdmissionSchools.map((school) => <SchoolWallCard key={`${school.id}-static`} school={school} />)}</div>
+    </div>
+    <p className="school-wall-note">校徽仅用于院校识别，版权归各院校所有 · 已上线 3 所计算机专业学习地图</p>
+  </div>
+}
+
 function Home({ resources }) {
   return <>
     <section className="hero-section">
-      <div className="eyebrow">ANHUI · 2026 · 专升本</div>
-      <h1>按考纲找课程，<br/><em>备考不再绕远路。</em></h1>
-      <p className="hero-copy">从目标院校的考试科目出发，把考纲拆成知识点，再为每个知识点匹配值得学的公开课程。</p>
-      <SearchBox resources={resources} />
-      <div className="hero-actions"><Link className="primary-btn" to="/anhui">开始规划学习 <span>→</span></Link><Link className="text-btn" to="/anhui/2026/computer-science">先对比院校</Link></div>
-      <div className="hero-stats" aria-label="当前收录概况"><div><strong>3</strong><span>试点院校</span></div><div><strong>6</strong><span>考试科目</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
+      <div className="hero-grid">
+        <div className="hero-main">
+          <div className="eyebrow">ANHUI EXAM PATH · 2026</div>
+          <h1>安徽专升本，<br/><em>找到适合你的本科院校</em></h1>
+          <p className="hero-copy">汇总安徽招生院校与报考信息，按目标院校的考试科目拆解考纲，再为每个知识点匹配值得学的公开课程。</p>
+          <div className="hero-actions"><Link className="primary-btn" to="/anhui">查看院校 <span>→</span></Link><Link className="secondary-btn" to="/anhui#school-filter">查报考条件</Link></div>
+          <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
+        </div>
+        <SchoolLogoWall />
+        <div className="hero-search"><SearchBox resources={resources} /></div>
+      </div>
+      <div className="hero-stats" aria-label="当前收录概况"><div><strong>42</strong><span>招生院校索引</span></div><div><strong>3</strong><span>完整学习地图</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
     </section>
     <section className="content-section countdown-wrap"><Countdown /></section>
     <section className="content-section anhui-focus-section">
       <div className="anhui-focus-card"><div className="province-mark">皖</div><div><span className="status-dot">专注安徽</span><h2>只做安徽专升本，把资料做深、做准</h2><p>持续补充安徽院校、招生专业、考试大纲和优质学习资源，不再扩展其他省份。</p></div><Link className="primary-btn" to="/anhui">进入安徽专区 <span>→</span></Link></div>
     </section>
-    <section className="content-section method-section">
-      <div className="section-heading"><div><span className="section-number">01</span><h2>三步找到学习路径</h2></div></div>
-      <div className="step-grid"><article><i>1</i><h3>选择目标院校</h3><p>先确认培养点、招生范围和四门考试科目。</p></article><article><i>2</i><h3>拆解考纲知识点</h3><p>按照章节逐项学习，完成一项就打一个勾。</p></article><article><i>3</i><h3>跟着精选课程学</h3><p>跳转原平台学习，收藏适合自己的讲解。</p></article></div>
+    <section className="content-section home-services">
+      <div className="section-heading"><div><span className="section-number">01</span><h2>从择校到备考，一站理清</h2></div><p>信息层级更清楚，每一步都有可核验的来源。</p></div>
+      <div className="service-grid">
+        <Link to="/anhui"><span>⌕</span><small>01</small><h3>院校筛选</h3><p>查看院校类型、培养地点、招生范围与考试科目。</p><b>开始筛选 →</b></Link>
+        <Link to="/anhui/2026/computer-science"><span>▦</span><small>02</small><h3>招生计划</h3><p>横向比较试点院校招生计划与专业课差异。</p><b>查看对比 →</b></Link>
+        <Link to="/sources"><span>◎</span><small>03</small><h3>报考指南</h3><p>了解资料年份、正式章程与官方考纲来源。</p><b>核验资料 →</b></Link>
+        <a href="#faq"><span>?</span><small>04</small><h3>常见问题</h3><p>快速了解网站数据、学习进度与更新方式。</p><b>查看说明 ↓</b></a>
+      </div>
+    </section>
+    <section className="content-section faq-section" id="faq">
+      <div><span className="eyebrow">QUICK GUIDE</span><h2>开始前，你可能想知道</h2></div>
+      <div className="faq-list"><details><summary>这里的信息是官方发布的吗？</summary><p>本站是非官方学习导航，但招生信息均尽量链接到学校或考试院原始页面，报考时仍请以最新官方通知为准。</p></details><details><summary>为什么目前只有 3 所院校能进入学习地图？</summary><p>首页院校墙展示安徽招生院校索引；学习地图需要逐校核对考纲，目前先完成计算机科学与技术专业的 3 所试点院校。</p></details><details><summary>学习进度会同步到其他设备吗？</summary><p>不会。当前进度和收藏只保存在本机浏览器，清除数据或更换设备后会丢失。</p></details></div>
     </section>
     <section className="notice-strip"><strong>非官方网站</strong><span>本站仅提供信息整理与学习资源导航，所有招生信息请以官方最新发布为准。</span><Link to="/sources">查看资料来源 →</Link></section>
   </>
@@ -122,7 +166,7 @@ function SchoolLogo({ schoolSlug, large = false }) {
 }
 
 function AnhuiHub() {
-  return <div className="page-wrap">
+  return <div className="page-wrap" id="school-filter">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
     <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>先看清报考条件与考试科目，再开始对应学习。当前基于 2026 年公开资料。</p></div><div className="filter-box"><label>考纲年份<select defaultValue="2026"><option>2026</option><option disabled>2027（待发布）</option></select></label><label>本科专业<select defaultValue="computer"><option value="computer">计算机科学与技术</option></select></label></div></section>
     <section className="exam-structure"><div><span>安徽考试结构</span><strong>2 门公共课</strong><b>+</b><strong>2 门专业课</strong></div><p>公共课由省考试院组织；专业课由招生院校组织，因此同一专业在不同院校的科目可能不同。</p></section>
