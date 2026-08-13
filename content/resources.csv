@@ -1,0 +1,10 @@
+resource_id,topic_tags,title,platform,creator,url,resource_type,difficulty,duration_text,recommendation_reason,priority,verified_at,status
+res-math-1,math-function|math-limit|math-derivative|math-integral,高等数学（一）,中国大学MOOC,同济大学,https://www.icourse163.org/course/TONGJI-53004,系统课程,入门,完整学期,体系完整，适合按章节建立微积分基础,1,2026-08-13,active
+res-english-1,english-vocabulary|english-grammar|english-reading|english-writing,大学英语学习专区,中国大学MOOC,中国大学MOOC,https://www.icourse163.org/search.htm?search=%E5%A4%A7%E5%AD%A6%E8%8B%B1%E8%AF%AD,课程检索,入门,按课程而定,可按自己的薄弱环节筛选词汇、语法与阅读课程,1,2026-08-13,active
+res-c-1,c-language-basic|c-language-control|c-language-array|c-language-pointer,程序设计入门——C语言,哔哩哔哩,中国大学MOOC·浙江大学翁恺,https://www.bilibili.com/video/BV1S441187zy/,视频课程,入门,10讲精选,官方账号发布，讲解清晰，适合零基础先建立概念,1,2026-08-13,active
+res-c-2,c-language-basic|c-language-control|c-language-array|c-language-pointer,C语言入门与进阶,哔哩哔哩,浙江大学翁恺公开课,https://www.bilibili.com/video/BV1SY411g7Hh/,系统课程,系统学习,97讲,覆盖基础到进阶，可用于完整复习与查漏补缺,2,2026-08-13,active
+res-c-3,c-language-pointer,C语言程序设计进阶,哔哩哔哩,浙江大学翁恺,https://www.bilibili.com/video/BV1Hs411A7NS/,专题课程,进阶,57讲,指针和字符串部分适合攻克易错难点,3,2026-08-13,active
+res-ds-1,data-structure-linear|data-structure-tree|data-structure-graph|data-structure-sort,数据结构课程检索,中国大学MOOC,中国大学MOOC,https://www.icourse163.org/search.htm?search=%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84,课程检索,系统学习,按课程而定,可优先选择国家精品课程并对照考纲章节学习,1,2026-08-13,active
+res-basic-1,computer-basics|computer-office,大学计算机基础,中国大学MOOC,中原工学院,https://www.icourse163.org/course/detail.htm?cid=1001796021,系统课程,入门,完整学期,覆盖系统组成、信息编码、操作系统和办公软件,1,2026-08-13,active
+res-basic-2,computer-basics|network-basic,信息技术1（计算机基础）,中国大学MOOC,高校课程团队,https://www.icourse163.org/course/detail.htm?cid=1002188002,系统课程,入门,完整学期,包含计算机原理、网络平台与数据处理等基础内容,2,2026-08-13,active
+res-network-1,network-basic|network-data|network-ip|network-transport,计算机网络课程检索,中国大学MOOC,中国大学MOOC,https://www.icourse163.org/search.htm?search=%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C,课程检索,系统学习,按课程而定,便于根据网络体系结构、IP与TCP等主题选择课程,1,2026-08-13,active
