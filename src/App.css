@@ -628,8 +628,7 @@ footer strong { font-size: 12px; }
 
 @media (max-width: 680px) {
   .hero-section { height: auto; min-height: 0; overflow: hidden; }
-  .hero-wall-zone { height: 184px; bottom: auto; }
-  .hero-content-zone { height: auto; padding: 148px 16px 26px; }
+  .hero-content-zone { height: auto; padding: 108px 16px 26px; }
   .hero-main { transform: none; }
   .hero-main .eyebrow { font-size: 11px; }
   .hero-section h1 { margin: 18px auto 14px; font-size: clamp(33px, 9vw, 42px); line-height: 1.16; }
