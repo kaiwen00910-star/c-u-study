@@ -385,7 +385,7 @@ footer strong { font-size: 12px; }
 .favorite-pill { color: #1556a6; background: #eaf3ff; }
 
 .hero-section {
-  height: calc(100svh - 100px);
+  height: max(705px, calc(100svh - 100px));
   min-height: 0;
   padding: 0;
   position: relative;
