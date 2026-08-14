@@ -97,13 +97,13 @@ function SchoolWallCard({ school }) {
         ? <img src={school.logo} alt="" onError={() => setImageFailed(true)} />
         : <b>{school.shortName}</b>}
     </span>
-    <span className="wall-school-info"><strong>{school.name}</strong><small>{school.hasDetails ? '学习地图已上线' : '院校资料持续整理中'}</small><span>查看院校 →</span></span>
+    <span className="wall-school-info"><strong>{school.name}</strong><span>查看院校 →</span></span>
   </Link>
 }
 
 function SchoolLogoWall() {
   return <div className="school-wall" aria-label="安徽普通专升本招生院校">
-    <div className="school-wall-head"><span><i />安徽招生院校</span><b>42 所院校持续更新</b></div>
+    <span className="sr-only">42 所安徽普通专升本招生院校</span>
     <div className="school-wall-window">
       {schoolWallTracks.map((track, index) => <div className={`logo-track track-${index + 1}`} key={index}>
         <div className="logo-track-inner">
@@ -113,23 +113,24 @@ function SchoolLogoWall() {
       </div>)}
       <div className="school-wall-static">{anhuiAdmissionSchools.map((school) => <SchoolWallCard key={`${school.id}-static`} school={school} />)}</div>
     </div>
-    <p className="school-wall-note">校徽仅用于院校识别，版权归各院校所有 · 已上线 3 所计算机专业学习地图</p>
   </div>
 }
 
 function Home({ resources }) {
   return <>
     <section className="hero-section">
-      <div className="hero-grid">
-        <div className="hero-main">
+      <div className="hero-stage">
+        <SchoolLogoWall />
+        <div className="hero-content-layer">
+          <div className="hero-main">
           <div className="eyebrow">ANHUI EXAM PATH · 2026</div>
           <h1>安徽专升本，<br/><em>找到适合你的本科院校</em></h1>
           <p className="hero-copy">汇总安徽招生院校与报考信息，按目标院校的考试科目拆解考纲，再为每个知识点匹配值得学的公开课程。</p>
           <div className="hero-actions"><Link className="primary-btn" to="/anhui">查看院校 <span>→</span></Link><Link className="secondary-btn" to="/anhui#school-filter">查报考条件</Link></div>
           <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
+          <div className="hero-search"><SearchBox resources={resources} /></div>
+          </div>
         </div>
-        <SchoolLogoWall />
-        <div className="hero-search"><SearchBox resources={resources} /></div>
       </div>
       <div className="hero-stats" aria-label="当前收录概况"><div><strong>42</strong><span>招生院校索引</span></div><div><strong>3</strong><span>完整学习地图</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
     </section>
