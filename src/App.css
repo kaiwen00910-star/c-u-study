@@ -482,7 +482,8 @@ footer strong { font-size: 12px; }
   .hero-search { margin-top: 13px; }
   .hero-search .search-wrap input { height: 46px; padding-left: 47px; font-size: 11px; }
   .hero-search .search-icon { left: 18px; top: 9px; }
-  .hero-stats { width: calc(100% - 24px); bottom: 10px; padding: 9px 8px; border-radius: 14px; }
+  .hero-stats { width: calc(100% - 24px); bottom: 10px; padding: 9px 5px; grid-template-columns: repeat(4,1fr); gap: 0; border-radius: 14px; }
+  .hero-stats div:nth-child(2) { border-right: 1px solid var(--line); }
   .hero-stats strong { font-size: 18px; }
   .hero-stats span { font-size: 9px; }
   .school-wall-window { padding: 64px 0 68px; }
