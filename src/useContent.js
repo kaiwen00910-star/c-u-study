@@ -3,7 +3,7 @@ import { fallbackResources } from './data'
 import { loadPublicContent } from './supabase'
 
 export function useContent() {
-  const [content, setContent] = useState({ resources: fallbackResources, announcement: null, source: 'csv', loading: true })
+  const [content, setContent] = useState({ resources: fallbackResources, announcement: null, schoolLogos: [], source: 'csv', loading: true })
 
   useEffect(() => {
     let active = true

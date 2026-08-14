@@ -4,7 +4,7 @@ import { resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNa
 import { AdminDashboard, AdminLogin, AdminResetPassword } from './Admin'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
-import { anhuiAdmissionSchools, schoolWallTracks } from './schoolWallData'
+import { createSchoolWallTracks, mergeSchoolLogos } from './schoolWallData'
 import './App.css'
 
 const schools = schoolGroups()
@@ -101,38 +101,40 @@ function SchoolWallCard({ school }) {
   </Link>
 }
 
-function SchoolLogoWall() {
+function SchoolLogoWall({ schools }) {
+  const tracks = createSchoolWallTracks(schools)
   return <div className="school-wall" aria-label="安徽普通专升本招生院校">
     <span className="sr-only">42 所安徽普通专升本招生院校</span>
     <div className="school-wall-window">
-      {schoolWallTracks.map((track, index) => <div className={`logo-track track-${index + 1}`} key={index}>
+      {tracks.map((track, index) => <div className={`logo-track track-${index + 1}`} key={index}>
         <div className="logo-track-inner">
           <div className="logo-track-group">{track.map((school) => <SchoolWallCard key={school.id} school={school} />)}</div>
           <div className="logo-track-group" aria-hidden="true">{track.map((school) => <SchoolWallCard key={`${school.id}-copy`} school={school} />)}</div>
         </div>
       </div>)}
-      <div className="school-wall-static">{anhuiAdmissionSchools.map((school) => <SchoolWallCard key={`${school.id}-static`} school={school} />)}</div>
+      <div className="school-wall-static">{schools.map((school) => <SchoolWallCard key={`${school.id}-static`} school={school} />)}</div>
     </div>
   </div>
 }
 
-function Home({ resources }) {
+function Home({ resources, schoolLogos }) {
+  const wallSchools = useMemo(() => mergeSchoolLogos(schoolLogos), [schoolLogos])
   return <>
     <section className="hero-section">
-      <div className="hero-stage">
-        <SchoolLogoWall />
-        <div className="hero-content-layer">
-          <div className="hero-main">
+      <div className="hero-wall-zone">
+        <SchoolLogoWall schools={wallSchools} />
+      </div>
+      <div className="hero-content-zone">
+        <div className="hero-main">
           <div className="eyebrow">ANHUI EXAM PATH · 2026</div>
           <h1>安徽专升本，<br/><em>找到适合你的本科院校</em></h1>
           <p className="hero-copy">汇总安徽招生院校与报考信息，按目标院校的考试科目拆解考纲，再为每个知识点匹配值得学的公开课程。</p>
           <div className="hero-actions"><Link className="primary-btn" to="/anhui">查看院校 <span>→</span></Link><Link className="secondary-btn" to="/anhui#school-filter">查报考条件</Link></div>
           <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
           <div className="hero-search"><SearchBox resources={resources} /></div>
-          </div>
         </div>
+        <div className="hero-stats" aria-label="当前收录概况"><div><strong>42</strong><span>招生院校索引</span></div><div><strong>3</strong><span>完整学习地图</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
       </div>
-      <div className="hero-stats" aria-label="当前收录概况"><div><strong>42</strong><span>招生院校索引</span></div><div><strong>3</strong><span>完整学习地图</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
     </section>
     <section className="content-section countdown-wrap"><Countdown /></section>
     <section className="content-section anhui-focus-section">
@@ -258,6 +260,6 @@ export default function App() {
     <Route path="/admin/login" element={<AdminLogin />} />
     <Route path="/admin/reset-password" element={<AdminResetPassword />} />
     <Route path="/admin" element={<AdminDashboard />} />
-    <Route path="*" element={<Layout favoritesCount={favorites.length} announcement={content.announcement}><Routes><Route path="/" element={<Home resources={content.resources} />} /><Route path="/anhui" element={<AnhuiHub />} /><Route path="/anhui/2026/computer-science" element={<Compare />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} />} /><Route path="/sources" element={<Sources />} /><Route path="*" element={<NotFound />} /></Routes></Layout>} />
+    <Route path="*" element={<Layout favoritesCount={favorites.length} announcement={content.announcement}><Routes><Route path="/" element={<Home resources={content.resources} schoolLogos={content.schoolLogos} />} /><Route path="/anhui" element={<AnhuiHub />} /><Route path="/anhui/2026/computer-science" element={<Compare />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} />} /><Route path="/sources" element={<Sources />} /><Route path="*" element={<NotFound />} /></Routes></Layout>} />
   </Routes></BrowserRouter>
 }
