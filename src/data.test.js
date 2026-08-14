@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
 import { validateAnnouncement, validateResource } from './resourceValidation'
+import { anhuiAdmissionSchools, createSchoolWallTracks, mergeSchoolLogos } from './schoolWallData'
 
 describe('招生内容', () => {
   it('仅包含计划中的三所院校', () => {
@@ -48,5 +49,15 @@ describe('招生内容', () => {
   it('公告结束时间必须晚于开始时间', () => {
     expect(validateAnnouncement({ title: '通知', content: '内容', starts_at: '2026-08-13T10:00:00Z', ends_at: '2026-08-13T09:00:00Z' }))
       .toContain('结束时间必须晚于开始时间')
+  })
+
+  it('首页将 42 所院校均分为三条轨道并优先使用后台校徽', () => {
+    expect(anhuiAdmissionSchools).toHaveLength(42)
+    expect(createSchoolWallTracks().map((track) => track.length)).toEqual([14, 14, 14])
+    const school = anhuiAdmissionSchools.find((item) => !item.logo)
+    const [merged] = mergeSchoolLogos([{ school_id: school.id, logo_url: 'https://example.com/logo.webp' }])
+      .filter((item) => item.id === school.id)
+    expect(merged.logo).toBe('https://example.com/logo.webp')
+    expect(merged.logoSource).toBe('database')
   })
 })

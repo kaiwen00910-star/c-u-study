@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { syllabus, subjectNames } from './data'
 import { ADMIN_EMAIL, validateAnnouncement, validateResource } from './resourceValidation'
 import { normalizeResource, supabase, supabaseConfigured } from './supabase'
+import { mergeSchoolLogos } from './schoolWallData'
 
 const emptyResource = {
   resource_id: '', topic_tags: [], title: '', platform: '哔哩哔哩', creator: '', url: '',
@@ -59,7 +60,7 @@ export function AdminLogin() {
 
   return <div className="admin-login-page"><section className="admin-login-card">
     <span className="eyebrow">升本导航 · 管理后台</span><h1>管理员登录</h1>
-    <p>后台仅供站长维护学习资源和首页公告。请使用管理员邮箱和密码登录。</p>
+    <p>后台仅供站长维护学习资源、首页公告和院校校徽。请使用管理员邮箱和密码登录。</p>
     <form onSubmit={login}><label>管理员邮箱<input value={ADMIN_EMAIL} readOnly /></label><label>密码<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength="8" required autoComplete="current-password" /></label><button className="admin-primary" disabled={sending}>{sending ? '请稍候…' : '登录后台'}</button><button type="button" onClick={resetPassword} disabled={sending}>首次设置或忘记密码</button></form>
     {!supabaseConfigured && <p className="admin-message error">当前部署尚未配置 Supabase。</p>}
     <Message state={message} /><a href="/">← 返回网站首页</a>
@@ -168,10 +169,67 @@ function AnnouncementsPanel({ announcements, setAnnouncements }) {
   </section>
 }
 
+const schoolLogoTypes = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp',
+}
+
+function SchoolLogosPanel({ logoRows, setLogoRows }) {
+  const [query, setQuery] = useState('')
+  const [uploading, setUploading] = useState('')
+  const [message, setMessage] = useState({ type: '', text: '' })
+  const schools = useMemo(() => mergeSchoolLogos(logoRows), [logoRows])
+  const filtered = schools.filter((school) => school.name.includes(query.trim()))
+  const readyCount = schools.filter((school) => school.logo).length
+
+  async function uploadLogo(school, event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    const extension = schoolLogoTypes[file.type]
+    if (!extension) return setMessage({ type: 'error', text: '校徽仅支持 PNG、JPG 或 WebP 图片。' })
+    if (file.size > 2 * 1024 * 1024) return setMessage({ type: 'error', text: '校徽图片不能超过 2MB。' })
+
+    setUploading(school.id); setMessage({ type: '', text: '' })
+    const objectPath = `${school.id}/logo-${Date.now()}.${extension}`
+    const { error: uploadError } = await supabase.storage.from('school-logos').upload(objectPath, file, {
+      cacheControl: '31536000',
+      contentType: file.type,
+    })
+    if (uploadError) {
+      setUploading('')
+      return setMessage({ type: 'error', text: `上传失败：${uploadError.message}` })
+    }
+
+    const { data: publicUrlData } = supabase.storage.from('school-logos').getPublicUrl(objectPath)
+    const { data, error } = await supabase.from('school_logos').upsert({
+      school_id: school.id,
+      logo_url: publicUrlData.publicUrl,
+    }, { onConflict: 'school_id' }).select().single()
+    setUploading('')
+    if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
+    setLogoRows((current) => [data, ...current.filter((item) => item.school_id !== school.id)])
+    setMessage({ type: 'success', text: `“${school.name}”校徽已更新，首页刷新后立即生效。` })
+  }
+
+  return <section className="admin-panel admin-school-logos">
+    <div className="admin-panel-title"><div><span className="eyebrow">首页内容</span><h2>院校校徽</h2><p>{readyCount} / {schools.length} 所已有校徽，可为缺失院校上传图片</p></div><input className="admin-logo-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索院校" /></div>
+    <Message state={message} />
+    <div className="admin-logo-grid">{filtered.map((school) => <article className="admin-logo-card" key={school.id}>
+      <span className="admin-logo-preview">{school.logo ? <img src={school.logo} alt={`${school.name}校徽`} /> : <b>{school.shortName}</b>}</span>
+      <div><strong>{school.name}</strong><span className={`admin-status ${school.logoSource !== 'missing' ? 'active' : ''}`}>{school.logoSource === 'database' ? '后台校徽' : school.logoSource === 'local' ? '内置校徽' : '待补充'}</span></div>
+      <label className="admin-logo-upload">{uploading === school.id ? '上传中…' : school.logo ? '替换图片' : '上传校徽'}<input type="file" accept="image/png,image/jpeg,image/webp" disabled={Boolean(uploading)} onChange={(event) => uploadLogo(school, event)} /></label>
+    </article>)}</div>
+    {!filtered.length && <p className="admin-empty">没有匹配的院校。</p>}
+  </section>
+}
+
 export function AdminDashboard() {
   const [authState, setAuthState] = useState({ loading: true, allowed: false, email: '' })
   const [resources, setResources] = useState([])
   const [announcements, setAnnouncements] = useState([])
+  const [schoolLogos, setSchoolLogos] = useState([])
   const [query, setQuery] = useState('')
   const [platform, setPlatform] = useState('all')
   const [status, setStatus] = useState('all')
@@ -186,12 +244,13 @@ export function AdminDashboard() {
       const { data: membership } = await supabase.from('admin_users').select('user_id,email').eq('user_id', user.id).maybeSingle()
       if (!membership) return setAuthState({ loading: false, allowed: false, email: user.email })
       setAuthState({ loading: false, allowed: true, email: user.email })
-      const [{ data: resourceRows, error: resourceError }, { data: announcementRows, error: announcementError }] = await Promise.all([
+      const [{ data: resourceRows, error: resourceError }, { data: announcementRows, error: announcementError }, { data: logoRows, error: logoError }] = await Promise.all([
         supabase.from('resources').select('*').order('updated_at', { ascending: false }),
         supabase.from('announcements').select('*').order('updated_at', { ascending: false }).limit(1),
+        supabase.from('school_logos').select('*').order('school_id'),
       ])
-      if (resourceError || announcementError) return setMessage({ type: 'error', text: `读取后台数据失败：${resourceError?.message || announcementError?.message}` })
-      setResources(resourceRows.map(normalizeResource)); setAnnouncements(announcementRows)
+      if (resourceError || announcementError || logoError) return setMessage({ type: 'error', text: `读取后台数据失败：${resourceError?.message || announcementError?.message || logoError?.message}` })
+      setResources(resourceRows.map(normalizeResource)); setAnnouncements(announcementRows); setSchoolLogos(logoRows)
     }
     initialize()
   }, [])
@@ -223,7 +282,7 @@ export function AdminDashboard() {
     <main className="admin-main"><section className="admin-panel admin-resources"><div className="admin-panel-title"><div><span className="eyebrow">学习内容</span><h2>课程资源</h2><p>{resources.length} 条资源 · {resources.filter((item) => item.status === 'active').length} 条启用</p></div><button className="admin-primary" onClick={() => setEditor('new')}>＋ 新增资源</button></div>
       <div className="admin-filters"><input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索标题、UP 主或资源 ID" /><select value={platform} onChange={(e) => setPlatform(e.target.value)}><option value="all">全部平台</option>{[...new Set(resources.map((item) => item.platform))].map((item) => <option key={item}>{item}</option>)}</select><select value={status} onChange={(e) => setStatus(e.target.value)}><option value="all">全部状态</option><option value="active">启用</option><option value="inactive">已下架</option></select></div>
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>资源</th><th>平台与标签</th><th>优先级</th><th>状态</th><th>操作</th></tr></thead><tbody>{filtered.map((item) => <tr key={item.resource_id}><td><strong>{item.title}</strong><small>{item.resource_id} · {item.creator}</small></td><td><span>{item.platform}</span><small>{item.tags.join(' · ')}</small></td><td>{item.priority}</td><td><span className={`admin-status ${item.status === 'active' ? 'active' : ''}`}>{item.status === 'active' ? '启用' : '已下架'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor(item)}>编辑</button><button onClick={() => duplicate(item)}>复制</button><button onClick={() => toggleStatus(item)}>{item.status === 'active' ? '下架' : '恢复'}</button></div></td></tr>)}</tbody></table>{!filtered.length && <p className="admin-empty">没有匹配的资源。</p>}</div>
-    </section><AnnouncementsPanel announcements={announcements} setAnnouncements={setAnnouncements} /></main>
+    </section><AnnouncementsPanel announcements={announcements} setAnnouncements={setAnnouncements} /><SchoolLogosPanel logoRows={schoolLogos} setLogoRows={setSchoolLogos} /></main>
     {editor && <ResourceEditor initial={editor === 'new' ? null : editor} onClose={() => setEditor(null)} onSaved={saved} />}
   </div>
 }

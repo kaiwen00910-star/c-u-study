@@ -64,9 +64,15 @@ export const anhuiAdmissionSchools = schoolNames.map((name, index) => ({
     .slice(0, 2) || '皖',
 }))
 
-export const schoolWallTracks = [
-  anhuiAdmissionSchools.slice(0, 11),
-  anhuiAdmissionSchools.slice(11, 21),
-  anhuiAdmissionSchools.slice(21, 32),
-  anhuiAdmissionSchools.slice(32),
-]
+export function mergeSchoolLogos(logoRows = []) {
+  const remoteLogos = new Map(logoRows.map((row) => [row.school_id, row.logo_url]))
+  return anhuiAdmissionSchools.map((school) => ({
+    ...school,
+    logo: remoteLogos.get(school.id) || school.logo,
+    logoSource: remoteLogos.has(school.id) ? 'database' : school.logo ? 'local' : 'missing',
+  }))
+}
+
+export function createSchoolWallTracks(schools = anhuiAdmissionSchools) {
+  return [schools.slice(0, 14), schools.slice(14, 28), schools.slice(28)]
+}

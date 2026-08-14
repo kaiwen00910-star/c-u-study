@@ -17,7 +17,7 @@ npm run dev
 - `syllabus.csv`：考纲章节和知识点
 - `resources.csv`：12 条内置备用资源（Supabase 暂不可用时自动回退）
 
-院校、考纲和来源仍由 CSV 维护；线上学习资源和首页公告由 `/admin` 后台维护，保存后访客刷新页面即可看到。
+院校、考纲和来源仍由 CSV 维护；线上学习资源、首页公告和院校校徽由 `/admin` 后台维护，保存后访客刷新页面即可看到。校徽支持 PNG、JPG、WebP，单张不超过 2MB；后台上传的校徽优先于项目内置图片。
 
 修改后先执行：
 
@@ -31,7 +31,7 @@ npm run build
 
 ## Supabase 后台
 
-1. 将 `supabase/migrations` 中的迁移应用到 Supabase 项目。
+1. 将 `supabase/migrations` 中的迁移应用到 Supabase 项目；校徽迁移会创建公开读取、仅管理员可上传的 `school-logos` Storage bucket。
 2. 运行 `supabase/seed.sql`，可重复导入内置资源而不产生重复记录。
 3. 在 Supabase Auth 预先创建管理员 `3130708522@qq.com`，再将其 `auth.users.id` 写入 `public.admin_users`。
 4. 复制 `.env.example` 为 `.env.local`，填写项目 URL 和 Publishable Key。
@@ -57,4 +57,4 @@ npm run build
 - `zsb:v1:favorites`
 - `zsb:v1:lastSelection`
 
-普通访客无需账号；清除浏览器数据或更换设备后，学习进度与收藏不会同步。管理员登录仅用于维护资源和公告。
+普通访客无需账号；清除浏览器数据或更换设备后，学习进度与收藏不会同步。管理员登录仅用于维护资源、公告和院校校徽。
