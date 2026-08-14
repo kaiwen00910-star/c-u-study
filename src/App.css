@@ -404,7 +404,7 @@ footer strong { font-size: 12px; }
 .hero-wall-zone { min-height: 0; position: relative; z-index: 1; }
 .hero-content-zone { min-height: 0; padding: 4px 24px 0; position: relative; z-index: 4; display: grid; grid-template-rows: minmax(0,1fr) auto; align-items: center; background: linear-gradient(180deg, rgba(248,252,255,.18) 0%, rgba(248,252,255,.92) 19%, rgba(251,253,255,.97) 55%, rgba(247,251,255,.99) 100%); backdrop-filter: blur(11px); }
 .hero-content-zone::before { content: ''; height: 58px; position: absolute; left: 0; right: 0; top: -58px; background: linear-gradient(180deg, transparent, rgba(248,252,255,.82)); pointer-events: none; }
-.hero-main { width: min(1040px,100%); margin: auto; position: relative; z-index: 1; transform: translateY(clamp(-220px, calc(450px - 61vh), 10px)); }
+.hero-main { width: min(1040px,100%); margin: auto; position: relative; z-index: 1; transform: translateY(clamp(-220px, calc(443px - 61vh), 3px)); }
 .hero-main .eyebrow { font-size: 13px; }
 .eyebrow { color: #2268b7; letter-spacing: .14em; }
 .hero-section h1, .page-hero h1 { color: #12233d; font-family: 'Noto Sans SC', system-ui, sans-serif; }
