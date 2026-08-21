@@ -65,11 +65,21 @@ export const anhuiAdmissionSchools = schoolNames.map((name, index) => ({
 }))
 
 export function mergeSchoolLogos(logoRows = []) {
-  const remoteLogos = new Map(logoRows.map((row) => [row.school_id, row.logo_url]))
+  const schoolOverrides = new Map(logoRows.map((row) => [row.school_id, row]))
   return anhuiAdmissionSchools.map((school) => ({
     ...school,
-    logo: remoteLogos.get(school.id) || school.logo,
-    logoSource: remoteLogos.has(school.id) ? 'database' : school.logo ? 'local' : 'missing',
+    name: schoolOverrides.get(school.id)?.display_name?.trim() || school.name,
+    defaultName: school.name,
+    customName: schoolOverrides.get(school.id)?.display_name?.trim() || null,
+    databaseLogo: schoolOverrides.get(school.id)?.logo_url || null,
+    logo: schoolOverrides.get(school.id)?.logo_url || school.logo,
+    logoSource: schoolOverrides.get(school.id)?.logo_url ? 'database' : school.logo ? 'local' : 'missing',
+    shortName: (schoolOverrides.get(school.id)?.display_name?.trim() || school.name)
+      .replace('安徽', '')
+      .replace('合肥', '')
+      .replace('大学', '')
+      .replace('学院', '')
+      .slice(0, 2) || '院校',
   }))
 }
 

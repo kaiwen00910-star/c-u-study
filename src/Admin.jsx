@@ -178,6 +178,7 @@ const schoolLogoTypes = {
 function SchoolLogosPanel({ logoRows, setLogoRows }) {
   const [query, setQuery] = useState('')
   const [uploading, setUploading] = useState('')
+  const [savingName, setSavingName] = useState('')
   const [message, setMessage] = useState({ type: '', text: '' })
   const schools = useMemo(() => mergeSchoolLogos(logoRows), [logoRows])
   const filtered = schools.filter((school) => school.name.includes(query.trim()))
@@ -206,6 +207,7 @@ function SchoolLogosPanel({ logoRows, setLogoRows }) {
     const { data, error } = await supabase.from('school_logos').upsert({
       school_id: school.id,
       logo_url: publicUrlData.publicUrl,
+      display_name: school.customName,
     }, { onConflict: 'school_id' }).select().single()
     setUploading('')
     if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
@@ -213,16 +215,41 @@ function SchoolLogosPanel({ logoRows, setLogoRows }) {
     setMessage({ type: 'success', text: `“${school.name}”校徽已更新，首页刷新后立即生效。` })
   }
 
+  async function saveSchoolName(school, value) {
+    const displayName = value.replace(/\s+/g, ' ').trim()
+    if (!displayName) return setMessage({ type: 'error', text: '学校名称不能为空。' })
+    if (displayName.length > 40) return setMessage({ type: 'error', text: '学校名称不能超过 40 个字符。' })
+    if (displayName === school.name) return setMessage({ type: 'success', text: '学校名称未变化。' })
+
+    setSavingName(school.id); setMessage({ type: '', text: '' })
+    const { data, error } = await supabase.from('school_logos').upsert({
+      school_id: school.id,
+      logo_url: school.databaseLogo,
+      display_name: displayName === school.defaultName ? null : displayName,
+    }, { onConflict: 'school_id' }).select().single()
+    setSavingName('')
+    if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
+    setLogoRows((current) => [data, ...current.filter((item) => item.school_id !== school.id)])
+    setMessage({ type: 'success', text: displayName === school.defaultName ? '已恢复默认学校名称。' : `“${displayName}”已保存，首页刷新后立即生效。` })
+  }
+
   return <section className="admin-panel admin-school-logos">
     <div className="admin-panel-title"><div><span className="eyebrow">首页内容</span><h2>院校校徽</h2><p>{readyCount} / {schools.length} 所已有校徽，可为缺失院校上传图片</p></div><input className="admin-logo-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索院校" /></div>
     <Message state={message} />
-    <div className="admin-logo-grid">{filtered.map((school) => <article className="admin-logo-card" key={school.id}>
-      <span className="admin-logo-preview">{school.logo ? <img src={school.logo} alt={`${school.name}校徽`} /> : <b>{school.shortName}</b>}</span>
-      <div><strong>{school.name}</strong><span className={`admin-status ${school.logoSource !== 'missing' ? 'active' : ''}`}>{school.logoSource === 'database' ? '后台校徽' : school.logoSource === 'local' ? '内置校徽' : '待补充'}</span></div>
-      <label className="admin-logo-upload">{uploading === school.id ? '上传中…' : school.logo ? '替换图片' : '上传校徽'}<input type="file" accept="image/png,image/jpeg,image/webp" disabled={Boolean(uploading)} onChange={(event) => uploadLogo(school, event)} /></label>
-    </article>)}</div>
+    <div className="admin-logo-grid">{filtered.map((school) => <SchoolLogoCard key={school.id} school={school} uploading={uploading} savingName={savingName} onUpload={uploadLogo} onSaveName={saveSchoolName} />)}</div>
     {!filtered.length && <p className="admin-empty">没有匹配的院校。</p>}
   </section>
+}
+
+function SchoolLogoCard({ school, uploading, savingName, onUpload, onSaveName }) {
+  const [name, setName] = useState(school.name)
+  useEffect(() => { setName(school.name) }, [school.name])
+  const busy = Boolean(uploading || savingName)
+  return <article className="admin-logo-card">
+    <span className="admin-logo-preview">{school.logo ? <img src={school.logo} alt={`${school.name}校徽`} /> : <b>{school.shortName}</b>}</span>
+    <div className="admin-logo-details"><label className="admin-logo-name">学校名称<input value={name} maxLength="40" disabled={busy} onChange={(event) => setName(event.target.value)} /></label><span className={`admin-status ${school.logoSource !== 'missing' ? 'active' : ''}`}>{school.logoSource === 'database' ? '后台校徽' : school.logoSource === 'local' ? '内置校徽' : '待补充'}</span></div>
+    <div className="admin-logo-actions"><button type="button" className="admin-logo-name-save" disabled={busy || name.trim() === school.name} onClick={() => onSaveName(school, name)}>{savingName === school.id ? '保存中…' : '保存名称'}</button><label className="admin-logo-upload">{uploading === school.id ? '上传中…' : school.logo ? '替换图片' : '上传校徽'}<input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={(event) => onUpload(school, event)} /></label></div>
+  </article>
 }
 
 export function AdminDashboard() {

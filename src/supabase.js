@@ -20,7 +20,7 @@ export async function loadPublicContent() {
   const [{ data: resourceRows, error: resourceError }, { data: announcementRows, error: announcementError }, { data: schoolLogoRows, error: schoolLogoError }] = await Promise.all([
     supabase.from('resources').select('*').order('priority').order('title'),
     supabase.from('announcements').select('*').order('updated_at', { ascending: false }).limit(1),
-    supabase.from('school_logos').select('school_id,logo_url,updated_at').order('school_id'),
+    supabase.from('school_logos').select('school_id,logo_url,display_name,updated_at').order('school_id'),
   ])
   if (resourceError) throw resourceError
   if (announcementError) throw announcementError
