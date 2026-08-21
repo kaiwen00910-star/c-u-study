@@ -540,13 +540,15 @@ footer strong { font-size: 12px; }
 /* Homepage Hero: the marquee remains a separate, untouched block above the content. */
 .hero-section {
   height: auto;
-  min-height: 870px;
-  grid-template-rows: 326px minmax(0, 1fr);
+  min-height: 822px;
+  grid-template-rows: 314px minmax(0, 1fr);
 }
+
+.school-wall-window { padding-top: 20px; }
 
 .hero-content-zone {
   display: block;
-  padding: 18px 24px 14px;
+  padding: 8px 24px 12px;
   background: linear-gradient(180deg, rgba(248,252,255,.76) 0%, rgba(251,253,255,.97) 20%, rgba(247,251,255,.99) 100%);
   backdrop-filter: blur(11px);
 }
@@ -563,7 +565,7 @@ footer strong { font-size: 12px; }
 
 .hero-section h1 {
   max-width: 860px;
-  margin: 10px auto 14px;
+  margin: 7px auto 9px;
   font-size: clamp(48px, 3.65vw, 58px);
   font-weight: 800;
   line-height: 1.1;
@@ -575,25 +577,26 @@ footer strong { font-size: 12px; }
 .hero-section h1 em { display: inline-block; font-size: 1.04em; }
 
 .hero-copy {
-  max-width: 720px;
+  max-width: 900px;
   font-size: 15.5px;
   line-height: 1.75;
+  white-space: nowrap;
 }
 
-.hero-actions { margin-top: 23px; gap: 14px; }
+.hero-actions { margin-top: 18px; gap: 14px; }
 .hero-actions .primary-btn,
 .hero-actions .secondary-btn { min-height: 50px; border-radius: 11px; }
 
-.hero-trust { margin-top: 16px; gap: 20px; }
+.hero-trust { margin-top: 12px; gap: 20px; }
 
-.hero-search { width: min(760px, 100%); margin-top: 22px; }
+.hero-search { width: min(760px, 100%); margin-top: 16px; }
 .hero-search .search-wrap input { height: 56px; border-radius: 15px; font-size: 15px; }
 .hero-search .search-icon { top: 14px; }
 
 .hero-stats {
   width: min(760px, 100%);
   min-height: 88px;
-  margin: 22px auto 0;
+  margin: 16px auto 0;
   padding: 12px 18px;
   border-radius: 18px;
 }
@@ -608,14 +611,17 @@ footer strong { font-size: 12px; }
     grid-template-rows: 276px auto;
   }
 
+  .school-wall-window { padding-top: 36px; }
   .hero-content-zone { padding: 18px 18px 18px; }
   .hero-main { transform: none; }
   .hero-section h1 { font-size: clamp(40px, 6.8vw, 52px); }
+  .hero-copy { white-space: normal; }
   .hero-stats { margin-top: 20px; }
 }
 
 @media (max-width: 680px) {
   .hero-section { grid-template-rows: 236px auto; }
+  .school-wall-window { padding-top: 34px; }
   .hero-content-zone { padding: 17px 14px 16px; }
   .hero-main .eyebrow { font-size: 11px; }
   .hero-section h1 { margin: 9px auto 12px; font-size: clamp(31px, 8.8vw, 38px); line-height: 1.12; }
