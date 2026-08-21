@@ -284,6 +284,13 @@ footer strong { font-size: 12px; }
 .admin-logo-preview b { font-size: 13px; }
 .admin-logo-card > div { min-width: 0; display: grid; justify-items: start; gap: 6px; }
 .admin-logo-card strong { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; }
+.admin-logo-details { align-content: center; }
+.admin-logo-name { width: 100%; display: grid; gap: 4px; color: var(--muted); font-size: 10px; font-weight: 700; }
+.admin-logo-name input { width: 100%; min-width: 0; padding: 7px 8px; border: 1px solid #cdd8d1; border-radius: 7px; color: var(--ink); background: white; font: inherit; outline: none; }
+.admin-logo-name input:focus { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(35,114,205,.1); }
+.admin-logo-actions { align-content: center; justify-items: stretch !important; gap: 7px !important; }
+.admin-logo-name-save { padding: 7px 9px; border: 1px solid #bfd3e8; border-radius: 7px; color: #1556a6; background: white; cursor: pointer; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.admin-logo-name-save:disabled { opacity: .55; cursor: not-allowed; }
 .admin-logo-upload { padding: 7px 9px; border: 1px solid #bfd3e8; border-radius: 7px; color: #1556a6; background: white; cursor: pointer; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .admin-logo-upload:hover { border-color: #76a9dc; background: #edf6ff; }
 .admin-logo-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
