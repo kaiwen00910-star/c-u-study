@@ -273,7 +273,7 @@ footer strong { font-size: 12px; }
 .admin-status.active { color: #17634f; background: #def2e9; }
 .admin-actions { display: flex; flex-wrap: wrap; gap: 5px; }
 .admin-empty { padding: 30px; text-align: center; color: var(--muted); }
-.admin-school-logos { grid-column: 1 / -1; }
+.admin-school-logos, .admin-academic-data { grid-column: 1 / -1; }
 .admin-school-logos > .admin-message { margin: 16px 0 0; }
 .admin-logo-search { width: min(230px,40vw); padding: 10px 12px; border: 1px solid #cdd8d1; border-radius: 8px; outline: none; }
 .admin-logo-search:focus { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(35,114,205,.1); }
@@ -294,6 +294,13 @@ footer strong { font-size: 12px; }
 .admin-logo-upload { padding: 7px 9px; border: 1px solid #bfd3e8; border-radius: 7px; color: #1556a6; background: white; cursor: pointer; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .admin-logo-upload:hover { border-color: #76a9dc; background: #edf6ff; }
 .admin-logo-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.admin-data-section { margin-top: 22px; }
+.admin-data-section > header { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.admin-data-section > header > div { display: flex; align-items: baseline; gap: 9px; }
+.admin-data-section h3 { margin: 0; font-size: 16px; }
+.admin-data-section header span { color: var(--muted); font-size: 11px; }
+.admin-academic-data .admin-table { min-width: 850px; }
+.admin-points-table { max-height: 520px; overflow: auto; }
 .announcement-form { margin-top: 22px; display: grid; gap: 15px; }
 .announcement-form > div { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 .admin-switch { display: flex !important; grid-template-columns: auto 1fr; align-items: center; }

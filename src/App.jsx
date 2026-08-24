@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useParams } from 'react-router-dom'
-import { resourcesForTopic, schoolGroups, schoolSyllabus, schoolTheme, subjectNames, syllabus } from './data'
+import { resourcesForTopic, schoolGroups, schoolSyllabus, subjectNames } from './data'
 import { AdminDashboard, AdminLogin, AdminResetPassword } from './Admin'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
 import { createSchoolWallTracks, mergeSchoolLogos } from './schoolWallData'
 import './App.css'
-
-const schools = schoolGroups()
 
 function Logo() {
   return <Link className="logo" to="/" aria-label="安徽升本导航首页"><span>皖</span><strong>安徽升本导航</strong></Link>
@@ -35,17 +33,17 @@ function Layout({ children, favoritesCount, announcement }) {
   </div>
 }
 
-function SearchBox({ resources }) {
+function SearchBox({ resources, syllabusPoints }) {
   const [query, setQuery] = useState('')
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return []
-    const pointMatches = syllabus.filter((item) => `${item.point_title}${item.section_name}${subjectNames[item.subject_slug]}`.toLowerCase().includes(q))
-      .slice(0, 5).map((item) => ({ type: '知识点', title: item.point_title, detail: subjectNames[item.subject_slug], slug: item.school_slug === 'common' ? 'hfnu' : item.school_slug }))
+    const pointMatches = syllabusPoints.filter((item) => `${item.point_title}${item.section_name}${item.subject_name || subjectNames[item.subject_slug] || ''}`.toLowerCase().includes(q))
+      .slice(0, 5).map((item) => ({ type: '知识点', title: item.point_title, detail: item.subject_name || subjectNames[item.subject_slug], slug: item.school_slug === 'common' ? 'hfnu' : item.school_slug }))
     const resourceMatches = resources.filter((item) => `${item.title}${item.creator}${item.platform}`.toLowerCase().includes(q))
       .slice(0, 3).map((item) => ({ type: '课程', title: item.title, detail: `${item.platform} · ${item.creator}`, url: item.url }))
     return [...pointMatches, ...resourceMatches]
-  }, [query, resources])
+  }, [query, resources, syllabusPoints])
 
   return <div className="search-wrap">
     <label htmlFor="home-search" className="sr-only">搜索知识点或课程</label>
@@ -117,8 +115,7 @@ function SchoolLogoWall({ schools }) {
   </div>
 }
 
-function Home({ resources, schoolLogos }) {
-  const wallSchools = useMemo(() => mergeSchoolLogos(schoolLogos), [schoolLogos])
+function Home({ resources, wallSchools, syllabusPoints, schoolCount }) {
   return <>
     <section className="hero-section">
       <div className="hero-wall-zone">
@@ -131,9 +128,9 @@ function Home({ resources, schoolLogos }) {
           <p className="hero-copy">汇总安徽招生院校与报考信息，按目标院校的考试科目拆解考纲，再为每个知识点匹配值得学的公开课程。</p>
           <div className="hero-actions"><Link className="primary-btn" to="/anhui">查看院校 <span>→</span></Link><Link className="secondary-btn" to="/anhui#school-filter">查报考条件</Link></div>
           <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
-          <div className="hero-search"><SearchBox resources={resources} /></div>
+          <div className="hero-search"><SearchBox resources={resources} syllabusPoints={syllabusPoints} /></div>
         </div>
-        <div className="hero-stats" aria-label="当前收录概况"><div><strong>42</strong><span>招生院校索引</span></div><div><strong>3</strong><span>完整学习地图</span></div><div><strong>{syllabus.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
+        <div className="hero-stats" aria-label="当前收录概况"><div><strong>{wallSchools.length}</strong><span>招生院校索引</span></div><div><strong>{schoolCount}</strong><span>完整学习地图</span></div><div><strong>{syllabusPoints.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
       </div>
     </section>
     <section className="content-section countdown-wrap"><Countdown /></section>
@@ -161,39 +158,37 @@ function SubjectTags({ school }) {
   return <div className="subject-groups"><div><small>公共课</small>{school.publicSubjects.map((s) => <span key={s}>{s}</span>)}</div><div><small>专业课</small>{school.professionalSubjects.map((s) => <span className="professional" key={s}>{s}</span>)}</div></div>
 }
 
-function SchoolLogo({ schoolSlug, large = false }) {
-  const theme = schoolTheme[schoolSlug]
-  return <span className={`school-logo school-logo-${schoolSlug}${large ? ' large' : ''}`}>
-    <img src={theme.logo} alt={`${theme.short}校徽`} />
+function SchoolLogo({ school, large = false }) {
+  return <span className={`school-logo school-logo-${school.school_slug}${large ? ' large' : ''}`}>
+    <img src={school.logo_url} alt={`${school.short_name}校徽`} />
   </span>
 }
 
-function AnhuiHub() {
+function AnhuiHub({ schools }) {
   return <div className="page-wrap" id="school-filter">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
     <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>先看清报考条件与考试科目，再开始对应学习。当前基于 2026 年公开资料。</p></div><div className="filter-box"><label>考纲年份<select defaultValue="2026"><option>2026</option><option disabled>2027（待发布）</option></select></label><label>本科专业<select defaultValue="computer"><option value="computer">计算机科学与技术</option></select></label></div></section>
     <section className="exam-structure"><div><span>安徽考试结构</span><strong>2 门公共课</strong><b>+</b><strong>2 门专业课</strong></div><p>公共课由省考试院组织；专业课由招生院校组织，因此同一专业在不同院校的科目可能不同。</p></section>
-    <div className="section-heading"><div><span className="section-number">3 所</span><h2>已整理院校</h2></div><Link to="/anhui/2026/computer-science">查看横向对比 →</Link></div>
+    <div className="section-heading"><div><span className="section-number">{schools.length} 所</span><h2>已整理院校</h2></div><Link to="/anhui/2026/computer-science">查看横向对比 →</Link></div>
     <section className="school-grid">{schools.map((school) => <SchoolCard key={school.school_slug} school={school} />)}</section>
     <div className="local-tip"><span>ⓘ</span><p><strong>你的进度只保存在当前浏览器</strong><br/>不需要注册即可使用；清除浏览器数据或更换设备后，进度与收藏不会同步。</p></div>
   </div>
 }
 
 function SchoolCard({ school }) {
-  const theme = schoolTheme[school.school_slug]
-  return <article className="school-card" style={{ '--school-color': theme.color }}>
-    <div className="school-head"><SchoolLogo schoolSlug={school.school_slug} /><div><span className="type-tag">{school.school_type}</span><h3>{school.school_name}</h3></div></div>
+  return <article className="school-card" style={{ '--school-color': school.theme_color }}>
+    <div className="school-head"><SchoolLogo school={school} /><div><span className="type-tag">{school.school_type}</span><h3>{school.school_name}</h3></div></div>
     <SubjectTags school={school} />
     <dl><div><dt>培养地点</dt><dd>{school.sites.join(' / ')}</dd></div><div><dt>招生范围</dt><dd>{school.eligible_major_categories}</dd></div><div><dt>计划数</dt><dd>{school.totalPlan} 人</dd></div></dl>
     <div className="school-card-foot"><span>核验于 {school.verified_at}</span><Link onClick={() => saveLastSelection({ year: 2026, major: 'computer-science', school: school.school_slug })} to={`/anhui/2026/computer-science/${school.school_slug}`}>打开学习地图 →</Link></div>
   </article>
 }
 
-function Compare() {
+function Compare({ schools }) {
   return <div className="page-wrap">
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>院校对比</div>
     <section className="page-hero"><div><span className="eyebrow">2026 · 计算机科学与技术</span><h1>三所院校，一页看清</h1><p>专业课差异是备考路线的关键。先选择院校，再按该校考纲学习。</p></div></section>
-    <div className="compare-scroll" tabIndex="0" aria-label="院校对比表，可横向滚动"><table><thead><tr><th>对比项</th>{schools.map((s) => <th key={s.school_slug}><span className="compare-school"><SchoolLogo schoolSlug={s.school_slug} /><span>{s.school_name}<small>{s.school_type}</small></span></span></th>)}</tr></thead><tbody>
+    <div className="compare-scroll" tabIndex="0" aria-label="院校对比表，可横向滚动"><table><thead><tr><th>对比项</th>{schools.map((s) => <th key={s.school_slug}><span className="compare-school"><SchoolLogo school={s} /><span>{s.school_name}<small>{s.school_type}</small></span></span></th>)}</tr></thead><tbody>
       <tr><th>培养地点</th>{schools.map((s) => <td key={s.school_slug}>{s.sites.map(x => <span className="table-line" key={x}>{x}</span>)}</td>)}</tr>
       <tr><th>招生范围</th>{schools.map((s) => <td key={s.school_slug}>{s.eligible_major_categories}</td>)}</tr>
       <tr><th>招生计划</th>{schools.map((s) => <td key={s.school_slug}><strong>{s.totalPlan}</strong> 人</td>)}</tr>
@@ -210,17 +205,17 @@ function ResourceCard({ resource, favorites, toggleFavorite }) {
   return <article className="resource-card"><div className="resource-top"><span className={resource.platform.includes('哔哩') ? 'platform bili' : 'platform mooc'}>{resource.platform}</span><button onClick={() => toggleFavorite(resource.resource_id)} aria-label={saved ? '取消收藏' : '收藏资源'} aria-pressed={saved}>{saved ? '★' : '☆'}</button></div><h4>{resource.title}</h4><p className="creator">{resource.creator}</p><div className="resource-meta"><span>{resource.difficulty}</span><span>{resource.duration_text}</span><span>{resource.resource_type}</span></div><p>{resource.recommendation_reason}</p><a href={resource.url} target="_blank" rel="noreferrer">前往官方平台学习 ↗</a></article>
 }
 
-function LearningMap({ favorites, toggleFavorite, resources }) {
+function LearningMap({ favorites, toggleFavorite, resources, schools, syllabusPoints }) {
   const { schoolSlug } = useParams()
   const school = schools.find((item) => item.school_slug === schoolSlug)
   const [progress, setProgress] = useState(getProgress)
   const [activeSubject, setActiveSubject] = useState('advanced-math')
   if (!school) return <Navigate to="/anhui" replace />
-  const points = schoolSyllabus(schoolSlug)
-  const subjectOrder = ['advanced-math', 'english', ...Object.keys(subjectNames).filter((key) => school.professionalSubjects.includes(subjectNames[key]))]
+  const points = schoolSyllabus(schoolSlug, syllabusPoints)
+  const subjectOrder = [...new Set([...school.publicSubjects, ...school.professionalSubjects].map((name) => points.find((point) => (point.subject_name || subjectNames[point.subject_slug]) === name)?.subject_slug).filter(Boolean))]
   const shownSubjects = [activeSubject]
   const completed = points.filter((point) => progress[progressKey(schoolSlug, point.point_id)]).length
-  const percent = Math.round(completed / points.length * 100)
+  const percent = points.length ? Math.round(completed / points.length * 100) : 0
 
   function togglePoint(pointId) {
     const key = progressKey(schoolSlug, pointId)
@@ -230,14 +225,15 @@ function LearningMap({ favorites, toggleFavorite, resources }) {
 
   return <div className="page-wrap learning-page">
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>{school.school_name}</div>
-    <section className="school-title" style={{ '--school-color': schoolTheme[schoolSlug].color }}><SchoolLogo schoolSlug={schoolSlug} large /><div><span className="type-tag">{school.school_type} · 2026</span><h1>{school.school_name}</h1><p>计算机科学与技术 · {school.sites.join(' / ')}</p></div><div className="official-links"><a href={school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a></div></section>
+    <section className="school-title" style={{ '--school-color': school.theme_color }}><SchoolLogo school={school} large /><div><span className="type-tag">{school.school_type} · 2026</span><h1>{school.school_name}</h1><p>计算机科学与技术 · {school.sites.join(' / ')}</p></div><div className="official-links"><a href={school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a></div></section>
     <SubjectTags school={school} />
     <section className="progress-panel"><div className="progress-copy"><span>学习进度</span><strong>{completed} / {points.length} 个知识点</strong></div><div className="progress-track"><span style={{ width: `${percent}%` }} /></div><b>{percent}%</b></section>
-    <div className="subject-tabs" role="tablist" aria-label="选择考试科目">{subjectOrder.map((slug) => <button type="button" role="tab" aria-selected={activeSubject === slug} className={activeSubject === slug ? 'active' : ''} onClick={() => setActiveSubject(slug)} key={slug}>{subjectNames[slug]}</button>)}</div>
+    <div className="subject-tabs" role="tablist" aria-label="选择考试科目">{subjectOrder.map((slug) => <button type="button" role="tab" aria-selected={activeSubject === slug} className={activeSubject === slug ? 'active' : ''} onClick={() => setActiveSubject(slug)} key={slug}>{points.find((point) => point.subject_slug === slug)?.subject_name || subjectNames[slug]}</button>)}</div>
     <div className="syllabus-column">{shownSubjects.map((subjectSlug) => {
       const subjectPoints = points.filter((p) => p.subject_slug === subjectSlug)
       const sections = [...new Set(subjectPoints.map((p) => p.section_name))]
-      return <section className="subject-block" id={subjectSlug} key={subjectSlug}><div className="subject-title"><div><span>{school.professionalSubjects.includes(subjectNames[subjectSlug]) ? '专业课' : '公共课'}</span><h2>{subjectNames[subjectSlug]}</h2></div><small>{subjectPoints.length} 个知识点</small></div>{sections.map((section) => <div className="chapter" key={section}><h3>{section}</h3>{subjectPoints.filter((p) => p.section_name === section).map((point) => {
+      const subjectName = subjectPoints[0]?.subject_name || subjectNames[subjectSlug]
+      return <section className="subject-block" id={subjectSlug} key={subjectSlug}><div className="subject-title"><div><span>{school.professionalSubjects.includes(subjectName) ? '专业课' : '公共课'}</span><h2>{subjectName}</h2></div><small>{subjectPoints.length} 个知识点</small></div>{sections.map((section) => <div className="chapter" key={section}><h3>{section}</h3>{subjectPoints.filter((p) => p.section_name === section).map((point) => {
         const done = !!progress[progressKey(schoolSlug, point.point_id)]
         const linked = resourcesForTopic(point.canonical_topic, resources)
         return <div className={`knowledge-item ${done ? 'done' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point.point_id)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div><div className="resource-row">{linked.length ? linked.map((r) => <ResourceCard key={r.resource_id} resource={r} favorites={favorites} toggleFavorite={toggleFavorite} />) : <p className="empty-resource">资源整理中，建议先对照官方考纲和参考书学习。</p>}</div></div>})}</div>)}</section>
@@ -246,8 +242,8 @@ function LearningMap({ favorites, toggleFavorite, resources }) {
   </div>
 }
 
-function Sources() {
-  return <div className="page-wrap sources-page"><div className="crumb"><Link to="/">首页</Link><span>/</span>资料来源</div><section className="page-hero"><div><span className="eyebrow">透明 · 可核验</span><h1>每条考试信息，都能回到官方来源</h1><p>我们优先采用正式招生章程；拟招生通知只作线索，不覆盖正式文件。</p></div></section><section className="source-rules"><article><b>01</b><h3>正式文件优先</h3><p>正式招生章程高于拟招生方案，后发布的官方更正高于旧版本。</p></article><article><b>02</b><h3>按年份隔离</h3><p>所有招生方案和知识点都标注适用年份，不将往年内容冒充最新考纲。</p></article><article><b>03</b><h3>人工复核</h3><p>展示最后核验日期；进入下一招生年度后逐校重新检查。</p></article></section><section className="source-list"><h2>2026 年试点院校</h2>{schools.map((school) => <article key={school.school_slug}><SchoolLogo schoolSlug={school.school_slug} /><div><h3>{school.school_name}</h3><p>{school.source_status} · 核验于 {school.verified_at}</p></div><div><a href={school.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">专业课考纲 ↗</a></div></article>)}</section><section className="disclaimer"><h2>免责声明</h2><p>“升本导航”不是安徽省教育招生考试院或任何招生院校的官方网站，不提供报名、录取和成绩查询服务。课程推荐为编辑整理，不代表招生单位意见，也不保证单个课程覆盖全部考试内容。报名前务必打开官方来源复核。</p></section></div>
+function Sources({ schools }) {
+  return <div className="page-wrap sources-page"><div className="crumb"><Link to="/">首页</Link><span>/</span>资料来源</div><section className="page-hero"><div><span className="eyebrow">透明 · 可核验</span><h1>每条考试信息，都能回到官方来源</h1><p>我们优先采用正式招生章程；拟招生通知只作线索，不覆盖正式文件。</p></div></section><section className="source-rules"><article><b>01</b><h3>正式文件优先</h3><p>正式招生章程高于拟招生方案，后发布的官方更正高于旧版本。</p></article><article><b>02</b><h3>按年份隔离</h3><p>所有招生方案和知识点都标注适用年份，不将往年内容冒充最新考纲。</p></article><article><b>03</b><h3>人工复核</h3><p>展示最后核验日期；进入下一招生年度后逐校重新检查。</p></article></section><section className="source-list"><h2>2026 年试点院校</h2>{schools.map((school) => <article key={school.school_slug}><SchoolLogo school={school} /><div><h3>{school.school_name}</h3><p>{school.source_status} · 核验于 {school.verified_at}</p></div><div><a href={school.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">专业课考纲 ↗</a></div></article>)}</section><section className="disclaimer"><h2>免责声明</h2><p>“升本导航”不是安徽省教育招生考试院或任何招生院校的官方网站，不提供报名、录取和成绩查询服务。课程推荐为编辑整理，不代表招生单位意见，也不保证单个课程覆盖全部考试内容。报名前务必打开官方来源复核。</p></section></div>
 }
 
 function NotFound() { return <div className="page-wrap not-found"><span>404</span><h1>这个页面还没整理好</h1><p>回到安徽专区，继续选择院校和学习路线。</p><Link className="primary-btn" to="/anhui">返回安徽专区</Link></div> }
@@ -255,11 +251,25 @@ function NotFound() { return <div className="page-wrap not-found"><span>404</spa
 export default function App() {
   const [favorites, setFavorites] = useState(getFavorites)
   const content = useContent()
+  const wallSchools = useMemo(() => mergeSchoolLogos(content.schoolLogos), [content.schoolLogos])
+  const academicSchools = useMemo(() => {
+    const wallById = new Map(wallSchools.map((school) => [school.id, school]))
+    return content.academicSchools.map((school) => {
+      const wall = wallById.get(school.wall_school_id)
+      return wall ? {
+        ...school,
+        school_name: wall.customName || school.school_name,
+        short_name: wall.customName ? wall.shortName : school.short_name,
+        logo_url: wall.logo || school.logo_url,
+      } : school
+    })
+  }, [content.academicSchools, wallSchools])
+  const schools = useMemo(() => schoolGroups(content.offerings, academicSchools), [content.offerings, academicSchools])
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
   return <BrowserRouter><Routes>
     <Route path="/admin/login" element={<AdminLogin />} />
     <Route path="/admin/reset-password" element={<AdminResetPassword />} />
     <Route path="/admin" element={<AdminDashboard />} />
-    <Route path="*" element={<Layout favoritesCount={favorites.length} announcement={content.announcement}><Routes><Route path="/" element={<Home resources={content.resources} schoolLogos={content.schoolLogos} />} /><Route path="/anhui" element={<AnhuiHub />} /><Route path="/anhui/2026/computer-science" element={<Compare />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} />} /><Route path="/sources" element={<Sources />} /><Route path="*" element={<NotFound />} /></Routes></Layout>} />
+    <Route path="*" element={<Layout favoritesCount={favorites.length} announcement={content.announcement}><Routes><Route path="/" element={<Home resources={content.resources} wallSchools={wallSchools} syllabusPoints={content.syllabusPoints} schoolCount={schools.length} />} /><Route path="/anhui" element={<AnhuiHub schools={schools} />} /><Route path="/anhui/2026/computer-science" element={<Compare schools={schools} />} /><Route path="/anhui/2026/computer-science/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} schools={schools} syllabusPoints={content.syllabusPoints} />} /><Route path="/sources" element={<Sources schools={schools} />} /><Route path="*" element={<NotFound />} /></Routes></Layout>} />
   </Routes></BrowserRouter>
 }
