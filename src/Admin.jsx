@@ -60,7 +60,7 @@ export function AdminLogin() {
 
   return <div className="admin-login-page"><section className="admin-login-card">
     <span className="eyebrow">升本导航 · 管理后台</span><h1>管理员登录</h1>
-    <p>后台仅供站长维护学习资源、首页公告和院校校徽。请使用管理员邮箱和密码登录。</p>
+    <p>后台仅供站长维护院校资料、招生计划、考纲知识点、学习资源、首页公告和院校校徽。请使用管理员邮箱和密码登录。</p>
     <form onSubmit={login}><label>管理员邮箱<input value={ADMIN_EMAIL} readOnly /></label><label>密码<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength="8" required autoComplete="current-password" /></label><button className="admin-primary" disabled={sending}>{sending ? '请稍候…' : '登录后台'}</button><button type="button" onClick={resetPassword} disabled={sending}>首次设置或忘记密码</button></form>
     {!supabaseConfigured && <p className="admin-message error">当前部署尚未配置 Supabase。</p>}
     <Message state={message} /><a href="/">← 返回网站首页</a>
