@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import Papa from 'papaparse'
+import { fallbackAcademicSchools } from '../src/schoolWallData.js'
 
 const root = process.cwd()
 const load = (name) => Papa.parse(fs.readFileSync(path.join(root, 'content', name), 'utf8'), {
@@ -41,6 +42,16 @@ unique(offerings, 'offering_id', 'offerings.csv'); unique(syllabus, 'point_id', 
 urlCheck(offerings, ['charter_url','syllabus_url'], 'offerings.csv'); urlCheck(resources, ['url'], 'resources.csv')
 dateCheck(offerings, 'offerings.csv'); dateCheck(resources, 'resources.csv')
 
+if (fallbackAcademicSchools.length !== 42) errors.push(`院校回退数据应为 42 所，当前为 ${fallbackAcademicSchools.length} 所`)
+unique(fallbackAcademicSchools, 'school_id', '院校回退数据')
+unique(fallbackAcademicSchools, 'school_slug', '院校回退数据')
+fallbackAcademicSchools.forEach((school, index) => {
+  const expectedId = `anhui-school-${String(index + 1).padStart(2, '0')}`
+  if (school.school_id !== expectedId) errors.push(`院校回退数据第 ${index + 1} 所 ID 或顺序错误`)
+  if (!school.school_name || !school.short_name) errors.push(`院校回退数据 ${expectedId} 缺少名称或简称`)
+})
+if (fallbackAcademicSchools.filter((school) => school.has_study_map).length !== 3) errors.push('院校回退数据必须仅开放 3 所学习地图')
+
 const schoolSlugs = new Set(offerings.map((row) => row.school_slug))
 syllabus.forEach((row, index) => {
   if (row.school_slug !== 'common' && !schoolSlugs.has(row.school_slug)) errors.push(`syllabus.csv 第 ${index + 2} 行引用了未知院校`)
@@ -67,4 +78,4 @@ if (errors.length) {
   console.error(`内容校验失败（${errors.length} 项）：\n- ${errors.join('\n- ')}`)
   process.exit(1)
 }
-console.log(`内容校验通过：${offerings.length} 个招生点、${syllabus.length} 个知识点、${resources.length} 条资源。`)
+console.log(`内容校验通过：${fallbackAcademicSchools.length} 所院校、${offerings.length} 个招生点、${syllabus.length} 个知识点、${resources.length} 条资源。`)

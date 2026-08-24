@@ -2,6 +2,9 @@ import Papa from 'papaparse'
 import offeringsCsv from '../content/offerings.csv?raw'
 import syllabusCsv from '../content/syllabus.csv?raw'
 import resourcesCsv from '../content/resources.csv?raw'
+import { fallbackAcademicSchools } from './schoolWallData'
+
+export { fallbackAcademicSchools } from './schoolWallData'
 
 const parse = (csv) => Papa.parse(csv, { header: true, skipEmptyLines: true }).data
 
@@ -38,14 +41,10 @@ export const schoolTheme = {
   wenda: { short: '文达', color: '#173d78', logo: '/schools/school-wenda.jpg' },
 }
 
-export const fallbackAcademicSchools = [
-  { school_slug: 'hfnu', wall_school_id: 'anhui-school-23', school_name: '合肥师范学院', school_type: '公办', short_name: '合师', theme_color: '#0869a6', logo_url: '/schools/school-hfnu.jpg', active: true, sort_order: 1 },
-  { school_slug: 'aiit', wall_school_id: 'anhui-school-33', school_name: '安徽信息工程学院', school_type: '民办', short_name: '安信', theme_color: '#164d89', logo_url: '/schools/school-aiit.png', active: true, sort_order: 2 },
-  { school_slug: 'wenda', wall_school_id: 'anhui-school-36', school_name: '安徽文达信息工程学院', school_type: '民办', short_name: '文达', theme_color: '#173d78', logo_url: '/schools/school-wenda.jpg', active: true, sort_order: 3 },
-]
-
 export function schoolGroups(items = offerings, academicSchools = fallbackAcademicSchools) {
-  const metadata = new Map(academicSchools.filter((school) => school.active !== false).map((school) => [school.school_slug, school]))
+  const metadata = new Map(academicSchools
+    .filter((school) => school.active !== false && school.has_study_map)
+    .map((school) => [school.school_slug, school]))
   const groups = Object.values(items.filter((item) => item.active !== false).reduce((acc, item) => {
     const school = metadata.get(item.school_slug)
     if (!school) return acc

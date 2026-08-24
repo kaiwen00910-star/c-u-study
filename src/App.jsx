@@ -4,7 +4,7 @@ import { resourcesForTopic, schoolGroups, schoolSyllabus, subjectNames } from '.
 import { AdminDashboard, AdminLogin, AdminResetPassword } from './Admin'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
-import { createSchoolWallTracks, mergeSchoolLogos } from './schoolWallData'
+import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
 import './App.css'
 
 function Logo() {
@@ -159,8 +159,11 @@ function SubjectTags({ school }) {
 }
 
 function SchoolLogo({ school, large = false }) {
+  const [imageFailed, setImageFailed] = useState(false)
   return <span className={`school-logo school-logo-${school.school_slug}${large ? ' large' : ''}`}>
-    <img src={school.logo_url} alt={`${school.short_name}校徽`} />
+    {school.logo_url && !imageFailed
+      ? <img src={school.logo_url} alt={`${school.short_name}校徽`} onError={() => setImageFailed(true)} />
+      : <b>{school.short_name}</b>}
   </span>
 }
 
@@ -251,19 +254,8 @@ function NotFound() { return <div className="page-wrap not-found"><span>404</spa
 export default function App() {
   const [favorites, setFavorites] = useState(getFavorites)
   const content = useContent()
-  const wallSchools = useMemo(() => mergeSchoolLogos(content.schoolLogos), [content.schoolLogos])
-  const academicSchools = useMemo(() => {
-    const wallById = new Map(wallSchools.map((school) => [school.id, school]))
-    return content.academicSchools.map((school) => {
-      const wall = wallById.get(school.wall_school_id)
-      return wall ? {
-        ...school,
-        school_name: wall.customName || school.school_name,
-        short_name: wall.customName ? wall.shortName : school.short_name,
-        logo_url: wall.logo || school.logo_url,
-      } : school
-    })
-  }, [content.academicSchools, wallSchools])
+  const academicSchools = content.academicSchools
+  const wallSchools = useMemo(() => createSchoolWallSchools(academicSchools), [academicSchools])
   const schools = useMemo(() => schoolGroups(content.offerings, academicSchools), [content.offerings, academicSchools])
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
   return <BrowserRouter><Routes>
