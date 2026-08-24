@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ADMIN_EMAIL, validateAnnouncement, validateResource } from './resourceValidation'
 import { normalizeAcademicSchool, normalizeOffering, normalizeResource, normalizeSyllabusPoint, supabase, supabaseConfigured } from './supabase'
-import { mergeSchoolLogos } from './schoolWallData'
 
 const emptyResource = {
   resource_id: '', topic_tags: [], title: '', platform: '哔哩哔哩', creator: '', url: '',
@@ -10,7 +9,7 @@ const emptyResource = {
   priority: 1, verified_at: new Date().toISOString().slice(0, 10), status: 'active',
 }
 const emptyAnnouncement = { id: null, title: '', content: '', enabled: false, starts_at: '', ends_at: '' }
-const emptyAcademicSchool = { school_slug: '', wall_school_id: '', school_name: '', school_type: '公办', short_name: '', theme_color: '#1556a6', logo_url: '', active: true, sort_order: 1 }
+const emptyAcademicSchool = { school_id: '', school_slug: '', school_name: '', school_type: '公办', short_name: '', theme_color: '#1556a6', logo_url: '', active: true, has_study_map: false, sort_order: 1 }
 const emptyOffering = { offering_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: '', training_site: '', eligible_major_categories: '', public_subjects: '高等数学|英语', professional_subjects: '', plan_count: 1, charter_url: '', syllabus_url: '', source_status: '正式章程', verified_at: new Date().toISOString().slice(0, 10), active: true, sort_order: 1 }
 const emptySyllabusPoint = { point_id: '', year: 2026, school_slug: 'common', subject_slug: '', subject_name: '', section_order: 1, section_name: '', point_order: 1, point_title: '', canonical_topic: '', active: true }
 
@@ -60,7 +59,7 @@ export function AdminLogin() {
 
   return <div className="admin-login-page"><section className="admin-login-card">
     <span className="eyebrow">升本导航 · 管理后台</span><h1>管理员登录</h1>
-    <p>后台仅供站长维护院校资料、招生计划、考纲知识点、学习资源、首页公告和院校校徽。请使用管理员邮箱和密码登录。</p>
+    <p>后台仅供站长维护院校资料（含校徽）、招生计划、考纲知识点、学习资源和首页公告。请使用管理员邮箱和密码登录。</p>
     <form onSubmit={login}><label>管理员邮箱<input value={ADMIN_EMAIL} readOnly /></label><label>密码<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength="8" required autoComplete="current-password" /></label><button className="admin-primary" disabled={sending}>{sending ? '请稍候…' : '登录后台'}</button><button type="button" onClick={resetPassword} disabled={sending}>首次设置或忘记密码</button></form>
     {!supabaseConfigured && <p className="admin-message error">当前部署尚未配置 Supabase。</p>}
     <Message state={message} /><a href="/">← 返回网站首页</a>
@@ -176,83 +175,6 @@ const schoolLogoTypes = {
   'image/webp': 'webp',
 }
 
-function SchoolLogosPanel({ logoRows, setLogoRows }) {
-  const [query, setQuery] = useState('')
-  const [uploading, setUploading] = useState('')
-  const [savingName, setSavingName] = useState('')
-  const [message, setMessage] = useState({ type: '', text: '' })
-  const schools = useMemo(() => mergeSchoolLogos(logoRows), [logoRows])
-  const filtered = schools.filter((school) => school.name.includes(query.trim()))
-  const readyCount = schools.filter((school) => school.logo).length
-
-  async function uploadLogo(school, event) {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) return
-    const extension = schoolLogoTypes[file.type]
-    if (!extension) return setMessage({ type: 'error', text: '校徽仅支持 PNG、JPG 或 WebP 图片。' })
-    if (file.size > 2 * 1024 * 1024) return setMessage({ type: 'error', text: '校徽图片不能超过 2MB。' })
-
-    setUploading(school.id); setMessage({ type: '', text: '' })
-    const objectPath = `${school.id}/logo-${Date.now()}.${extension}`
-    const { error: uploadError } = await supabase.storage.from('school-logos').upload(objectPath, file, {
-      cacheControl: '31536000',
-      contentType: file.type,
-    })
-    if (uploadError) {
-      setUploading('')
-      return setMessage({ type: 'error', text: `上传失败：${uploadError.message}` })
-    }
-
-    const { data: publicUrlData } = supabase.storage.from('school-logos').getPublicUrl(objectPath)
-    const { data, error } = await supabase.from('school_logos').upsert({
-      school_id: school.id,
-      logo_url: publicUrlData.publicUrl,
-      display_name: school.customName,
-    }, { onConflict: 'school_id' }).select().single()
-    setUploading('')
-    if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
-    setLogoRows((current) => [data, ...current.filter((item) => item.school_id !== school.id)])
-    setMessage({ type: 'success', text: `“${school.name}”校徽已更新，首页刷新后立即生效。` })
-  }
-
-  async function saveSchoolName(school, value) {
-    const displayName = value.replace(/\s+/g, ' ').trim()
-    if (!displayName) return setMessage({ type: 'error', text: '学校名称不能为空。' })
-    if (displayName.length > 40) return setMessage({ type: 'error', text: '学校名称不能超过 40 个字符。' })
-    if (displayName === school.name) return setMessage({ type: 'success', text: '学校名称未变化。' })
-
-    setSavingName(school.id); setMessage({ type: '', text: '' })
-    const { data, error } = await supabase.from('school_logos').upsert({
-      school_id: school.id,
-      logo_url: school.databaseLogo,
-      display_name: displayName === school.defaultName ? null : displayName,
-    }, { onConflict: 'school_id' }).select().single()
-    setSavingName('')
-    if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
-    setLogoRows((current) => [data, ...current.filter((item) => item.school_id !== school.id)])
-    setMessage({ type: 'success', text: displayName === school.defaultName ? '已恢复默认学校名称。' : `“${displayName}”已保存，首页刷新后立即生效。` })
-  }
-
-  return <section className="admin-panel admin-school-logos">
-    <div className="admin-panel-title"><div><span className="eyebrow">首页内容</span><h2>院校校徽</h2><p>{readyCount} / {schools.length} 所已有校徽，可为缺失院校上传图片</p></div><input className="admin-logo-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索院校" /></div>
-    <Message state={message} />
-    <div className="admin-logo-grid">{filtered.map((school) => <SchoolLogoCard key={school.id} school={school} uploading={uploading} savingName={savingName} onUpload={uploadLogo} onSaveName={saveSchoolName} />)}</div>
-    {!filtered.length && <p className="admin-empty">没有匹配的院校。</p>}
-  </section>
-}
-
-function SchoolLogoCard({ school, uploading, savingName, onUpload, onSaveName }) {
-  const [name, setName] = useState(school.name)
-  useEffect(() => { setName(school.name) }, [school.name])
-  const busy = Boolean(uploading || savingName)
-  return <article className="admin-logo-card">
-    <span className="admin-logo-preview">{school.logo ? <img src={school.logo} alt={`${school.name}校徽`} /> : <b>{school.shortName}</b>}</span>
-    <div className="admin-logo-details"><label className="admin-logo-name">学校名称<input value={name} maxLength="40" disabled={busy} onChange={(event) => setName(event.target.value)} /></label><span className={`admin-status ${school.logoSource !== 'missing' ? 'active' : ''}`}>{school.logoSource === 'database' ? '后台校徽' : school.logoSource === 'local' ? '内置校徽' : '待补充'}</span></div>
-    <div className="admin-logo-actions"><button type="button" className="admin-logo-name-save" disabled={busy || name.trim() === school.name} onClick={() => onSaveName(school, name)}>{savingName === school.id ? '保存中…' : '保存名称'}</button><label className="admin-logo-upload">{uploading === school.id ? '上传中…' : school.logo ? '替换图片' : '上传校徽'}<input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={(event) => onUpload(school, event)} /></label></div>
-  </article>
-}
-
 function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
   const defaults = kind === 'school' ? emptyAcademicSchool : kind === 'offering' ? emptyOffering : emptySyllabusPoint
   const prepared = initial && kind === 'offering'
@@ -261,16 +183,57 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
   const [form, setForm] = useState(prepared ? { ...prepared } : { ...defaults, school_slug: kind !== 'school' ? (schools[0]?.school_slug || defaults.school_slug) : defaults.school_slug })
   const [message, setMessage] = useState({ type: '', text: '' })
   const [saving, setSaving] = useState(false)
+  const [logoFile, setLogoFile] = useState(null)
   const editing = Boolean(initial)
   const set = (field, value) => setForm((current) => ({ ...current, [field]: value }))
+
+  function chooseLogo(event) {
+    const file = event.target.files?.[0]
+    if (!file) return setLogoFile(null)
+    if (!schoolLogoTypes[file.type]) {
+      event.target.value = ''
+      setLogoFile(null)
+      return setMessage({ type: 'error', text: '校徽仅支持 PNG、JPG 或 WebP 图片。' })
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      event.target.value = ''
+      setLogoFile(null)
+      return setMessage({ type: 'error', text: '校徽图片不能超过 2MB。' })
+    }
+    setMessage({ type: '', text: '' })
+    setLogoFile(file)
+  }
 
   async function save(event) {
     event.preventDefault()
     setSaving(true); setMessage({ type: '', text: '' })
     let table; let key; let payload; let normalize
     if (kind === 'school') {
-      table = 'academic_schools'; key = 'school_slug'; normalize = normalizeAcademicSchool
-      payload = { ...form, wall_school_id: form.wall_school_id || null, logo_url: form.logo_url || null, sort_order: Number(form.sort_order) }
+      table = 'academic_schools'; key = 'school_id'; normalize = normalizeAcademicSchool
+      let logoUrl = form.logo_url || null
+      if (logoFile) {
+        const extension = schoolLogoTypes[logoFile.type]
+        const objectPath = `${form.school_id}/logo-${Date.now()}.${extension}`
+        const { error: uploadError } = await supabase.storage.from('school-logos').upload(objectPath, logoFile, {
+          cacheControl: '31536000',
+          contentType: logoFile.type,
+        })
+        if (uploadError) {
+          setSaving(false)
+          return setMessage({ type: 'error', text: `上传失败：${uploadError.message}` })
+        }
+        const { data: publicUrlData } = supabase.storage.from('school-logos').getPublicUrl(objectPath)
+        logoUrl = publicUrlData.publicUrl
+      }
+      payload = {
+        school_name: form.school_name.replace(/\s+/g, ' ').trim(),
+        short_name: form.short_name.replace(/\s+/g, ' ').trim(),
+        school_type: form.school_type.trim(),
+        theme_color: form.theme_color,
+        logo_url: logoUrl,
+        active: form.active,
+        sort_order: Number(form.sort_order),
+      }
     } else if (kind === 'offering') {
       table = 'admission_offerings'; key = 'offering_id'; normalize = normalizeOffering
       payload = { ...form, year: Number(form.year), plan_count: Number(form.plan_count), sort_order: Number(form.sort_order), public_subjects: form.public_subjects.split('|').map((item) => item.trim()).filter(Boolean), professional_subjects: form.professional_subjects.split('|').map((item) => item.trim()).filter(Boolean) }
@@ -279,7 +242,7 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
       table = 'syllabus_points'; key = 'point_id'; normalize = normalizeSyllabusPoint
       payload = { ...form, year: Number(form.year), section_order: Number(form.section_order), point_order: Number(form.point_order) }
     }
-    delete payload.created_at; delete payload.updated_at
+    delete payload.created_at; delete payload.updated_at; delete payload.has_study_map
     const query = editing
       ? supabase.from(table).update(payload).eq(key, initial[key]).select().single()
       : supabase.from(table).insert(payload).select().single()
@@ -293,15 +256,16 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
   return <div className="admin-modal" role="dialog" aria-modal="true" aria-label={`编辑${title}`}><form className="admin-editor" onSubmit={save}>
     <header><div><span className="eyebrow">院校内容管理</span><h2>{editing ? `编辑${title}` : `新增${title}`}</h2></div><button type="button" onClick={onClose} aria-label="关闭">×</button></header>
     {kind === 'school' && <div className="admin-form-grid">
-      <label>院校标识<input required pattern="[a-z0-9-]+" value={form.school_slug} disabled={editing} onChange={(e) => set('school_slug', e.target.value.trim())} placeholder="school-slug" /></label>
-      <label>校徽墙院校 ID<input value={form.wall_school_id || ''} onChange={(e) => set('wall_school_id', e.target.value.trim())} placeholder="anhui-school-01" /></label>
+      <label>固定院校 ID<input value={form.school_id} disabled /></label>
+      <label>系统路由标识<input value={form.school_slug} disabled /></label>
       <label>学校名称<input required value={form.school_name} onChange={(e) => set('school_name', e.target.value)} /></label>
       <label>简称<input required value={form.short_name} onChange={(e) => set('short_name', e.target.value)} /></label>
       <label>办学类型<input required value={form.school_type} onChange={(e) => set('school_type', e.target.value)} /></label>
       <label>主题色<input type="color" value={form.theme_color} onChange={(e) => set('theme_color', e.target.value)} /></label>
-      <label className="wide">学习地图校徽地址<input value={form.logo_url || ''} onChange={(e) => set('logo_url', e.target.value.trim())} placeholder="/schools/example.png 或 https://..." /></label>
+      <div className="admin-school-logo-field wide"><span className="admin-logo-preview">{form.logo_url ? <img src={form.logo_url} alt={`${form.school_name}校徽`} /> : <b>{form.short_name || '院校'}</b>}</span><label>校徽图片<span>{logoFile ? `已选择：${logoFile.name}` : form.logo_url ? '当前校徽已保存；选择新图片即可替换' : '选择图片后将在保存时上传'}</span><input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseLogo} /></label></div>
       <label>排序<input type="number" min="1" required value={form.sort_order} onChange={(e) => set('sort_order', e.target.value)} /></label>
       <label className="admin-switch"><input type="checkbox" checked={form.active} onChange={(e) => set('active', e.target.checked)} /><span>前台启用</span></label>
+      <p className="admin-system-note wide">学习地图：{form.has_study_map ? '已开放（招生计划与学校考纲均已配置）' : '未开放（系统将在两类数据齐全后自动启用）'}</p>
     </div>}
     {kind === 'offering' && <div className="admin-form-grid">
       <label>计划 ID<input required pattern="[a-z0-9-]+" value={form.offering_id} disabled={editing} onChange={(e) => set('offering_id', e.target.value.trim())} /></label>
@@ -340,15 +304,21 @@ function AcademicDataPanel({ schools, setSchools, offerings, setOfferings, sylla
   const [editor, setEditor] = useState(null)
   const schoolNames = new Map(schools.map((school) => [school.school_slug, school.school_name]))
 
+  async function refreshSchools() {
+    const { data } = await supabase.from('academic_schools').select('*').order('sort_order').order('school_id')
+    if (data) setSchools(data.map(normalizeAcademicSchool))
+  }
+
   function saved(kind, row) {
-    if (kind === 'school') setSchools((current) => [...current.filter((item) => item.school_slug !== row.school_slug), row].sort((a, b) => a.sort_order - b.sort_order))
+    if (kind === 'school') setSchools((current) => [...current.filter((item) => item.school_id !== row.school_id), row].sort((a, b) => a.sort_order - b.sort_order || a.school_id.localeCompare(b.school_id)))
     if (kind === 'offering') setOfferings((current) => [...current.filter((item) => item.offering_id !== row.offering_id), row].sort((a, b) => a.sort_order - b.sort_order))
     if (kind === 'point') setSyllabusPoints((current) => [...current.filter((item) => item.point_id !== row.point_id), row].sort((a, b) => a.school_slug.localeCompare(b.school_slug) || a.subject_slug.localeCompare(b.subject_slug) || a.section_order - b.section_order || a.point_order - b.point_order))
+    if (kind !== 'school') void refreshSchools()
   }
 
   return <section className="admin-panel admin-academic-data">
-    <div className="admin-panel-title"><div><span className="eyebrow">前台内容</span><h2>已整理院校与考纲</h2><p>这里的启用数据会直接驱动院校列表、对比页和学习地图</p></div></div>
-    <div className="admin-data-section"><header><div><h3>院校资料</h3><span>{schools.length} 所</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'school', initial: null })}>＋ 新增院校</button></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校</th><th>校徽墙绑定</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody>{schools.map((school) => <tr key={school.school_slug}><td><strong>{school.school_name}</strong><small>{school.school_slug} · {school.school_type}</small></td><td>{school.wall_school_id || '未绑定'}</td><td>{school.sort_order}</td><td><span className={`admin-status ${school.active ? 'active' : ''}`}>{school.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'school', initial: school })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
+    <div className="admin-panel-title"><div><span className="eyebrow">前台内容</span><h2>院校资料与考纲</h2><p>院校资料是首页校徽墙、已整理院校、对比页、学习地图和资料来源页的统一数据源</p></div></div>
+    <div className="admin-data-section"><header><div><h3>院校资料</h3><span>{schools.length} 所 · {schools.filter((school) => school.has_study_map).length} 所已开放学习地图</span></div></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校</th><th>校徽</th><th>排序</th><th>学习地图</th><th>状态</th><th>操作</th></tr></thead><tbody>{schools.map((school) => <tr key={school.school_id}><td><strong>{school.school_name}</strong><small>{school.school_id} · {school.short_name} · {school.school_type}</small></td><td><span className="admin-table-logo">{school.logo_url ? <img src={school.logo_url} alt="" /> : school.short_name}</span></td><td>{school.sort_order}</td><td><span className={`admin-status ${school.has_study_map ? 'active' : ''}`}>{school.has_study_map ? '已开放' : '未开放'}</span></td><td><span className={`admin-status ${school.active ? 'active' : ''}`}>{school.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'school', initial: school })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
     <div className="admin-data-section"><header><div><h3>招生计划</h3><span>{offerings.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'offering', initial: null })}>＋ 新增计划</button></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校与地点</th><th>考试科目</th><th>计划数</th><th>状态</th><th>操作</th></tr></thead><tbody>{offerings.map((item) => <tr key={item.offering_id}><td><strong>{schoolNames.get(item.school_slug) || item.school_slug}</strong><small>{item.training_site}</small></td><td><span>{item.publicSubjects.join(' · ')}</span><small>{item.professionalSubjects.join(' · ')}</small></td><td>{item.plan_count} 人</td><td><span className={`admin-status ${item.active ? 'active' : ''}`}>{item.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'offering', initial: item })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
     <div className="admin-data-section"><header><div><h3>考纲知识点</h3><span>{syllabusPoints.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'point', initial: null })}>＋ 新增知识点</button></header><div className="admin-table-wrap admin-points-table"><table className="admin-table"><thead><tr><th>科目</th><th>章节与知识点</th><th>适用院校</th><th>资源标签</th><th>操作</th></tr></thead><tbody>{syllabusPoints.map((point) => <tr key={point.point_id}><td><strong>{point.subject_name}</strong><small>{point.subject_slug}</small></td><td><strong>{point.point_title}</strong><small>{point.section_name} · {point.section_order}-{point.point_order}</small></td><td>{point.school_slug === 'common' ? '所有院校' : schoolNames.get(point.school_slug) || point.school_slug}</td><td>{point.canonical_topic}</td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'point', initial: point })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
     {editor && <AcademicEditor kind={editor.kind} initial={editor.initial} schools={schools} onClose={() => setEditor(null)} onSaved={saved} />}
@@ -359,7 +329,6 @@ export function AdminDashboard() {
   const [authState, setAuthState] = useState({ loading: true, allowed: false, email: '' })
   const [resources, setResources] = useState([])
   const [announcements, setAnnouncements] = useState([])
-  const [schoolLogos, setSchoolLogos] = useState([])
   const [academicSchools, setAcademicSchools] = useState([])
   const [offerings, setOfferings] = useState([])
   const [syllabusPoints, setSyllabusPoints] = useState([])
@@ -380,21 +349,19 @@ export function AdminDashboard() {
       const [
         { data: resourceRows, error: resourceError },
         { data: announcementRows, error: announcementError },
-        { data: logoRows, error: logoError },
         { data: academicSchoolRows, error: academicSchoolError },
         { data: offeringRows, error: offeringError },
         { data: syllabusRows, error: syllabusError },
       ] = await Promise.all([
         supabase.from('resources').select('*').order('updated_at', { ascending: false }),
         supabase.from('announcements').select('*').order('updated_at', { ascending: false }).limit(1),
-        supabase.from('school_logos').select('*').order('school_id'),
-        supabase.from('academic_schools').select('*').order('sort_order'),
+        supabase.from('academic_schools').select('*').order('sort_order').order('school_id'),
         supabase.from('admission_offerings').select('*').order('sort_order'),
         supabase.from('syllabus_points').select('*').order('school_slug').order('subject_slug').order('section_order').order('point_order'),
       ])
-      const loadError = resourceError || announcementError || logoError || academicSchoolError || offeringError || syllabusError
+      const loadError = resourceError || announcementError || academicSchoolError || offeringError || syllabusError
       if (loadError) return setMessage({ type: 'error', text: `读取后台数据失败：${loadError.message}` })
-      setResources(resourceRows.map(normalizeResource)); setAnnouncements(announcementRows); setSchoolLogos(logoRows)
+      setResources(resourceRows.map(normalizeResource)); setAnnouncements(announcementRows)
       setAcademicSchools(academicSchoolRows.map(normalizeAcademicSchool)); setOfferings(offeringRows.map(normalizeOffering)); setSyllabusPoints(syllabusRows.map(normalizeSyllabusPoint))
     }
     initialize()
@@ -428,7 +395,7 @@ export function AdminDashboard() {
     <main className="admin-main"><section className="admin-panel admin-resources"><div className="admin-panel-title"><div><span className="eyebrow">学习内容</span><h2>课程资源</h2><p>{resources.length} 条资源 · {resources.filter((item) => item.status === 'active').length} 条启用</p></div><button className="admin-primary" onClick={() => setEditor('new')}>＋ 新增资源</button></div>
       <div className="admin-filters"><input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索标题、UP 主或资源 ID" /><select value={platform} onChange={(e) => setPlatform(e.target.value)}><option value="all">全部平台</option>{[...new Set(resources.map((item) => item.platform))].map((item) => <option key={item}>{item}</option>)}</select><select value={status} onChange={(e) => setStatus(e.target.value)}><option value="all">全部状态</option><option value="active">启用</option><option value="inactive">已下架</option></select></div>
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>资源</th><th>平台与标签</th><th>优先级</th><th>状态</th><th>操作</th></tr></thead><tbody>{filtered.map((item) => <tr key={item.resource_id}><td><strong>{item.title}</strong><small>{item.resource_id} · {item.creator}</small></td><td><span>{item.platform}</span><small>{item.tags.join(' · ')}</small></td><td>{item.priority}</td><td><span className={`admin-status ${item.status === 'active' ? 'active' : ''}`}>{item.status === 'active' ? '启用' : '已下架'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor(item)}>编辑</button><button onClick={() => duplicate(item)}>复制</button><button onClick={() => toggleStatus(item)}>{item.status === 'active' ? '下架' : '恢复'}</button></div></td></tr>)}</tbody></table>{!filtered.length && <p className="admin-empty">没有匹配的资源。</p>}</div>
-    </section><AnnouncementsPanel announcements={announcements} setAnnouncements={setAnnouncements} /><AcademicDataPanel schools={academicSchools} setSchools={setAcademicSchools} offerings={offerings} setOfferings={setOfferings} syllabusPoints={syllabusPoints} setSyllabusPoints={setSyllabusPoints} /><SchoolLogosPanel logoRows={schoolLogos} setLogoRows={setSchoolLogos} /></main>
+    </section><AnnouncementsPanel announcements={announcements} setAnnouncements={setAnnouncements} /><AcademicDataPanel schools={academicSchools} setSchools={setAcademicSchools} offerings={offerings} setOfferings={setOfferings} syllabusPoints={syllabusPoints} setSyllabusPoints={setSyllabusPoints} /></main>
     {editor && <ResourceEditor initial={editor === 'new' ? null : editor} onClose={() => setEditor(null)} onSaved={saved} topics={topics} />}
   </div>
 }

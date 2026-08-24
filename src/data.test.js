@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
+import { fallbackAcademicSchools, offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
 import { validateAnnouncement, validateResource } from './resourceValidation'
-import { anhuiAdmissionSchools, createSchoolWallTracks, mergeSchoolLogos } from './schoolWallData'
+import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
+import { fallbackContent } from './useContent'
 
 describe('招生内容', () => {
   it('仅包含计划中的三所院校', () => {
@@ -28,7 +29,7 @@ describe('招生内容', () => {
   })
 
   it('院校列表和学习地图可由后台数据动态替换', () => {
-    const dynamicSchools = [{ school_slug: 'demo', school_name: '测试院校', school_type: '公办', short_name: '测试', theme_color: '#1556a6', logo_url: '/demo.png', active: true, sort_order: 1 }]
+    const dynamicSchools = [{ school_id: 'anhui-school-01', school_slug: 'demo', school_name: '测试院校', school_type: '公办', short_name: '测试', theme_color: '#1556a6', logo_url: '/demo.png', active: true, has_study_map: true, sort_order: 1 }]
     const dynamicOfferings = [{ school_slug: 'demo', training_site: '测试校区', plan_count: 20, publicSubjects: ['英语'], professionalSubjects: ['测试科目'], active: true }]
     const dynamicPoints = [{ point_id: 'demo-point', school_slug: 'demo', subject_slug: 'demo-subject', subject_name: '测试科目', active: true }]
     expect(schoolGroups(dynamicOfferings, dynamicSchools)[0]).toMatchObject({ school_name: '测试院校', totalPlan: 20, sites: ['测试校区'] })
@@ -59,15 +60,37 @@ describe('招生内容', () => {
       .toContain('结束时间必须晚于开始时间')
   })
 
-  it('首页将 42 所院校均分为三条轨道并优先使用后台校徽', () => {
-    expect(anhuiAdmissionSchools).toHaveLength(42)
-    expect(createSchoolWallTracks().map((track) => track.length)).toEqual([14, 14, 14])
-    const school = anhuiAdmissionSchools.find((item) => !item.logo)
-    const [merged] = mergeSchoolLogos([{ school_id: school.id, logo_url: 'https://example.com/logo.webp', display_name: '新校名' }])
-      .filter((item) => item.id === school.id)
-    expect(merged.logo).toBe('https://example.com/logo.webp')
-    expect(merged.logoSource).toBe('database')
-    expect(merged.name).toBe('新校名')
-    expect(merged.defaultName).toBe(school.name)
+  it('统一院校数据生成 42 张卡片并保持三条轨道与原始顺序', () => {
+    const wallSchools = createSchoolWallSchools(fallbackAcademicSchools)
+    expect(wallSchools).toHaveLength(42)
+    expect(createSchoolWallTracks(wallSchools).map((track) => track.length)).toEqual([14, 14, 14])
+    expect(wallSchools.map((school) => school.id)).toEqual(
+      Array.from({ length: 42 }, (_, index) => `anhui-school-${String(index + 1).padStart(2, '0')}`),
+    )
+  })
+
+  it('迁移后的后台校名与已上传校徽同时驱动校徽墙和院校页面', () => {
+    const migrated = fallbackAcademicSchools.map((school) => school.school_id === 'anhui-school-23'
+      ? { ...school, school_name: '合肥师范学院（测试名称）', logo_url: 'https://example.com/uploaded-logo.webp' }
+      : school)
+    const wallSchool = createSchoolWallSchools(migrated).find((school) => school.id === 'anhui-school-23')
+    const academicSchool = schoolGroups(offerings, migrated).find((school) => school.school_slug === 'hfnu')
+    expect(wallSchool).toMatchObject({ name: '合肥师范学院（测试名称）', logo: 'https://example.com/uploaded-logo.webp', logoSource: 'database' })
+    expect(academicSchool).toMatchObject({ school_name: '合肥师范学院（测试名称）', logo_url: 'https://example.com/uploaded-logo.webp' })
+  })
+
+  it('没有招生计划与学校考纲的院校不会生成无效学习地图入口', () => {
+    const noMapSchool = fallbackAcademicSchools.find((school) => school.school_id === 'anhui-school-01')
+    const [wallSchool] = createSchoolWallSchools([noMapSchool])
+    const fakeOffering = [{ school_slug: noMapSchool.school_slug, training_site: '测试校区', plan_count: 10, publicSubjects: ['英语'], professionalSubjects: ['测试科目'], active: true }]
+    expect(wallSchool.hasDetails).toBe(false)
+    expect(wallSchool.href).toBe('/anhui#school-filter')
+    expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
+  })
+
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与三所学习地图', () => {
+    expect(fallbackContent.source).toBe('csv')
+    expect(createSchoolWallSchools(fallbackContent.academicSchools)).toHaveLength(42)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools)).toHaveLength(3)
   })
 })

@@ -114,6 +114,7 @@ main { min-height: 70vh; }
 .school-head { display: flex; align-items: center; gap: 14px; }
 .school-logo { width: 58px; height: 58px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--school-color, #d6ded9) 22%, #d6ded9); border-radius: 50%; background: white; box-shadow: 0 5px 14px rgba(23,51,46,.09); }
 .school-logo img { width: 88%; height: 88%; display: block; object-fit: contain; }
+.school-logo b { color: var(--school-color, var(--green-2)); font-size: 13px; }
 .school-logo-hfnu img { width: 94px; height: auto; max-width: none; transform: translateY(-21px); }
 .school-logo.large { width: 82px; height: 82px; }
 .school-logo-hfnu.large img { width: 132px; transform: translateY(-29px); }
@@ -294,6 +295,13 @@ footer strong { font-size: 12px; }
 .admin-logo-upload { padding: 7px 9px; border: 1px solid #bfd3e8; border-radius: 7px; color: #1556a6; background: white; cursor: pointer; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .admin-logo-upload:hover { border-color: #76a9dc; background: #edf6ff; }
 .admin-logo-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.admin-school-logo-field { display: flex; align-items: center; gap: 14px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #f9fbfd; }
+.admin-school-logo-field > label { flex: 1; display: grid; gap: 7px; }
+.admin-school-logo-field > label > span, .admin-system-note { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.admin-school-logo-field input[type="file"] { width: 100%; }
+.admin-system-note { margin: 0; padding: 10px 12px; border-radius: 8px; background: #eef6ff; }
+.admin-table-logo { width: 40px; height: 40px; display: grid; place-items: center; overflow: hidden; border: 1px solid #d8e4f0; border-radius: 50%; color: #1767bd; background: white; font-size: 10px; font-weight: 700; }
+.admin-table-logo img { width: 88%; height: 88%; object-fit: contain; }
 .admin-data-section { margin-top: 22px; }
 .admin-data-section > header { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .admin-data-section > header > div { display: flex; align-items: baseline; gap: 9px; }

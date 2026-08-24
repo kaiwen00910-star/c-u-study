@@ -16,7 +16,12 @@ export function normalizeResource(row) {
 }
 
 export function normalizeAcademicSchool(row) {
-  return { ...row, sort_order: Number(row.sort_order) }
+  return {
+    ...row,
+    sort_order: Number(row.sort_order),
+    active: row.active !== false,
+    has_study_map: Boolean(row.has_study_map),
+  }
 }
 
 export function normalizeOffering(row) {
@@ -39,28 +44,24 @@ export async function loadPublicContent() {
   const [
     { data: resourceRows, error: resourceError },
     { data: announcementRows, error: announcementError },
-    { data: schoolLogoRows, error: schoolLogoError },
     { data: academicSchoolRows, error: academicSchoolError },
     { data: offeringRows, error: offeringError },
     { data: syllabusRows, error: syllabusError },
   ] = await Promise.all([
     supabase.from('resources').select('*').order('priority').order('title'),
     supabase.from('announcements').select('*').order('updated_at', { ascending: false }).limit(1),
-    supabase.from('school_logos').select('school_id,logo_url,display_name,updated_at').order('school_id'),
-    supabase.from('academic_schools').select('*').order('sort_order'),
+    supabase.from('academic_schools').select('*').order('sort_order').order('school_id'),
     supabase.from('admission_offerings').select('*').order('sort_order'),
     supabase.from('syllabus_points').select('*').order('subject_slug').order('section_order').order('point_order'),
   ])
   if (resourceError) throw resourceError
   if (announcementError) throw announcementError
-  if (schoolLogoError) throw schoolLogoError
   if (academicSchoolError) throw academicSchoolError
   if (offeringError) throw offeringError
   if (syllabusError) throw syllabusError
   return {
     resources: resourceRows.map(normalizeResource),
     announcement: announcementRows[0] ?? null,
-    schoolLogos: schoolLogoRows,
     academicSchools: academicSchoolRows.map(normalizeAcademicSchool),
     offerings: offeringRows.map(normalizeOffering),
     syllabusPoints: syllabusRows.map(normalizeSyllabusPoint),

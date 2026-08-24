@@ -1,9 +1,3 @@
-const detailedLinks = {
-  '合肥师范学院': '/anhui/2026/computer-science/hfnu',
-  '安徽信息工程学院': '/anhui/2026/computer-science/aiit',
-  '安徽文达信息工程学院': '/anhui/2026/computer-science/wenda',
-}
-
 const localLogos = {
   '安徽工业大学': '/school-wall/anhui-university-of-technology.webp',
   '安徽农业大学': '/school-wall/anhui-agricultural-university.webp',
@@ -46,42 +40,60 @@ const schoolNames = [
   '安徽第二医学院', '安徽职业技术大学', '芜湖职业技术大学',
 ]
 
-/**
- * 首页院校墙的唯一配置入口。
- * logo 可替换成学校官网发布的透明 PNG / SVG；为空时显示文字校徽兜底。
- */
-export const anhuiAdmissionSchools = schoolNames.map((name, index) => ({
-  id: `anhui-school-${String(index + 1).padStart(2, '0')}`,
-  name,
-  logo: localLogos[name] || '',
-  href: detailedLinks[name] || '/anhui#school-filter',
-  hasDetails: Boolean(detailedLinks[name]),
-  shortName: name
-    .replace('安徽', '')
-    .replace('合肥', '')
-    .replace('大学', '')
-    .replace('学院', '')
-    .slice(0, 2) || '皖',
-}))
+const shortNames = [
+  '工业', '农业', '医科', '师范', '中医', '阜阳', '安庆', '建筑', '科技', '铜陵',
+  '蚌埠', '蚌医', '皖医', '合大', '巢湖', '亳州', '滁州', '宿州', '黄山', '池州',
+  '皖西', '淮南', '合师', '艺术', '临床', '马鞍', '新华', '经济', '城市', '外语',
+  '三联', '工商', '安信', '淮北', '皖江', '文达', '芜湖', '阜阳', '财经', '二医',
+  '安职', '芜职',
+]
 
-export function mergeSchoolLogos(logoRows = []) {
-  const schoolOverrides = new Map(logoRows.map((row) => [row.school_id, row]))
-  return anhuiAdmissionSchools.map((school) => ({
-    ...school,
-    name: schoolOverrides.get(school.id)?.display_name?.trim() || school.name,
-    defaultName: school.name,
-    customName: schoolOverrides.get(school.id)?.display_name?.trim() || null,
-    databaseLogo: schoolOverrides.get(school.id)?.logo_url || null,
-    logo: schoolOverrides.get(school.id)?.logo_url || school.logo,
-    logoSource: schoolOverrides.get(school.id)?.logo_url ? 'database' : school.logo ? 'local' : 'missing',
-    shortName: (schoolOverrides.get(school.id)?.display_name?.trim() || school.name)
-      .replace('安徽', '')
-      .replace('合肥', '')
-      .replace('大学', '')
-      .replace('学院', '')
-      .slice(0, 2) || '院校',
-  }))
+const detailedSchools = {
+  23: { school_slug: 'hfnu', school_type: '公办', theme_color: '#0869a6' },
+  33: { school_slug: 'aiit', school_type: '民办', theme_color: '#164d89' },
+  36: { school_slug: 'wenda', school_type: '民办', theme_color: '#173d78' },
 }
+
+const privateSchoolNumbers = new Set([25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38])
+
+/**
+ * Supabase 读取失败时使用的完整院校快照。
+ * 顺序、ID 和本地校徽与数据库迁移保持一致，避免离线回退改变首页三行校徽墙。
+ */
+export const fallbackAcademicSchools = schoolNames.map((schoolName, index) => {
+  const order = index + 1
+  const schoolId = `anhui-school-${String(order).padStart(2, '0')}`
+  const detail = detailedSchools[order]
+  return {
+    school_id: schoolId,
+    school_slug: detail?.school_slug || schoolId,
+    school_name: schoolName,
+    school_type: detail?.school_type || (privateSchoolNumbers.has(order) ? '民办' : '公办'),
+    short_name: shortNames[index],
+    theme_color: detail?.theme_color || '#1556a6',
+    logo_url: localLogos[schoolName] || null,
+    sort_order: order,
+    active: true,
+    has_study_map: Boolean(detail),
+  }
+})
+
+export function createSchoolWallSchools(schools = fallbackAcademicSchools) {
+  return schools
+    .filter((school) => school.active !== false)
+    .sort((a, b) => a.sort_order - b.sort_order || a.school_id.localeCompare(b.school_id))
+    .map((school) => ({
+      id: school.school_id,
+      name: school.school_name,
+      shortName: school.short_name,
+      logo: school.logo_url || '',
+      logoSource: school.logo_url?.startsWith('https://') ? 'database' : school.logo_url ? 'local' : 'missing',
+      href: school.has_study_map ? `/anhui/2026/computer-science/${school.school_slug}` : '/anhui#school-filter',
+      hasDetails: Boolean(school.has_study_map),
+    }))
+}
+
+export const anhuiAdmissionSchools = createSchoolWallSchools()
 
 export function createSchoolWallTracks(schools = anhuiAdmissionSchools) {
   return [schools.slice(0, 14), schools.slice(14, 28), schools.slice(28)]
