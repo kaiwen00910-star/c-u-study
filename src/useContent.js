@@ -1,9 +1,18 @@
 import { useEffect, useState } from 'react'
-import { fallbackResources } from './data'
+import { fallbackAcademicSchools, fallbackResources, offerings, syllabus } from './data'
 import { loadPublicContent } from './supabase'
 
 export function useContent() {
-  const [content, setContent] = useState({ resources: fallbackResources, announcement: null, schoolLogos: [], source: 'csv', loading: true })
+  const [content, setContent] = useState({
+    resources: fallbackResources,
+    announcement: null,
+    schoolLogos: [],
+    academicSchools: fallbackAcademicSchools,
+    offerings,
+    syllabusPoints: syllabus,
+    source: 'csv',
+    loading: true,
+  })
 
   useEffect(() => {
     let active = true

@@ -27,6 +27,14 @@ describe('招生内容', () => {
     expect(aiit.some((point) => point.subject_slug === 'advanced-math')).toBe(true)
   })
 
+  it('院校列表和学习地图可由后台数据动态替换', () => {
+    const dynamicSchools = [{ school_slug: 'demo', school_name: '测试院校', school_type: '公办', short_name: '测试', theme_color: '#1556a6', logo_url: '/demo.png', active: true, sort_order: 1 }]
+    const dynamicOfferings = [{ school_slug: 'demo', training_site: '测试校区', plan_count: 20, publicSubjects: ['英语'], professionalSubjects: ['测试科目'], active: true }]
+    const dynamicPoints = [{ point_id: 'demo-point', school_slug: 'demo', subject_slug: 'demo-subject', subject_name: '测试科目', active: true }]
+    expect(schoolGroups(dynamicOfferings, dynamicSchools)[0]).toMatchObject({ school_name: '测试院校', totalPlan: 20, sites: ['测试校区'] })
+    expect(schoolSyllabus('demo', dynamicPoints).map((point) => point.point_id)).toEqual(['demo-point'])
+  })
+
   it('资源使用具体课程或视频入口且每个知识点不超过三条推荐', () => {
     expect(resources.some((resource) => /\/search(?:\.htm)?[?/]/.test(resource.url))).toBe(false)
     expect(resources.filter((resource) => resource.platform === '哔哩哔哩')
