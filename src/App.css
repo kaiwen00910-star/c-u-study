@@ -115,9 +115,7 @@ main { min-height: 70vh; }
 .school-logo { width: 58px; height: 58px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--school-color, #d6ded9) 22%, #d6ded9); border-radius: 50%; background: white; box-shadow: 0 5px 14px rgba(23,51,46,.09); }
 .school-logo img { width: 88%; height: 88%; display: block; object-fit: contain; }
 .school-logo b { color: var(--school-color, var(--green-2)); font-size: 13px; }
-.school-logo-hfnu img { width: 94px; height: auto; max-width: none; transform: translateY(-21px); }
 .school-logo.large { width: 82px; height: 82px; }
-.school-logo-hfnu.large img { width: 132px; transform: translateY(-29px); }
 .school-head h3 { margin: 4px 0 0; font-size: 18px; }
 .type-tag { padding: 2px 7px; color: var(--school-color); background: color-mix(in srgb, var(--school-color) 10%, white); border-radius: 3px; font-size: 10px; font-weight: 700; }
 .subject-groups { display: grid; gap: 11px; margin: 23px 0; }
@@ -147,7 +145,6 @@ thead th:first-child { width: 120px; color: var(--muted); font-size: 12px; }
 thead small { display: block; margin-top: 5px; color: var(--muted); font-weight: 400; }
 .compare-school { display: flex; align-items: center; gap: 10px; }
 .compare-school .school-logo { width: 42px; height: 42px; }
-.compare-school .school-logo-hfnu img { width: 68px; transform: translateY(-15px); }
 tbody th { color: var(--muted); background: #fafbf8; font-weight: 500; }
 td a { display: block; margin-bottom: 7px; color: var(--green-2); font-weight: 600; }
 td small { display: block; color: var(--muted); font-size: 10px; }
@@ -375,7 +372,6 @@ footer strong { font-size: 12px; }
   .school-card { display: flex; }
   .school-title { align-items: flex-start; flex-wrap: wrap; }
   .school-logo.large { width: 62px; height: 62px; }
-  .school-logo-hfnu.large img { width: 100px; transform: translateY(-22px); }
   .school-title > div:nth-child(2) { flex: 1; }
   .school-title h1 { font-size: 25px; }
   .official-links { width: 100%; margin-left: 0; }
