@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "validate:data": "node scripts/validate-content.mjs",
+    "snapshot:export": "node scripts/export-public-snapshot.mjs",
+    "build:with-snapshot": "npm run snapshot:export && npm run build",
     "build": "npm run validate:data && vite build",
     "lint": "oxlint",
     "test": "vitest run",

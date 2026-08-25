@@ -3,6 +3,9 @@ import { fallbackAcademicSchools, offerings, resources, resourcesForTopic, schoo
 import { validateAnnouncement, validateResource } from './resourceValidation'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
 import { fallbackContent } from './useContent'
+import { DEFAULT_SCOPE } from './contentScope'
+import { progressKey } from './storage'
+import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
   it('仅包含计划中的三所院校', () => {
@@ -30,10 +33,11 @@ describe('招生内容', () => {
 
   it('院校列表和学习地图可由后台数据动态替换', () => {
     const dynamicSchools = [{ school_id: 'anhui-school-01', school_slug: 'demo', school_name: '测试院校', school_type: '公办', short_name: '测试', theme_color: '#1556a6', logo_url: '/demo.png', active: true, has_study_map: true, sort_order: 1 }]
-    const dynamicOfferings = [{ school_slug: 'demo', training_site: '测试校区', plan_count: 20, publicSubjects: ['英语'], professionalSubjects: ['测试科目'], active: true }]
-    const dynamicPoints = [{ point_id: 'demo-point', school_slug: 'demo', subject_slug: 'demo-subject', subject_name: '测试科目', active: true }]
-    expect(schoolGroups(dynamicOfferings, dynamicSchools)[0]).toMatchObject({ school_name: '测试院校', totalPlan: 20, sites: ['测试校区'] })
-    expect(schoolSyllabus('demo', dynamicPoints).map((point) => point.point_id)).toEqual(['demo-point'])
+    const scopeFields = { year: 2026, province_slug: 'anhui', major_slug: 'computer-science' }
+    const dynamicOfferings = [{ ...scopeFields, school_slug: 'demo', training_site: '测试校区', plan_count: 20, publicSubjects: ['英语'], professionalSubjects: ['测试科目'], active: true }]
+    const dynamicPoints = [{ ...scopeFields, point_id: 'demo-point', school_slug: 'demo', subject_slug: 'demo-subject', subject_name: '测试科目', active: true }]
+    expect(schoolGroups(dynamicOfferings, dynamicSchools, DEFAULT_SCOPE, dynamicPoints)[0]).toMatchObject({ school_name: '测试院校', totalPlan: 20, sites: ['测试校区'] })
+    expect(schoolSyllabus('demo', dynamicPoints, DEFAULT_SCOPE).map((point) => point.point_id)).toEqual(['demo-point'])
   })
 
   it('资源使用具体课程或视频入口且每个知识点不超过三条推荐', () => {
@@ -61,7 +65,7 @@ describe('招生内容', () => {
   })
 
   it('统一院校数据生成 42 张卡片并保持三条轨道与原始顺序', () => {
-    const wallSchools = createSchoolWallSchools(fallbackAcademicSchools)
+    const wallSchools = createSchoolWallSchools(fallbackAcademicSchools, offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)
     expect(wallSchools).toHaveLength(42)
     expect(createSchoolWallTracks(wallSchools).map((track) => track.length)).toEqual([14, 14, 14])
     expect(wallSchools.map((school) => school.id)).toEqual(
@@ -73,7 +77,7 @@ describe('招生内容', () => {
     const migrated = fallbackAcademicSchools.map((school) => school.school_id === 'anhui-school-23'
       ? { ...school, school_name: '合肥师范学院（测试名称）', logo_url: 'https://example.com/uploaded-logo.webp' }
       : school)
-    const wallSchool = createSchoolWallSchools(migrated).find((school) => school.id === 'anhui-school-23')
+    const wallSchool = createSchoolWallSchools(migrated, offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE).find((school) => school.id === 'anhui-school-23')
     const academicSchool = schoolGroups(offerings, migrated).find((school) => school.school_slug === 'hfnu')
     expect(wallSchool).toMatchObject({ name: '合肥师范学院（测试名称）', logo: 'https://example.com/uploaded-logo.webp', logoSource: 'database' })
     expect(academicSchool).toMatchObject({ school_name: '合肥师范学院（测试名称）', logo_url: 'https://example.com/uploaded-logo.webp' })
@@ -84,13 +88,63 @@ describe('招生内容', () => {
     const [wallSchool] = createSchoolWallSchools([noMapSchool])
     const fakeOffering = [{ school_slug: noMapSchool.school_slug, training_site: '测试校区', plan_count: 10, publicSubjects: ['英语'], professionalSubjects: ['测试科目'], active: true }]
     expect(wallSchool.hasDetails).toBe(false)
-    expect(wallSchool.href).toBe('/anhui#school-filter')
+    expect(wallSchool.href).toBeNull()
     expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
   })
 
   it('Supabase 不可用时的静态回退仍包含完整院校墙与三所学习地图', () => {
-    expect(fallbackContent.source).toBe('csv')
-    expect(createSchoolWallSchools(fallbackContent.academicSchools)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools)).toHaveLength(3)
+    expect(fallbackContent.source).toBe('snapshot')
+    expect(fallbackContent.metadata.version).toBeTruthy()
+    expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(3)
+  })
+
+  it('同一学校的 2026 与 2027 招生计划严格隔离', () => {
+    const school = fallbackAcademicSchools.find((item) => item.school_slug === 'hfnu')
+    const scopedPoints = [
+      { year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'hfnu', point_id: 'p-2026', active: true },
+      { year: 2027, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'hfnu', point_id: 'p-2027', active: true },
+    ]
+    const scopedOfferings = [
+      { year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'hfnu', training_site: '2026 校区', plan_count: 10, active: true },
+      { year: 2027, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'hfnu', training_site: '2027 校区', plan_count: 99, active: true },
+    ]
+    const groups = schoolGroups(scopedOfferings, [school], DEFAULT_SCOPE, scopedPoints)
+    expect(groups[0]).toMatchObject({ totalPlan: 10, sites: ['2026 校区'] })
+  })
+
+  it('同一年不同专业不会混入院校聚合或考纲', () => {
+    const school = fallbackAcademicSchools.find((item) => item.school_slug === 'hfnu')
+    const otherScope = { year: 2026, provinceSlug: 'anhui', majorSlug: 'software-engineering' }
+    const points = [
+      { year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'hfnu', point_id: 'computer-point', active: true },
+      { year: 2026, province_slug: 'anhui', major_slug: 'software-engineering', school_slug: 'hfnu', point_id: 'software-point', active: true },
+    ]
+    const plans = [
+      { year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'hfnu', training_site: '计算机校区', plan_count: 10, active: true },
+      { year: 2026, province_slug: 'anhui', major_slug: 'software-engineering', school_slug: 'hfnu', training_site: '软件校区', plan_count: 20, active: true },
+    ]
+    expect(schoolGroups(plans, [school], otherScope, points)[0]).toMatchObject({ totalPlan: 20, sites: ['软件校区'] })
+    expect(schoolSyllabus('hfnu', points, DEFAULT_SCOPE).map((point) => point.point_id)).toEqual(['computer-point'])
+    expect(schoolSyllabus('hfnu', points, otherScope).map((point) => point.point_id)).toEqual(['software-point'])
+  })
+
+  it('不同年份、专业与省份的学习进度 key 互不污染', () => {
+    const base = progressKey(DEFAULT_SCOPE, 'hfnu', 'pointer')
+    expect(progressKey({ ...DEFAULT_SCOPE, year: 2027 }, 'hfnu', 'pointer')).not.toBe(base)
+    expect(progressKey({ ...DEFAULT_SCOPE, majorSlug: 'software-engineering' }, 'hfnu', 'pointer')).not.toBe(base)
+    expect(progressKey({ ...DEFAULT_SCOPE, provinceSlug: 'jiangsu' }, 'hfnu', 'pointer')).not.toBe(base)
+  })
+
+  it('公告状态区分草稿、待发布、进行中与已过期，前台只取进行中', () => {
+    const now = new Date('2026-08-25T08:00:00Z')
+    const rows = [
+      { id: 'draft', enabled: false },
+      { id: 'scheduled', enabled: true, starts_at: '2026-08-26T00:00:00Z' },
+      { id: 'active', enabled: true, starts_at: '2026-08-24T00:00:00Z', ends_at: '2026-08-26T00:00:00Z' },
+      { id: 'expired', enabled: true, ends_at: '2026-08-24T00:00:00Z' },
+    ]
+    expect(rows.map((row) => announcementStatus(row, now).key)).toEqual(['draft', 'scheduled', 'active', 'expired'])
+    expect(currentAnnouncement(rows, now)?.id).toBe('active')
   })
 })

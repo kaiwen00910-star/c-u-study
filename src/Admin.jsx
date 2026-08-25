@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ADMIN_EMAIL, validateAnnouncement, validateResource } from './resourceValidation'
 import { normalizeAcademicSchool, normalizeOffering, normalizeResource, normalizeSyllabusPoint, supabase, supabaseConfigured } from './supabase'
+import { announcementStatus } from './announcements'
+import { mapAvailableSchoolSlugs } from './data'
+import { DEFAULT_SCOPE } from './contentScope'
 
 const emptyResource = {
   resource_id: '', topic_tags: [], title: '', platform: '哔哩哔哩', creator: '', url: '',
@@ -11,7 +14,7 @@ const emptyResource = {
 const emptyAnnouncement = { id: null, title: '', content: '', enabled: false, starts_at: '', ends_at: '' }
 const emptyAcademicSchool = { school_id: '', school_slug: '', school_name: '', school_type: '公办', short_name: '', theme_color: '#1556a6', logo_url: '', active: true, has_study_map: false, sort_order: 1 }
 const emptyOffering = { offering_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: '', training_site: '', eligible_major_categories: '', public_subjects: '高等数学|英语', professional_subjects: '', plan_count: 1, charter_url: '', syllabus_url: '', source_status: '正式章程', verified_at: new Date().toISOString().slice(0, 10), active: true, sort_order: 1 }
-const emptySyllabusPoint = { point_id: '', year: 2026, school_slug: 'common', subject_slug: '', subject_name: '', section_order: 1, section_name: '', point_order: 1, point_title: '', canonical_topic: '', active: true }
+const emptySyllabusPoint = { point_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'common', subject_slug: '', subject_name: '', section_order: 1, section_name: '', point_order: 1, point_title: '', canonical_topic: '', active: true }
 
 function Message({ state }) {
   return state.text ? <p className={`admin-message ${state.type}`} role="status">{state.text}</p> : null
@@ -20,6 +23,7 @@ function Message({ state }) {
 export function AdminLogin() {
   const [message, setMessage] = useState({ type: '', text: '' })
   const [sending, setSending] = useState(false)
+  const [email, setEmail] = useState(ADMIN_EMAIL)
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
@@ -29,7 +33,7 @@ export function AdminLogin() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       const { data: membership } = await supabase.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle()
-      if (user.email?.toLowerCase() === ADMIN_EMAIL && membership) navigate('/admin', { replace: true })
+      if (membership) navigate('/admin', { replace: true })
       else await supabase.auth.signOut()
     }
     restoreAdminSession()
@@ -39,28 +43,34 @@ export function AdminLogin() {
     event.preventDefault()
     if (!supabase) return setMessage({ type: 'error', text: '后台服务尚未配置，请先完成 Supabase 环境变量。' })
     setSending(true); setMessage({ type: '', text: '' })
-    const { error } = await supabase.auth.signInWithPassword({ email: ADMIN_EMAIL, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password })
+    if (error) { setSending(false); return setMessage({ type: 'error', text: '登录失败，请检查凭据或稍后再试。' }) }
+    const { data: membership, error: membershipError } = await supabase.from('admin_users').select('user_id').eq('user_id', data.user.id).maybeSingle()
+    if (membershipError || !membership) {
+      await supabase.auth.signOut()
+      setSending(false)
+      return setMessage({ type: 'error', text: '该账号不在管理员成员表中，无法进入后台。' })
+    }
     setSending(false)
-    if (error) return setMessage({ type: 'error', text: '登录失败，请检查密码是否正确。' })
     navigate('/admin', { replace: true })
   }
 
   async function resetPassword() {
     if (!supabase) return setMessage({ type: 'error', text: '后台服务尚未配置，请先完成 Supabase 环境变量。' })
     setSending(true); setMessage({ type: '', text: '' })
-    const { error } = await supabase.auth.resetPasswordForEmail(ADMIN_EMAIL, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
       redirectTo: `${window.location.origin}/admin/reset-password`,
     })
     setSending(false)
     setMessage(error
       ? { type: 'error', text: `发送失败：${error.message}` }
-      : { type: 'success', text: `设置/重置密码邮件已发送到 ${ADMIN_EMAIL}。` })
+      : { type: 'success', text: '如果该邮箱存在且允许重置，将收到密码邮件。' })
   }
 
   return <div className="admin-login-page"><section className="admin-login-card">
     <span className="eyebrow">升本导航 · 管理后台</span><h1>管理员登录</h1>
     <p>后台仅供站长维护院校资料（含校徽）、招生计划、考纲知识点、学习资源和首页公告。请使用管理员邮箱和密码登录。</p>
-    <form onSubmit={login}><label>管理员邮箱<input value={ADMIN_EMAIL} readOnly /></label><label>密码<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength="8" required autoComplete="current-password" /></label><button className="admin-primary" disabled={sending}>{sending ? '请稍候…' : '登录后台'}</button><button type="button" onClick={resetPassword} disabled={sending}>首次设置或忘记密码</button></form>
+    <form onSubmit={login}><label>管理员邮箱<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="username" /></label><label>密码<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength="8" required autoComplete="current-password" /></label><button className="admin-primary" disabled={sending}>{sending ? '请稍候…' : '登录后台'}</button><button type="button" onClick={resetPassword} disabled={sending}>首次设置或忘记密码</button></form>
     {!supabaseConfigured && <p className="admin-message error">当前部署尚未配置 Supabase。</p>}
     <Message state={message} /><a href="/">← 返回网站首页</a>
   </section></div>
@@ -144,10 +154,12 @@ function ResourceEditor({ initial, onClose, onSaved, topics }) {
 }
 
 function AnnouncementsPanel({ announcements, setAnnouncements }) {
-  const [form, setForm] = useState(announcements[0] ?? emptyAnnouncement)
+  const [selectedId, setSelectedId] = useState(null)
+  const selected = announcements.find((item) => item.id === selectedId)
+  const [form, setForm] = useState(emptyAnnouncement)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [saving, setSaving] = useState(false)
-  useEffect(() => { setForm(announcements[0] ?? emptyAnnouncement) }, [announcements])
+  useEffect(() => { setForm(selected ? { ...selected } : { ...emptyAnnouncement }) }, [selectedId, selected])
   const set = (field, value) => setForm((current) => ({ ...current, [field]: value }))
   const localDate = (value) => value ? new Date(value).toISOString().slice(0, 16) : ''
 
@@ -161,11 +173,13 @@ function AnnouncementsPanel({ announcements, setAnnouncements }) {
     const { data, error } = await query
     setSaving(false)
     if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
-    setAnnouncements([data]); setMessage({ type: 'success', text: '公告已保存，符合有效时间时会立即显示。' })
+    setAnnouncements((current) => [data, ...current.filter((item) => item.id !== data.id)].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)))
+    setSelectedId(data.id); setMessage({ type: 'success', text: '公告已保存；系统会按时间范围计算真实状态。' })
   }
 
-  return <section className="admin-panel"><div className="admin-panel-title"><div><span className="eyebrow">首页内容</span><h2>顶部公告栏</h2></div><span className={form.enabled ? 'admin-status active' : 'admin-status'}>{form.enabled ? '已启用' : '未启用'}</span></div>
-    <form className="announcement-form" onSubmit={save}><label>公告标题<input value={form.title} onChange={(e) => set('title', e.target.value)} /></label><label>公告内容<textarea rows="4" value={form.content} onChange={(e) => set('content', e.target.value)} /></label><div><label>开始时间<input type="datetime-local" value={localDate(form.starts_at)} onChange={(e) => set('starts_at', e.target.value ? new Date(e.target.value).toISOString() : '')} /></label><label>结束时间<input type="datetime-local" value={localDate(form.ends_at)} onChange={(e) => set('ends_at', e.target.value ? new Date(e.target.value).toISOString() : '')} /></label></div><label className="admin-switch"><input type="checkbox" checked={form.enabled} onChange={(e) => set('enabled', e.target.checked)} /><span>在有效时间内展示公告</span></label><Message state={message} /><button className="admin-primary" disabled={saving}>{saving ? '保存中…' : '保存公告'}</button></form>
+  return <section className="admin-panel"><div className="admin-panel-title"><div><span className="eyebrow">首页内容</span><h2>顶部公告栏</h2><p>启用的公告时间范围不可重叠，前台任一时刻最多展示一条。</p></div><button className="admin-primary" type="button" onClick={() => { setSelectedId(null); setForm({ ...emptyAnnouncement }); setMessage({ type: '', text: '' }) }}>＋ 新建草稿</button></div>
+    <div className="admin-table-wrap announcement-list"><table className="admin-table"><thead><tr><th>标题</th><th>状态</th><th>时间范围</th><th>更新时间</th><th>操作</th></tr></thead><tbody>{announcements.map((item) => { const status = announcementStatus(item); return <tr key={item.id}><td><strong>{item.title}</strong></td><td><span className={`admin-status ${status.key}`}>{status.label}</span></td><td><small>{item.starts_at ? new Date(item.starts_at).toLocaleString('zh-CN') : '立即'} — {item.ends_at ? new Date(item.ends_at).toLocaleString('zh-CN') : '长期'}</small></td><td><small>{new Date(item.updated_at).toLocaleString('zh-CN')}</small></td><td><button type="button" onClick={() => setSelectedId(item.id)}>编辑</button></td></tr> })}</tbody></table>{!announcements.length && <p className="admin-empty">尚无公告，请先新建草稿。</p>}</div>
+    <form className="announcement-form" onSubmit={save}><h3>{form.id ? '编辑公告' : '新建公告'}</h3><label>公告标题<input value={form.title} onChange={(e) => set('title', e.target.value)} /></label><label>公告内容<textarea rows="4" value={form.content} onChange={(e) => set('content', e.target.value)} /></label><div><label>开始时间<input type="datetime-local" value={localDate(form.starts_at)} onChange={(e) => set('starts_at', e.target.value ? new Date(e.target.value).toISOString() : '')} /></label><label>结束时间<input type="datetime-local" value={localDate(form.ends_at)} onChange={(e) => set('ends_at', e.target.value ? new Date(e.target.value).toISOString() : '')} /></label></div><label className="admin-switch"><input type="checkbox" checked={form.enabled} onChange={(e) => set('enabled', e.target.checked)} /><span>启用并按时间范围发布</span></label><Message state={message} /><button className="admin-primary" disabled={saving}>{saving ? '保存中…' : '保存公告'}</button></form>
   </section>
 }
 
@@ -243,10 +257,14 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
       payload = { ...form, year: Number(form.year), section_order: Number(form.section_order), point_order: Number(form.point_order) }
     }
     delete payload.created_at; delete payload.updated_at; delete payload.has_study_map
-    const query = editing
-      ? supabase.from(table).update(payload).eq(key, initial[key]).select().single()
-      : supabase.from(table).insert(payload).select().single()
-    const { data, error } = await query
+    let query
+    if (editing) {
+      query = supabase.from(table).update(payload).eq(key, initial[key])
+      if (kind === 'point') query = query.eq('year', initial.year).eq('province_slug', initial.province_slug).eq('major_slug', initial.major_slug)
+    } else {
+      query = supabase.from(table).insert(payload)
+    }
+    const { data, error } = await query.select().single()
     setSaving(false)
     if (error) return setMessage({ type: 'error', text: `保存失败：${error.message}` })
     onSaved(kind, normalize(data)); onClose()
@@ -287,6 +305,8 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
       <label>知识点 ID<input required pattern="[a-z0-9-]+" value={form.point_id} disabled={editing} onChange={(e) => set('point_id', e.target.value.trim())} /></label>
       <label>适用院校<select value={form.school_slug} onChange={(e) => set('school_slug', e.target.value)}><option value="common">公共课（所有院校）</option>{schools.map((school) => <option key={school.school_slug} value={school.school_slug}>{school.school_name}</option>)}</select></label>
       <label>年份<input type="number" min="2020" max="2100" required value={form.year} onChange={(e) => set('year', e.target.value)} /></label>
+      <label>省份标识<input required pattern="[a-z0-9-]+" value={form.province_slug} onChange={(e) => set('province_slug', e.target.value.trim())} /></label>
+      <label>专业标识<input required pattern="[a-z0-9-]+" value={form.major_slug} onChange={(e) => set('major_slug', e.target.value.trim())} /></label>
       <label>科目标识<input required pattern="[a-z0-9-]+" value={form.subject_slug} onChange={(e) => set('subject_slug', e.target.value.trim())} /></label>
       <label>科目名称<input required value={form.subject_name} onChange={(e) => set('subject_name', e.target.value)} /></label>
       <label>章节顺序<input type="number" min="1" required value={form.section_order} onChange={(e) => set('section_order', e.target.value)} /></label>
@@ -303,6 +323,7 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
 function AcademicDataPanel({ schools, setSchools, offerings, setOfferings, syllabusPoints, setSyllabusPoints }) {
   const [editor, setEditor] = useState(null)
   const schoolNames = new Map(schools.map((school) => [school.school_slug, school.school_name]))
+  const defaultMapSchools = mapAvailableSchoolSlugs(offerings, syllabusPoints, DEFAULT_SCOPE)
 
   async function refreshSchools() {
     const { data } = await supabase.from('academic_schools').select('*').order('sort_order').order('school_id')
@@ -312,15 +333,15 @@ function AcademicDataPanel({ schools, setSchools, offerings, setOfferings, sylla
   function saved(kind, row) {
     if (kind === 'school') setSchools((current) => [...current.filter((item) => item.school_id !== row.school_id), row].sort((a, b) => a.sort_order - b.sort_order || a.school_id.localeCompare(b.school_id)))
     if (kind === 'offering') setOfferings((current) => [...current.filter((item) => item.offering_id !== row.offering_id), row].sort((a, b) => a.sort_order - b.sort_order))
-    if (kind === 'point') setSyllabusPoints((current) => [...current.filter((item) => item.point_id !== row.point_id), row].sort((a, b) => a.school_slug.localeCompare(b.school_slug) || a.subject_slug.localeCompare(b.subject_slug) || a.section_order - b.section_order || a.point_order - b.point_order))
+    if (kind === 'point') setSyllabusPoints((current) => [...current.filter((item) => !(item.point_id === row.point_id && item.year === row.year && item.province_slug === row.province_slug && item.major_slug === row.major_slug)), row].sort((a, b) => a.year - b.year || a.province_slug.localeCompare(b.province_slug) || a.major_slug.localeCompare(b.major_slug) || a.school_slug.localeCompare(b.school_slug) || a.subject_slug.localeCompare(b.subject_slug) || a.section_order - b.section_order || a.point_order - b.point_order))
     if (kind !== 'school') void refreshSchools()
   }
 
   return <section className="admin-panel admin-academic-data">
     <div className="admin-panel-title"><div><span className="eyebrow">前台内容</span><h2>院校资料与考纲</h2><p>院校资料是首页校徽墙、已整理院校、对比页、学习地图和资料来源页的统一数据源</p></div></div>
-    <div className="admin-data-section"><header><div><h3>院校资料</h3><span>{schools.length} 所 · {schools.filter((school) => school.has_study_map).length} 所已开放学习地图</span></div></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校</th><th>校徽</th><th>排序</th><th>学习地图</th><th>状态</th><th>操作</th></tr></thead><tbody>{schools.map((school) => <tr key={school.school_id}><td><strong>{school.school_name}</strong><small>{school.school_id} · {school.short_name} · {school.school_type}</small></td><td><span className="admin-table-logo">{school.logo_url ? <img src={school.logo_url} alt="" /> : school.short_name}</span></td><td>{school.sort_order}</td><td><span className={`admin-status ${school.has_study_map ? 'active' : ''}`}>{school.has_study_map ? '已开放' : '未开放'}</span></td><td><span className={`admin-status ${school.active ? 'active' : ''}`}>{school.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'school', initial: school })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
+    <div className="admin-data-section"><header><div><h3>院校资料</h3><span>{schools.length} 所 · 默认范围 {defaultMapSchools.size} 所已开放学习地图</span></div></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校</th><th>校徽</th><th>排序</th><th>2026 计算机学习地图</th><th>状态</th><th>操作</th></tr></thead><tbody>{schools.map((school) => { const hasMap = defaultMapSchools.has(school.school_slug); return <tr key={school.school_id}><td><strong>{school.school_name}</strong><small>{school.school_id} · {school.short_name} · {school.school_type}</small></td><td><span className="admin-table-logo">{school.logo_url ? <img src={school.logo_url} alt="" /> : school.short_name}</span></td><td>{school.sort_order}</td><td><span className={`admin-status ${hasMap ? 'active' : ''}`}>{hasMap ? '已开放' : '资料整理中'}</span></td><td><span className={`admin-status ${school.active ? 'active' : ''}`}>{school.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'school', initial: school })}>编辑</button></div></td></tr> })}</tbody></table></div></div>
     <div className="admin-data-section"><header><div><h3>招生计划</h3><span>{offerings.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'offering', initial: null })}>＋ 新增计划</button></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校与地点</th><th>考试科目</th><th>计划数</th><th>状态</th><th>操作</th></tr></thead><tbody>{offerings.map((item) => <tr key={item.offering_id}><td><strong>{schoolNames.get(item.school_slug) || item.school_slug}</strong><small>{item.training_site}</small></td><td><span>{item.publicSubjects.join(' · ')}</span><small>{item.professionalSubjects.join(' · ')}</small></td><td>{item.plan_count} 人</td><td><span className={`admin-status ${item.active ? 'active' : ''}`}>{item.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'offering', initial: item })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
-    <div className="admin-data-section"><header><div><h3>考纲知识点</h3><span>{syllabusPoints.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'point', initial: null })}>＋ 新增知识点</button></header><div className="admin-table-wrap admin-points-table"><table className="admin-table"><thead><tr><th>科目</th><th>章节与知识点</th><th>适用院校</th><th>资源标签</th><th>操作</th></tr></thead><tbody>{syllabusPoints.map((point) => <tr key={point.point_id}><td><strong>{point.subject_name}</strong><small>{point.subject_slug}</small></td><td><strong>{point.point_title}</strong><small>{point.section_name} · {point.section_order}-{point.point_order}</small></td><td>{point.school_slug === 'common' ? '所有院校' : schoolNames.get(point.school_slug) || point.school_slug}</td><td>{point.canonical_topic}</td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'point', initial: point })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
+    <div className="admin-data-section"><header><div><h3>考纲知识点</h3><span>{syllabusPoints.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'point', initial: null })}>＋ 新增知识点</button></header><div className="admin-table-wrap admin-points-table"><table className="admin-table"><thead><tr><th>科目</th><th>章节与知识点</th><th>适用范围</th><th>资源标签</th><th>操作</th></tr></thead><tbody>{syllabusPoints.map((point) => <tr key={`${point.year}:${point.province_slug}:${point.major_slug}:${point.point_id}`}><td><strong>{point.subject_name}</strong><small>{point.subject_slug}</small></td><td><strong>{point.point_title}</strong><small>{point.section_name} · {point.section_order}-{point.point_order}</small></td><td>{point.year} · {point.province_slug} · {point.major_slug}<small>{point.school_slug === 'common' ? '所有院校' : schoolNames.get(point.school_slug) || point.school_slug}</small></td><td>{point.canonical_topic}</td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'point', initial: point })}>编辑</button></div></td></tr>)}</tbody></table></div></div>
     {editor && <AcademicEditor kind={editor.kind} initial={editor.initial} schools={schools} onClose={() => setEditor(null)} onSaved={saved} />}
   </section>
 }
@@ -342,7 +363,7 @@ export function AdminDashboard() {
     if (!supabase) return setAuthState({ loading: false, allowed: false, email: '' })
     async function initialize() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL) return setAuthState({ loading: false, allowed: false, email: user?.email ?? '' })
+      if (!user) return setAuthState({ loading: false, allowed: false, email: '' })
       const { data: membership } = await supabase.from('admin_users').select('user_id,email').eq('user_id', user.id).maybeSingle()
       if (!membership) return setAuthState({ loading: false, allowed: false, email: user.email })
       setAuthState({ loading: false, allowed: true, email: user.email })
@@ -354,7 +375,7 @@ export function AdminDashboard() {
         { data: syllabusRows, error: syllabusError },
       ] = await Promise.all([
         supabase.from('resources').select('*').order('updated_at', { ascending: false }),
-        supabase.from('announcements').select('*').order('updated_at', { ascending: false }).limit(1),
+        supabase.from('announcements').select('*').order('updated_at', { ascending: false }),
         supabase.from('academic_schools').select('*').order('sort_order').order('school_id'),
         supabase.from('admission_offerings').select('*').order('sort_order'),
         supabase.from('syllabus_points').select('*').order('school_slug').order('subject_slug').order('section_order').order('point_order'),
@@ -365,6 +386,10 @@ export function AdminDashboard() {
       setAcademicSchools(academicSchoolRows.map(normalizeAcademicSchool)); setOfferings(offeringRows.map(normalizeOffering)); setSyllabusPoints(syllabusRows.map(normalizeSyllabusPoint))
     }
     initialize()
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') setAuthState({ loading: false, allowed: false, email: '' })
+    })
+    return () => authListener.subscription.unsubscribe()
   }, [])
 
   const filtered = useMemo(() => resources.filter((item) => {

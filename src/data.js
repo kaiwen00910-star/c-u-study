@@ -1,31 +1,37 @@
-import Papa from 'papaparse'
-import offeringsCsv from '../content/offerings.csv?raw'
-import syllabusCsv from '../content/syllabus.csv?raw'
-import resourcesCsv from '../content/resources.csv?raw'
-import { fallbackAcademicSchools } from './schoolWallData'
+import snapshot from '../content/public-content.snapshot.json'
+import { DEFAULT_SCOPE, matchesScope, normalizeScope } from './contentScope'
 
-export { fallbackAcademicSchools } from './schoolWallData'
+export const snapshotMetadata = snapshot.metadata
+export const fallbackAnnouncements = snapshot.announcements ?? []
 
-const parse = (csv) => Papa.parse(csv, { header: true, skipEmptyLines: true }).data
+export const fallbackAcademicSchools = snapshot.academicSchools
+  .map((row) => ({ ...row, sort_order: Number(row.sort_order), active: row.active !== false }))
 
-export const offerings = parse(offeringsCsv).map((item) => ({
+export const offerings = snapshot.offerings.map((item) => ({
   ...item,
   year: Number(item.year),
   plan_count: Number(item.plan_count),
-  publicSubjects: item.public_subjects.split('|'),
-  professionalSubjects: item.professional_subjects.split('|'),
+  sort_order: Number(item.sort_order),
+  publicSubjects: Array.isArray(item.public_subjects) ? item.public_subjects : String(item.public_subjects || '').split('|').filter(Boolean),
+  professionalSubjects: Array.isArray(item.professional_subjects) ? item.professional_subjects : String(item.professional_subjects || '').split('|').filter(Boolean),
 }))
 
-export const syllabus = parse(syllabusCsv).map((item) => ({
+export const syllabus = snapshot.syllabusPoints.map((item) => ({
   ...item,
+  province_slug: item.province_slug ?? DEFAULT_SCOPE.provinceSlug,
+  major_slug: item.major_slug ?? DEFAULT_SCOPE.majorSlug,
   year: Number(item.year),
   section_order: Number(item.section_order),
   point_order: Number(item.point_order),
 }))
 
-export const fallbackResources = parse(resourcesCsv)
+export const fallbackResources = snapshot.resources
   .filter((item) => item.status === 'active')
-  .map((item) => ({ ...item, priority: Number(item.priority), tags: item.topic_tags.split('|') }))
+  .map((item) => ({
+    ...item,
+    priority: Number(item.priority),
+    tags: Array.isArray(item.topic_tags) ? item.topic_tags : String(item.topic_tags || '').split('|').filter(Boolean),
+  }))
 
 export const resources = fallbackResources
 
@@ -41,23 +47,41 @@ export const schoolTheme = {
   wenda: { short: '文达', color: '#173d78', logo: '/schools/school-wenda.jpg' },
 }
 
-export function schoolGroups(items = offerings, academicSchools = fallbackAcademicSchools) {
+export function mapAvailableSchoolSlugs(items = offerings, syllabusItems = syllabus, scope = DEFAULT_SCOPE) {
+  const normalized = normalizeScope(scope)
+  const offeringSchools = new Set(items
+    .filter((item) => item.active !== false && matchesScope(item, normalized))
+    .map((item) => item.school_slug))
+  const syllabusSchools = new Set(syllabusItems
+    .filter((item) => item.active !== false && item.school_slug !== 'common' && matchesScope(item, normalized))
+    .map((item) => item.school_slug))
+  return new Set([...offeringSchools].filter((slug) => syllabusSchools.has(slug)))
+}
+
+export function schoolGroups(items = offerings, academicSchools = fallbackAcademicSchools, scope = DEFAULT_SCOPE, syllabusItems = syllabus) {
+  const normalized = normalizeScope(scope)
+  const available = mapAvailableSchoolSlugs(items, syllabusItems, normalized)
   const metadata = new Map(academicSchools
-    .filter((school) => school.active !== false && school.has_study_map)
+    .filter((school) => school.active !== false && available.has(school.school_slug))
     .map((school) => [school.school_slug, school]))
-  const groups = Object.values(items.filter((item) => item.active !== false).reduce((acc, item) => {
-    const school = metadata.get(item.school_slug)
-    if (!school) return acc
-    acc[item.school_slug] ??= { ...item, ...school, sites: [], totalPlan: 0 }
-    acc[item.school_slug].sites.push(item.training_site)
-    acc[item.school_slug].totalPlan += item.plan_count
-    return acc
-  }, {}))
+  const groups = Object.values(items
+    .filter((item) => item.active !== false && matchesScope(item, normalized))
+    .reduce((acc, item) => {
+      const school = metadata.get(item.school_slug)
+      if (!school) return acc
+      acc[item.school_slug] ??= { ...item, ...school, sites: [], totalPlan: 0 }
+      acc[item.school_slug].sites.push(item.training_site)
+      acc[item.school_slug].totalPlan += item.plan_count
+      return acc
+    }, {}))
   return groups.sort((a, b) => a.sort_order - b.sort_order)
 }
 
-export function schoolSyllabus(slug, items = syllabus) {
-  return items.filter((item) => item.active !== false && (item.school_slug === 'common' || item.school_slug === slug))
+export function schoolSyllabus(slug, items = syllabus, scope = DEFAULT_SCOPE) {
+  const normalized = normalizeScope(scope)
+  return items.filter((item) => item.active !== false
+    && matchesScope(item, normalized)
+    && (item.school_slug === 'common' || item.school_slug === slug))
 }
 
 export function resourcesForTopic(topic, items = resources) {

@@ -1,9 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import Papa from 'papaparse'
-import { fallbackAcademicSchools } from '../src/schoolWallData.js'
 
 const root = process.cwd()
+const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content', 'public-content.snapshot.json'), 'utf8'))
+const fallbackAcademicSchools = snapshot.academicSchools
 const load = (name) => Papa.parse(fs.readFileSync(path.join(root, 'content', name), 'utf8'), {
   header: true, skipEmptyLines: true,
 }).data
@@ -35,8 +36,8 @@ function dateCheck(rows, file) {
   })
 }
 
-required(offerings, ['offering_id','year','school_slug','school_name','training_site','charter_url','syllabus_url','verified_at'], 'offerings.csv')
-required(syllabus, ['year','school_slug','subject_slug','point_id','point_title','canonical_topic'], 'syllabus.csv')
+required(offerings, ['offering_id','year','province_slug','major_slug','school_slug','school_name','training_site','charter_url','syllabus_url','verified_at'], 'offerings.csv')
+required(syllabus, ['year','province_slug','major_slug','school_slug','subject_slug','point_id','point_title','canonical_topic'], 'syllabus.csv')
 required(resources, ['resource_id','topic_tags','title','platform','url','priority','verified_at','status'], 'resources.csv')
 unique(offerings, 'offering_id', 'offerings.csv'); unique(syllabus, 'point_id', 'syllabus.csv'); unique(resources, 'resource_id', 'resources.csv')
 urlCheck(offerings, ['charter_url','syllabus_url'], 'offerings.csv'); urlCheck(resources, ['url'], 'resources.csv')
@@ -51,6 +52,32 @@ fallbackAcademicSchools.forEach((school, index) => {
   if (!school.school_name || !school.short_name) errors.push(`院校回退数据 ${expectedId} 缺少名称或简称`)
 })
 if (fallbackAcademicSchools.filter((school) => school.has_study_map).length !== 3) errors.push('院校回退数据必须仅开放 3 所学习地图')
+if (!snapshot.metadata?.version || !snapshot.metadata?.generatedAt || !snapshot.metadata?.sourceUpdatedAt) errors.push('公开快照缺少版本、生成时间或源数据更新时间')
+if (fallbackAcademicSchools.find((school) => school.school_id === 'anhui-school-09')?.school_name !== '安徽科技工程大学') errors.push('公开快照中的 anhui-school-09 未与线上有效校名同步')
+
+const snapshotSchoolSlugs = new Set(fallbackAcademicSchools.map((school) => school.school_slug))
+snapshot.syllabusPoints.forEach((row, index) => {
+  if (row.school_slug !== 'common' && !snapshotSchoolSlugs.has(row.school_slug)) errors.push(`公开快照考纲第 ${index + 1} 条引用未知院校 ${row.school_slug}`)
+})
+const activeSnapshotTopics = new Set(snapshot.syllabusPoints.filter((row) => row.active !== false).map((row) => row.canonical_topic))
+snapshot.resources.filter((row) => row.status === 'active').forEach((row, index) => {
+  const tags = Array.isArray(row.topic_tags) ? row.topic_tags : String(row.topic_tags || '').split('|').filter(Boolean)
+  tags.forEach((tag) => { if (!activeSnapshotTopics.has(tag)) errors.push(`公开快照资源第 ${index + 1} 条引用无有效考纲的主题 ${tag}`) })
+})
+
+const snapshotOfferingCombinations = new Set()
+snapshot.offerings.forEach((row, index) => {
+  const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase()].join('|')
+  if (snapshotOfferingCombinations.has(combination)) errors.push(`公开快照招生计划第 ${index + 1} 条范围/院校/培养地点组合重复`)
+  snapshotOfferingCombinations.add(combination)
+})
+
+const offeringCombinations = new Set()
+offerings.forEach((row, index) => {
+  const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase()].join('|')
+  if (offeringCombinations.has(combination)) errors.push(`offerings.csv 第 ${index + 2} 行年份/省份/专业/院校/培养地点组合重复`)
+  offeringCombinations.add(combination)
+})
 
 const schoolSlugs = new Set(offerings.map((row) => row.school_slug))
 syllabus.forEach((row, index) => {

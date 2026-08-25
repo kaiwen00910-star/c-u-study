@@ -1,3 +1,5 @@
+import { DEFAULT_SCOPE, normalizeScope } from './contentScope'
+
 const KEYS = {
   progress: 'zsb:v1:progress', favorites: 'zsb:v1:favorites', lastSelection: 'zsb:v1:lastSelection',
 }
@@ -12,6 +14,7 @@ export function getFavorites() { return read(KEYS.favorites, []) }
 export function saveFavorites(value) { localStorage.setItem(KEYS.favorites, JSON.stringify(value)) }
 export function saveLastSelection(value) { localStorage.setItem(KEYS.lastSelection, JSON.stringify(value)) }
 
-export function progressKey(schoolSlug, pointId) {
-  return `2026:computer-science:${schoolSlug}:${pointId}`
+export function progressKey(scope = DEFAULT_SCOPE, schoolSlug, pointId) {
+  const normalized = normalizeScope(scope)
+  return `${normalized.year}:${normalized.provinceSlug}:${normalized.majorSlug}:${schoolSlug}:${pointId}`
 }
