@@ -30,7 +30,7 @@ $env:SNAPSHOT_SUPABASE_PUBLISHABLE_KEY='YOUR_PUBLISHABLE_KEY'
 npm run snapshot:export
 ```
 
-脚本通过现有 RLS 读取公开有效数据，写入 `content/public-content.snapshot.json`，并记录 `content_versions` 的单调版本号、数据库更新时间和快照生成时间。提交快照后再构建。Netlify 使用 `npm run build:with-snapshot`，因此需配置同名环境变量；同步失败会阻止部署旧快照。
+脚本通过现有 RLS 读取公开有效数据，写入 `content/public-content.snapshot.json`，并记录 `content_versions` 的单调版本号、数据库更新时间和快照生成时间。发布前必须执行该命令、运行数据校验并提交生成的快照。Netlify 使用 `npm run build` 验证并构建已提交快照，因此生产构建不依赖 Supabase 当时是否可用；快照同步失败时，发布流程应在提交前停止。
 
 修改后先执行：
 

@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build:with-snapshot"
+  command = "npm run build"
   publish = "dist"
 
 [[headers]]
