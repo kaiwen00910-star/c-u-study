@@ -60,7 +60,7 @@ snapshot.syllabusPoints.forEach((row, index) => {
   if (row.school_slug !== 'common' && !snapshotSchoolSlugs.has(row.school_slug)) errors.push(`公开快照考纲第 ${index + 1} 条引用未知院校 ${row.school_slug}`)
 })
 const activeSnapshotTopics = new Set(snapshot.syllabusPoints.filter((row) => row.active !== false).map((row) => row.canonical_topic))
-snapshot.resources.filter((row) => row.status === 'active').forEach((row, index) => {
+snapshot.resources.filter((row) => row.status === 'active' || row.status === 'published').forEach((row, index) => {
   const tags = Array.isArray(row.topic_tags) ? row.topic_tags : String(row.topic_tags || '').split('|').filter(Boolean)
   tags.forEach((tag) => { if (!activeSnapshotTopics.has(tag)) errors.push(`公开快照资源第 ${index + 1} 条引用无有效考纲的主题 ${tag}`) })
 })

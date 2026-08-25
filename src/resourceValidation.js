@@ -19,7 +19,7 @@ export function validateResource(resource, validTopics) {
   if (isBilibili && !/^https:\/\/www\.bilibili\.com\/video\/(?:BV[\w]+|av\d+)\/?$/.test(resourceUrl)) errors.push('请填写规范的哔哩哔哩具体视频链接')
   if (!/^\d{4}-\d{2}-\d{2}$/.test(resource.verified_at || '')) errors.push('核验日期格式应为 YYYY-MM-DD')
   if (!Number.isInteger(Number(resource.priority)) || Number(resource.priority) < 1) errors.push('优先级必须是大于 0 的整数')
-  if (!['active', 'inactive'].includes(resource.status)) errors.push('资源状态无效')
+  if (!['draft', 'published', 'archived'].includes(resource.status)) errors.push('资源状态无效')
   const tags = Array.isArray(resource.topic_tags) ? resource.topic_tags : String(resource.topic_tags || '').split('|').filter(Boolean)
   if (!tags.length) errors.push('至少选择一个知识点标签')
   tags.forEach((tag) => { if (!validTopics.has(tag)) errors.push(`未知知识点标签：${tag}`) })

@@ -26,9 +26,9 @@ export const syllabus = snapshot.syllabusPoints.map((item) => ({
 }))
 
 export const fallbackResources = snapshot.resources
-  .filter((item) => item.status === 'active')
+  .filter((item) => item.status === 'active' || item.status === 'published')
   .map((item) => ({
-    ...item,
+    ...item, status: 'published',
     priority: Number(item.priority),
     tags: Array.isArray(item.topic_tags) ? item.topic_tags : String(item.topic_tags || '').split('|').filter(Boolean),
   }))

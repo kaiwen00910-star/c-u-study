@@ -57,3 +57,14 @@ export async function loadPublicContent(scope = DEFAULT_SCOPE, attempt = 0) {
     },
   }
 }
+
+export async function loadPublishedScopes() {
+  if (!publicApiConfigured) throw new Error('公开内容服务尚未配置')
+  const rows = await read('admission_offerings', {
+    select: 'year,province_slug,major_slug',
+    order: 'year.desc',
+  })
+  return [...new Map(rows.map((row) => [`${row.year}:${row.province_slug}:${row.major_slug}`, {
+    year: Number(row.year), provinceSlug: row.province_slug, majorSlug: row.major_slug,
+  }])).values()]
+}

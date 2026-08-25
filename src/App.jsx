@@ -1,10 +1,13 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
-import { offeringSchoolGroups, resourcesForTopic, schoolGroups, schoolSyllabus, subjectNames } from './data'
-import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
+import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { offeringSchoolGroups, offerings as snapshotOfferings, resourcesForTopic, schoolGroups, schoolSyllabus, subjectNames } from './data'
+import { createLocalBackup, getCountdownTarget, getFavorites, getProgress, importLocalBackup, progressKey, saveCountdownTarget, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
 import { comparePath, DEFAULT_SCOPE, MAJOR_NAMES, normalizeScope, scopeLabel, scopePath } from './contentScope'
+import { aggregateChapterResources, differingCompareFields, filterSchoolDirectory, learningDeepLink, sanitizeCompareSelection } from './publicFeatures'
+import { loadPublishedScopes } from './publicApi'
+import { applyPageMetadata } from './seo'
 import './App.css'
 
 const AdminDashboard = lazy(() => import('./Admin').then((module) => ({ default: module.AdminDashboard })))
@@ -50,7 +53,7 @@ export function MobileNavigation({ favoritesCount }) {
       <NavLink to="/anhui" onClick={close}>院校与专业</NavLink>
       <NavLink to={comparePath(DEFAULT_SCOPE)} onClick={close}>院校对比</NavLink>
       <NavLink to="/sources" onClick={close}>资料来源</NavLink>
-      <span className="mobile-favorite-count" aria-label={`已收藏 ${favoritesCount} 条资源`}>★ 收藏数量 <b>{favoritesCount}</b></span>
+      <NavLink className="mobile-favorite-count" to="/favorites" onClick={close} aria-label={`已收藏 ${favoritesCount} 条资源`}>★ 我的收藏 <b>{favoritesCount}</b></NavLink>
     </nav>}
   </div>
 }
@@ -64,7 +67,7 @@ function Layout({ children, favoritesCount, announcement, content }) {
           <NavLink to="/anhui">院校与专业</NavLink>
           <NavLink to={comparePath(DEFAULT_SCOPE)}>院校对比</NavLink>
           <NavLink to="/sources">资料来源</NavLink>
-          <span className="favorite-pill" title="已收藏资源">★ {favoritesCount}</span>
+          <NavLink className="favorite-pill" to="/favorites" aria-label={`查看 ${favoritesCount} 条收藏资源`}>★ {favoritesCount}</NavLink>
         </nav>
         <MobileNavigation favoritesCount={favoritesCount} />
       </div>
@@ -80,17 +83,20 @@ function Layout({ children, favoritesCount, announcement, content }) {
   </div>
 }
 
-function SearchBox({ resources, syllabusPoints, scope }) {
+export function SearchBox({ resources, syllabusPoints, schools, scope }) {
   const [query, setQuery] = useState('')
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return []
+    const openSlugs = new Set(schools.map((school) => school.school_slug))
     const pointMatches = syllabusPoints.filter((item) => `${item.point_title}${item.section_name}${item.subject_name || subjectNames[item.subject_slug] || ''}`.toLowerCase().includes(q))
-      .slice(0, 5).map((item) => ({ type: '知识点', title: item.point_title, detail: item.subject_name || subjectNames[item.subject_slug], slug: item.school_slug === 'common' ? 'hfnu' : item.school_slug }))
+      .map((item) => ({ item, schoolSlug: item.school_slug === 'common' ? schools[0]?.school_slug : item.school_slug }))
+      .filter(({ schoolSlug }) => openSlugs.has(schoolSlug)).slice(0, 5)
+      .map(({ item, schoolSlug }) => ({ type: '知识点', title: item.point_title, detail: `${schools.find((school) => school.school_slug === schoolSlug)?.school_name || schoolSlug} · ${item.subject_name || subjectNames[item.subject_slug]}`, href: learningDeepLink(scope, schoolSlug, item) }))
     const resourceMatches = resources.filter((item) => `${item.title}${item.creator}${item.platform}`.toLowerCase().includes(q))
       .slice(0, 3).map((item) => ({ type: '课程', title: item.title, detail: `${item.platform} · ${item.creator}`, url: item.url }))
     return [...pointMatches, ...resourceMatches]
-  }, [query, resources, syllabusPoints])
+  }, [query, resources, schools, syllabusPoints, scope])
 
   return <div className="search-wrap">
     <label htmlFor="home-search" className="sr-only">搜索知识点或课程</label>
@@ -99,16 +105,14 @@ function SearchBox({ resources, syllabusPoints, scope }) {
     {query && <div className="search-results" role="status">
       {matches.length ? matches.map((item, index) => item.url
         ? <a key={`${item.title}-${index}`} href={item.url} target="_blank" rel="noreferrer"><span>{item.type}</span><b>{item.title}</b><small>{item.detail}</small></a>
-        : <Link key={`${item.title}-${index}`} to={scopePath(scope, item.slug)}><span>{item.type}</span><b>{item.title}</b><small>{item.detail}</small></Link>)
+        : <Link key={`${item.title}-${index}`} to={item.href}><span>{item.type}</span><b>{item.title}</b><small>{item.detail}</small></Link>)
         : <p>没有找到匹配内容，试试“C语言”或“高等数学”。</p>}
     </div>}
   </div>
 }
 
-const COUNTDOWN_STORAGE_KEY = 'zsb:v1:countdownTarget'
-
 function Countdown() {
-  const [target, setTarget] = useState(() => localStorage.getItem(COUNTDOWN_STORAGE_KEY) || '2027-04-18')
+  const [target, setTarget] = useState(() => getCountdownTarget() || '2027-04-18')
   const [today, setToday] = useState(() => new Date())
 
   useEffect(() => {
@@ -124,7 +128,7 @@ function Countdown() {
   function changeTarget(event) {
     const value = event.target.value
     setTarget(value)
-    localStorage.setItem(COUNTDOWN_STORAGE_KEY, value)
+    saveCountdownTarget(value)
   }
 
   return <section className="countdown-section" aria-label="安徽专升本备考倒计时">
@@ -177,7 +181,7 @@ export function SchoolLogoWall({ schools }) {
   </div>
 }
 
-function Home({ resources, wallSchools, syllabusPoints, schoolCount, scope }) {
+function Home({ resources, wallSchools, syllabusPoints, schools, schoolCount, scope }) {
   return <>
     <section className="hero-section">
       <div className="hero-wall-zone">
@@ -190,7 +194,7 @@ function Home({ resources, wallSchools, syllabusPoints, schoolCount, scope }) {
           <p className="hero-copy">收录 42 所安徽招生院校名录；其中 3 所已完成招生计划与考纲整理，可进入学习地图。</p>
           <div className="hero-actions"><Link className="primary-btn" to={scopePath(scope)}>查看院校状态 <span>→</span></Link><Link className="secondary-btn" to={`${scopePath(scope)}#school-filter`}>查报考条件</Link></div>
           <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
-          <div className="hero-search"><SearchBox resources={resources} syllabusPoints={syllabusPoints} scope={scope} /></div>
+          <div className="hero-search"><SearchBox resources={resources} syllabusPoints={syllabusPoints} schools={schools} scope={scope} /></div>
         </div>
         <div className="hero-stats" aria-label="当前收录概况"><div><strong>{wallSchools.length}</strong><span>院校名录</span></div><div><strong>{schoolCount}</strong><span>已开放学习地图</span></div><div><strong>{syllabusPoints.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
       </div>
@@ -229,16 +233,30 @@ function SchoolLogo({ school, large = false }) {
   </span>
 }
 
-function AnhuiHub({ schools, wallSchools, scope }) {
-  const pendingSchools = wallSchools.filter((school) => !school.hasDetails)
+export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAULT_SCOPE] }) {
+  const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
+  const filters = { q: params.get('q') || '', type: params.get('type') || '', map: params.get('map') || '', subject: params.get('subject') || '' }
+  const setFilter = (key, value) => {
+    const next = new URLSearchParams(params)
+    if (value) next.set(key, value); else next.delete(key)
+    setParams(next, { replace: true })
+  }
+  const filteredDirectory = filterSchoolDirectory(wallSchools, schools, filters)
+  const filteredSlugs = new Set(filteredDirectory.map((school) => school.schoolSlug))
+  const openSchools = schools.filter((school) => filteredSlugs.has(school.school_slug))
+  const pendingSchools = filteredDirectory.filter((school) => !school.hasDetails)
+  const subjects = [...new Set(schools.flatMap((school) => [...school.publicSubjects, ...school.professionalSubjects]))]
+  const years = [...new Set(publishedScopes.filter((item) => item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug).map((item) => item.year))].sort((a, b) => b - a)
   return <div className="page-wrap" id="school-filter">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
-    <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>42 所院校名录中，当前仅 3 所试点院校开放完整学习地图。</p></div><div className="filter-box scope-summary"><strong>当前开放范围</strong><span>{scope.year} 年</span><span>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug}</span><small>其他年份和专业尚未开放切换</small></div></section>
+    <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>{wallSchools.length} 所院校名录中，当前 {schools.length} 所院校开放完整学习地图。</p></div><div className="filter-box scope-summary"><strong>已发布年份</strong><label className="sr-only" htmlFor="published-year">选择年份</label><select id="published-year" value={scope.year} onChange={(event) => navigate(scopePath({ ...scope, year: Number(event.target.value) }))}>{years.map((year) => <option key={year} value={year}>{year} 年</option>)}</select><span>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug}</span><small>仅展示已有正式发布数据的年份</small></div></section>
     <section className="exam-structure"><div><span>安徽考试结构</span><strong>2 门公共课</strong><b>+</b><strong>2 门专业课</strong></div><p>公共课由省考试院组织；专业课由招生院校组织，因此同一专业在不同院校的科目可能不同。</p></section>
-    <div className="section-heading"><div><span className="section-number">{schools.length} 所</span><h2>已开放学习地图</h2></div><Link to={comparePath(scope)}>查看横向对比 →</Link></div>
-    <section className="school-grid">{schools.map((school) => <SchoolCard key={school.school_slug} school={school} scope={scope} />)}</section>
-    <div className="section-heading pending-heading"><div><span className="section-number">{pendingSchools.length} 所</span><h2>资料整理中</h2></div><p>已列入院校名录，暂未开放学习地图</p></div>
-    <section className="pending-school-grid">{pendingSchools.map((school) => <article key={school.id}><strong>{school.name}</strong><span>{school.schoolType}</span><small>资料整理中 · 暂未开放学习地图</small></article>)}</section>
+    <section className="school-filters" aria-label="院校筛选"><label>院校名称<input type="search" value={filters.q} onChange={(event) => setFilter('q', event.target.value)} placeholder="输入院校名称" /></label><label>办学性质<select value={filters.type} onChange={(event) => setFilter('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>资料状态<select value={filters.map} onChange={(event) => setFilter('map', event.target.value)}><option value="">全部</option><option value="open">已开放学习地图</option><option value="pending">资料整理中</option></select></label><label>考试科目<select value={filters.subject} onChange={(event) => setFilter('subject', event.target.value)}><option value="">全部科目</option>{subjects.map((subject) => <option key={subject}>{subject}</option>)}</select></label><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>
+    <p className="filter-result-count" role="status">找到 {filteredDirectory.length} 所院校</p>
+    {!filteredDirectory.length && <section className="filter-empty"><h2>没有匹配的院校</h2><p>可以减少筛选条件，或清空后重新查找。</p><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>}
+    {!!openSchools.length && <><div className="section-heading"><div><span className="section-number">{openSchools.length} 所</span><h2>已开放学习地图</h2></div><Link to={comparePath(scope)}>查看横向对比 →</Link></div><section className="school-grid">{openSchools.map((school) => <SchoolCard key={school.school_slug} school={school} scope={scope} />)}</section></>}
+    {!!pendingSchools.length && <><div className="section-heading pending-heading"><div><span className="section-number">{pendingSchools.length} 所</span><h2>资料整理中</h2></div><p>已列入院校名录，暂未开放学习地图</p></div><section className="pending-school-grid">{pendingSchools.map((school) => <article key={school.id}><strong>{school.name}</strong><span>{school.schoolType}</span><small>资料整理中 · 暂未开放学习地图</small></article>)}</section></>}
     <div className="local-tip"><span>ⓘ</span><p><strong>你的进度只保存在当前浏览器</strong><br/>不需要注册即可使用；清除浏览器数据或更换设备后，进度与收藏不会同步。</p></div>
   </div>
 }
@@ -252,32 +270,86 @@ function SchoolCard({ school, scope }) {
   </article>
 }
 
-function Compare({ schools, scope }) {
+export function Compare({ schools, scope }) {
+  const [params, setParams] = useSearchParams()
+  const selectedSlugs = sanitizeCompareSelection(params.get('schools'), schools)
+  const selected = schools.filter((school) => selectedSlugs.includes(school.school_slug))
+  const differences = differingCompareFields(selected)
+  const toggleSchool = (slug) => {
+    const next = selectedSlugs.includes(slug) ? selectedSlugs.filter((item) => item !== slug) : [...selectedSlugs, slug].slice(0, 3)
+    const nextParams = new URLSearchParams(params)
+    if (next.length) nextParams.set('schools', next.join(',')); else nextParams.delete('schools')
+    setParams(nextParams, { replace: true })
+  }
   return <div className="page-wrap">
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>院校对比</div>
-    <section className="page-hero"><div><span className="eyebrow">{scopeLabel(scope)}</span><h1>三所院校，一页看清</h1><p>专业课差异是备考路线的关键。先选择院校，再按该校考纲学习。</p></div></section>
-    <div className="compare-scroll" tabIndex="0" aria-label="院校对比表，可横向滚动"><table><thead><tr><th>对比项</th>{schools.map((s) => <th key={s.school_slug}><span className="compare-school"><SchoolLogo school={s} /><span>{s.school_name}<small>{s.school_type}</small></span></span></th>)}</tr></thead><tbody>
-      <tr><th>培养地点</th>{schools.map((s) => <td key={s.school_slug}>{s.sites.map(x => <span className="table-line" key={x}>{x}</span>)}</td>)}</tr>
-      <tr><th>招生范围</th>{schools.map((s) => <td key={s.school_slug}>{s.eligible_major_categories}</td>)}</tr>
-      <tr><th>招生计划</th>{schools.map((s) => <td key={s.school_slug}><strong>{s.totalPlan}</strong> 人</td>)}</tr>
-      <tr><th>公共课</th>{schools.map((s) => <td key={s.school_slug}>{s.publicSubjects.join(' · ')}</td>)}</tr>
-      <tr className="highlight-row"><th>专业课</th>{schools.map((s) => <td key={s.school_slug}>{s.professionalSubjects.map(x => <span className="table-subject" key={x}>{x}</span>)}</td>)}</tr>
-      <tr><th>官方资料</th>{schools.map((s) => <td key={s.school_slug}><a href={s.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={s.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a><small>{s.source_status} · {s.verified_at}</small></td>)}</tr>
-      <tr><th>学习入口</th>{schools.map((s) => <td key={s.school_slug}><Link className="small-primary" to={scopePath(scope, s.school_slug)}>查看学习地图</Link></td>)}</tr>
+    <section className="page-hero"><div><span className="eyebrow">{scopeLabel(scope)}</span><h1>选择院校进行对比</h1><p>最多选择 3 所已开放院校；至少选择 2 所后生成有效对比。</p></div></section>
+    <section className="compare-picker" aria-label="选择对比院校">{schools.map((school) => <label key={school.school_slug}><input type="checkbox" checked={selectedSlugs.includes(school.school_slug)} disabled={!selectedSlugs.includes(school.school_slug) && selectedSlugs.length >= 3} onChange={() => toggleSchool(school.school_slug)} /><span>{school.school_name}</span></label>)}</section>
+    {selected.length < 2 ? <section className="compare-empty" role="status"><h2>再选择 {2 - selected.length} 所院校即可对比</h2><p>当前选择会保存在网址中，复制链接即可分享。</p></section> : <div className="compare-scroll" tabIndex="0" aria-label="院校对比表，可横向滚动"><table><thead><tr><th>对比项</th>{selected.map((s) => <th key={s.school_slug}><span className="compare-school"><SchoolLogo school={s} /><span>{s.school_name}<small>{s.school_type}</small></span></span></th>)}</tr></thead><tbody>
+      <tr className={differences.has('sites') ? 'is-different' : ''}><th>培养地点</th>{selected.map((s) => <td key={s.school_slug}>{s.sites.map(x => <span className="table-line" key={x}>{x}</span>)}</td>)}</tr>
+      <tr className={differences.has('eligible_major_categories') ? 'is-different' : ''}><th>招生范围</th>{selected.map((s) => <td key={s.school_slug}>{s.eligible_major_categories}</td>)}</tr>
+      <tr className={differences.has('totalPlan') ? 'is-different' : ''}><th>招生计划</th>{selected.map((s) => <td key={s.school_slug}><strong>{s.totalPlan}</strong> 人</td>)}</tr>
+      <tr><th>公共课</th>{selected.map((s) => <td key={s.school_slug}>{s.publicSubjects.join(' · ')}</td>)}</tr>
+      <tr className={differences.has('professionalSubjects') ? 'is-different highlight-row' : 'highlight-row'}><th>专业课</th>{selected.map((s) => <td key={s.school_slug}>{s.professionalSubjects.map(x => <span className="table-subject" key={x}>{x}</span>)}</td>)}</tr>
+      <tr><th>官方资料</th>{selected.map((s) => <td key={s.school_slug}><a href={s.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={s.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a><small>{s.source_status} · {s.verified_at}</small></td>)}</tr>
+      <tr><th>学习入口</th>{selected.map((s) => <td key={s.school_slug}><Link className="small-primary" to={scopePath(scope, s.school_slug)}>查看学习地图</Link></td>)}</tr>
     </tbody></table></div>
+    }
   </div>
 }
 
-function ResourceCard({ resource, favorites, toggleFavorite }) {
+function ResourceCard({ resource, favorites, toggleFavorite, coveragePoints = [] }) {
   const saved = favorites.includes(resource.resource_id)
-  return <article className="resource-card"><div className="resource-top"><span className={resource.platform.includes('哔哩') ? 'platform bili' : 'platform mooc'}>{resource.platform}</span><button onClick={() => toggleFavorite(resource.resource_id)} aria-label={saved ? '取消收藏' : '收藏资源'} aria-pressed={saved}>{saved ? '★' : '☆'}</button></div><h4>{resource.title}</h4><p className="creator">{resource.creator}</p><div className="resource-meta"><span>{resource.difficulty}</span><span>{resource.duration_text}</span><span>{resource.resource_type}</span></div><p>{resource.recommendation_reason}</p><a href={resource.url} target="_blank" rel="noreferrer">前往官方平台学习 ↗</a></article>
+  return <article className="resource-card"><div className="resource-top"><span className={resource.platform.includes('哔哩') ? 'platform bili' : 'platform mooc'}>{resource.platform}</span><button onClick={() => toggleFavorite(resource.resource_id)} aria-label={saved ? '取消收藏' : '收藏资源'} aria-pressed={saved}>{saved ? '★' : '☆'}</button></div><h4>{resource.title}</h4><p className="creator">{resource.creator}</p><div className="resource-meta"><span>{resource.difficulty}</span><span>{resource.duration_text}</span><span>{resource.resource_type}</span></div>{coveragePoints.length > 0 && <p className="resource-coverage"><strong>覆盖知识点：</strong>{coveragePoints.map((point) => point.point_title).join('、')}</p>}<p>{resource.recommendation_reason}</p><a href={resource.url} target="_blank" rel="noreferrer">前往官方平台学习 ↗</a></article>
+}
+
+function LocalBackup({ onImported }) {
+  const [message, setMessage] = useState('')
+  function exportBackup() {
+    const blob = new Blob([JSON.stringify(createLocalBackup(), null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url; link.download = `anhui-zsb-backup-${new Date().toISOString().slice(0, 10)}.json`; link.click()
+    URL.revokeObjectURL(url)
+    setMessage('备份文件已生成。')
+  }
+  async function importBackup(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    try {
+      if (file.size > 1024 * 1024) throw new Error('备份文件不能超过 1MB')
+      const parsed = JSON.parse(await file.text())
+      if (!window.confirm('导入会覆盖当前浏览器的学习进度、收藏、目标日期和最后选择。确定继续吗？')) return
+      const imported = importLocalBackup(parsed)
+      onImported(imported)
+      setMessage('导入成功；新数据已安全应用。')
+    } catch (error) {
+      setMessage(`导入失败：${error.message}。现有本地数据未改变。`)
+    }
+  }
+  return <section className="local-backup"><div><h2>本地进度与收藏备份</h2><p>导出文件只包含本站认可的本地字段；导入会先完整校验，异常文件不会覆盖现有数据。</p></div><div><button type="button" onClick={exportBackup}>导出备份</button><label className="backup-import">导入备份<input type="file" accept="application/json,.json" onChange={importBackup} /></label></div>{message && <p role="status">{message}</p>}</section>
+}
+
+export function Favorites({ favorites, resources, toggleFavorite, clearInvalid, onImported, scope }) {
+  const resourceById = new Map(resources.map((resource) => [resource.resource_id, resource]))
+  const savedResources = favorites.map((id) => resourceById.get(id)).filter(Boolean)
+  const invalidIds = favorites.filter((id) => !resourceById.has(id))
+  return <div className="page-wrap favorites-page"><div className="crumb"><Link to="/">首页</Link><span>/</span>我的收藏</div><section className="page-hero compact"><div><span className="eyebrow">仅保存在当前浏览器</span><h1>我的收藏</h1><p>当前共收藏 {favorites.length} 条资源，可在这里取消收藏或清理已失效项目。</p></div><Link className="primary-btn" to={scopePath(scope)}>返回学习地图</Link></section>
+    {!favorites.length && <section className="favorites-empty"><span aria-hidden="true">☆</span><h2>还没有收藏资源</h2><p>进入学习地图，点击资源卡右上角的星标即可收藏。</p><Link className="primary-btn" to={scopePath(scope)}>去学习地图</Link></section>}
+    {!!savedResources.length && <section className="favorites-grid">{savedResources.map((resource) => <ResourceCard key={resource.resource_id} resource={resource} favorites={favorites} toggleFavorite={toggleFavorite} />)}</section>}
+    {!!invalidIds.length && <section className="invalid-favorites" role="status"><div><h2>{invalidIds.length} 条收藏已失效</h2><p>对应资源可能已下架或删除，不影响其他收藏。</p></div><button type="button" onClick={() => clearInvalid(invalidIds)}>清理失效收藏</button></section>}
+    <LocalBackup onImported={onImported} />
+  </div>
 }
 
 export function LearningMap({ favorites, toggleFavorite, resources, schools, syllabusPoints, scope }) {
   const { schoolSlug } = useParams()
+  const location = useLocation()
   const school = schools.find((item) => item.school_slug === schoolSlug)
   const [progress, setProgress] = useState(getProgress)
   const [selectedSubject, setSelectedSubject] = useState('')
+  const [highlightedPoint, setHighlightedPoint] = useState('')
   const points = useMemo(() => schoolSyllabus(schoolSlug, syllabusPoints, scope), [schoolSlug, syllabusPoints, scope])
   const subjectOrder = useMemo(() => {
     const declaredSubjects = school ? [...school.publicSubjects, ...school.professionalSubjects] : []
@@ -290,8 +362,17 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
   const percent = points.length ? Math.round(completed / points.length * 100) : 0
 
   useEffect(() => {
-    setSelectedSubject(subjectOrder[0] || '')
-  }, [schoolSlug, scope.year, scope.provinceSlug, scope.majorSlug, subjectOrder])
+    const params = new URLSearchParams(location.search)
+    const pointId = params.get('point') || ''
+    const subjectSlug = params.get('subject') || ''
+    const target = points.find((point) => point.point_id === pointId && (!subjectSlug || point.subject_slug === subjectSlug))
+    setSelectedSubject(target?.subject_slug || subjectOrder[0] || '')
+    if (!target) { setHighlightedPoint(''); return undefined }
+    setHighlightedPoint(target.point_id)
+    const scrollTimer = window.setTimeout(() => document.getElementById(`point-${target.point_id}`)?.scrollIntoView?.({ behavior: 'smooth', block: 'center' }), 50)
+    const clearTimer = window.setTimeout(() => setHighlightedPoint(''), 2400)
+    return () => { window.clearTimeout(scrollTimer); window.clearTimeout(clearTimer) }
+  }, [location.search, points, schoolSlug, scope.year, scope.provinceSlug, scope.majorSlug, subjectOrder])
 
   if (!school) return <Navigate to={scopePath(scope)} replace />
 
@@ -320,10 +401,15 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
       const subjectPoints = points.filter((p) => p.subject_slug === subjectSlug)
       const sections = [...new Set(subjectPoints.map((p) => p.section_name))]
       const subjectName = subjectPoints[0]?.subject_name || subjectNames[subjectSlug]
-      return <section className="subject-block" id={subjectSlug} key={subjectSlug}><div className="subject-title"><div><span>{school.professionalSubjects.includes(subjectName) ? '专业课' : '公共课'}</span><h2>{subjectName}</h2></div><small>{subjectPoints.length} 个知识点</small></div>{sections.map((section) => <div className="chapter" key={section}><h3>{section}</h3>{subjectPoints.filter((p) => p.section_name === section).map((point) => {
-        const done = !!progress[progressKey(scope, schoolSlug, point.point_id)]
-        const linked = resourcesForTopic(point.canonical_topic, resources)
-        return <div className={`knowledge-item ${done ? 'done' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point.point_id)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div><div className="resource-row">{linked.length ? linked.map((r) => <ResourceCard key={r.resource_id} resource={r} favorites={favorites} toggleFavorite={toggleFavorite} />) : <p className="empty-resource">资源整理中，建议先对照官方考纲和参考书学习。</p>}</div></div>})}</div>)}</section>
+      return <section className="subject-block" id={subjectSlug} key={subjectSlug}><div className="subject-title"><div><span>{school.professionalSubjects.includes(subjectName) ? '专业课' : '公共课'}</span><h2>{subjectName}</h2></div><small>{subjectPoints.length} 个知识点</small></div>{sections.map((section) => {
+        const sectionPoints = subjectPoints.filter((point) => point.section_name === section)
+        const recommendations = aggregateChapterResources(sectionPoints, resources)
+        return <div className="chapter" key={section}><h3>{section}</h3>{sectionPoints.map((point) => {
+          const done = !!progress[progressKey(scope, schoolSlug, point.point_id)]
+          const linked = resourcesForTopic(point.canonical_topic, resources)
+          return <div id={`point-${point.point_id}`} className={`knowledge-item compact ${done ? 'done' : ''} ${highlightedPoint === point.point_id ? 'target-highlight' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point.point_id)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div></div>
+        })}<details className="chapter-resources"><summary>查看本章推荐资源（已去重 {recommendations.length} 条）</summary><div className="resource-row">{recommendations.length ? recommendations.map(({ resource, points: covered }) => <ResourceCard key={resource.resource_id} resource={resource} coveragePoints={covered} favorites={favorites} toggleFavorite={toggleFavorite} />) : <p className="empty-resource">资源整理中，建议先对照官方考纲和参考书学习。</p>}</div></details></div>
+      })}</section>
     })}</div>
     <div className="source-date">资料状态：{school.source_status} · 最后人工核验 {school.verified_at}。如与官方最新通知不一致，请以官方为准。</div>
   </div>
@@ -345,15 +431,27 @@ function PublicSite() {
   const location = useLocation()
   const scope = useMemo(() => scopeFromLocation(location.pathname), [location.pathname])
   const content = useContent(scope)
+  const [publishedScopes, setPublishedScopes] = useState(() => [...new Map(snapshotOfferings.filter((item) => item.active !== false).map((item) => [`${item.year}:${item.province_slug}:${item.major_slug}`, normalizeScope(item)])).values()].sort((a, b) => b.year - a.year))
   const academicSchools = content.academicSchools
   const wallSchools = useMemo(() => createSchoolWallSchools(academicSchools, content.offerings, content.syllabusPoints, scope), [academicSchools, content.offerings, content.syllabusPoints, scope])
   const schools = useMemo(() => schoolGroups(content.offerings, academicSchools, scope, content.syllabusPoints), [content.offerings, academicSchools, scope, content.syllabusPoints])
   const routeSchools = useMemo(() => offeringSchoolGroups(content.offerings, academicSchools, scope), [content.offerings, academicSchools, scope])
+  const defaultPublishedScope = publishedScopes[0] || DEFAULT_SCOPE
+  useEffect(() => { loadPublishedScopes().then((items) => { if (items.length) setPublishedScopes(items.sort((a, b) => b.year - a.year)) }).catch(() => {}) }, [])
+  useEffect(() => {
+    const match = location.pathname.match(/^\/[a-z0-9-]+\/\d{4}\/[a-z0-9-]+\/([a-z0-9-]+)/)
+    applyPageMetadata(location.pathname, routeSchools.find((school) => school.school_slug === match?.[1])?.school_name || '')
+  }, [location.pathname, routeSchools])
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
+  function clearInvalid(ids) { const invalid = new Set(ids); const next = favorites.filter((id) => !invalid.has(id)); setFavorites(next); saveFavorites(next) }
+  const pathHasScope = /^\/[a-z0-9-]+\/\d{4}\/[a-z0-9-]+/.test(location.pathname)
+  const scopeIsPublished = publishedScopes.some((item) => item.year === scope.year && item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug)
+  if (pathHasScope && !scopeIsPublished) return <Navigate to={scopePath(defaultPublishedScope)} replace />
   return <Layout favoritesCount={favorites.length} announcement={content.announcement} content={content}><Routes>
-    <Route path="/" element={<Home resources={content.resources} wallSchools={wallSchools} syllabusPoints={content.syllabusPoints} schoolCount={schools.length} scope={scope} />} />
-    <Route path="/anhui" element={<Navigate to={scopePath(DEFAULT_SCOPE)} replace />} />
-    <Route path="/:provinceSlug/:year/:majorSlug" element={<AnhuiHub schools={schools} wallSchools={wallSchools} scope={scope} />} />
+    <Route path="/" element={<Home resources={content.resources} wallSchools={wallSchools} syllabusPoints={content.syllabusPoints} schools={schools} schoolCount={schools.length} scope={scope} />} />
+    <Route path="/anhui" element={<Navigate to={scopePath(defaultPublishedScope)} replace />} />
+    <Route path="/favorites" element={<Favorites favorites={favorites} resources={content.resources} toggleFavorite={toggleFavorite} clearInvalid={clearInvalid} onImported={(imported) => setFavorites(imported.favorites)} scope={defaultPublishedScope} />} />
+    <Route path="/:provinceSlug/:year/:majorSlug" element={<AnhuiHub schools={schools} wallSchools={wallSchools} scope={scope} publishedScopes={publishedScopes} />} />
     <Route path="/:provinceSlug/:year/:majorSlug/compare" element={<Compare schools={schools} scope={scope} />} />
     <Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} schools={routeSchools} syllabusPoints={content.syllabusPoints} scope={scope} />} />
     <Route path="/sources" element={<Sources schools={schools} scope={scope} />} />
@@ -367,7 +465,7 @@ export default function App() {
   return <BrowserRouter><Suspense fallback={<AdminFallback />}><Routes>
     <Route path="/admin/login" element={<AdminLogin />} />
     <Route path="/admin/reset-password" element={<AdminResetPassword />} />
-    <Route path="/admin" element={<AdminDashboard />} />
+    <Route path="/admin/*" element={<AdminDashboard />} />
     <Route path="*" element={<PublicSite />} />
   </Routes></Suspense></BrowserRouter>
 }

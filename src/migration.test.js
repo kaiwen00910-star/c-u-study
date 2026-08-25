@@ -27,4 +27,16 @@ describe('Supabase migration 安全与完整性', () => {
     expect(scopedMigration).toContain('resources_validate_topic_tags')
     expect(scopedMigration).toContain('announcements_prevent_overlap')
   })
+
+  it('草稿默认不可公开读取，年度复制 RPC 检查管理员并收紧执行权限', () => {
+    expect(allSql).toContain("alter table public.resources alter column status set default 'draft'")
+    expect(allSql).toContain('anonymous users can read published resources')
+    expect(allSql).toContain('anonymous can read published admission offerings')
+    expect(allSql).toContain('anonymous can read published syllabus points')
+    expect(allSql).toContain('create or replace function public.copy_academic_year')
+    expect(allSql).toContain('pg_advisory_xact_lock')
+    expect(allSql).toContain("'等待新年度官方文件核验'")
+    expect(allSql).toContain('where user_id = (select auth.uid())')
+    expect(allSql).toContain('revoke all on function public.copy_academic_year')
+  })
 })

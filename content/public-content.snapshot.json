@@ -1,9 +1,9 @@
 {
   "metadata": {
     "schemaVersion": 2,
-    "version": 1,
-    "generatedAt": "2026-08-25T07:38:42.052Z",
-    "sourceUpdatedAt": "2026-08-25T07:34:52.193509+00:00",
+    "version": 14,
+    "generatedAt": "2026-08-25T11:45:47.477Z",
+    "sourceUpdatedAt": "2026-08-25T11:44:16.19573+00:00",
     "source": "supabase-public-rest-rls"
   },
   "academicSchools": [
@@ -18,7 +18,7 @@
       "active": true,
       "sort_order": 1,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-01",
       "has_study_map": false
     },
@@ -33,7 +33,7 @@
       "active": true,
       "sort_order": 2,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-02",
       "has_study_map": false
     },
@@ -48,7 +48,7 @@
       "active": true,
       "sort_order": 3,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-03",
       "has_study_map": false
     },
@@ -63,7 +63,7 @@
       "active": true,
       "sort_order": 4,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-04",
       "has_study_map": false
     },
@@ -78,7 +78,7 @@
       "active": true,
       "sort_order": 5,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-05",
       "has_study_map": false
     },
@@ -93,7 +93,7 @@
       "active": true,
       "sort_order": 6,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-06",
       "has_study_map": false
     },
@@ -108,7 +108,7 @@
       "active": true,
       "sort_order": 7,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-07",
       "has_study_map": false
     },
@@ -123,7 +123,7 @@
       "active": true,
       "sort_order": 8,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-08",
       "has_study_map": false
     },
@@ -138,7 +138,7 @@
       "active": true,
       "sort_order": 9,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-09",
       "has_study_map": false
     },
@@ -153,7 +153,7 @@
       "active": true,
       "sort_order": 10,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-10",
       "has_study_map": false
     },
@@ -168,7 +168,7 @@
       "active": true,
       "sort_order": 11,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-11",
       "has_study_map": false
     },
@@ -183,7 +183,7 @@
       "active": true,
       "sort_order": 12,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-12",
       "has_study_map": false
     },
@@ -198,7 +198,7 @@
       "active": true,
       "sort_order": 13,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-13",
       "has_study_map": false
     },
@@ -213,7 +213,7 @@
       "active": true,
       "sort_order": 14,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-14",
       "has_study_map": false
     },
@@ -228,7 +228,7 @@
       "active": true,
       "sort_order": 15,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-15",
       "has_study_map": false
     },
@@ -243,7 +243,7 @@
       "active": true,
       "sort_order": 16,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-16",
       "has_study_map": false
     },
@@ -258,7 +258,7 @@
       "active": true,
       "sort_order": 17,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-17",
       "has_study_map": false
     },
@@ -273,7 +273,7 @@
       "active": true,
       "sort_order": 18,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-18",
       "has_study_map": false
     },
@@ -288,7 +288,7 @@
       "active": true,
       "sort_order": 19,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-19",
       "has_study_map": false
     },
@@ -303,7 +303,7 @@
       "active": true,
       "sort_order": 20,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-20",
       "has_study_map": false
     },
@@ -318,7 +318,7 @@
       "active": true,
       "sort_order": 21,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-21",
       "has_study_map": false
     },
@@ -333,7 +333,7 @@
       "active": true,
       "sort_order": 22,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-22",
       "has_study_map": false
     },
@@ -348,7 +348,7 @@
       "active": true,
       "sort_order": 23,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T14:00:13.1888+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-23",
       "has_study_map": true
     },
@@ -363,7 +363,7 @@
       "active": true,
       "sort_order": 24,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-24",
       "has_study_map": false
     },
@@ -378,7 +378,7 @@
       "active": true,
       "sort_order": 25,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-25",
       "has_study_map": false
     },
@@ -393,7 +393,7 @@
       "active": true,
       "sort_order": 26,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-26",
       "has_study_map": false
     },
@@ -408,7 +408,7 @@
       "active": true,
       "sort_order": 27,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-27",
       "has_study_map": false
     },
@@ -423,7 +423,7 @@
       "active": true,
       "sort_order": 28,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-28",
       "has_study_map": false
     },
@@ -438,7 +438,7 @@
       "active": true,
       "sort_order": 29,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-29",
       "has_study_map": false
     },
@@ -453,7 +453,7 @@
       "active": true,
       "sort_order": 30,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-30",
       "has_study_map": false
     },
@@ -468,7 +468,7 @@
       "active": true,
       "sort_order": 31,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-31",
       "has_study_map": false
     },
@@ -483,7 +483,7 @@
       "active": true,
       "sort_order": 32,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-32",
       "has_study_map": false
     },
@@ -498,7 +498,7 @@
       "active": true,
       "sort_order": 33,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-33",
       "has_study_map": true
     },
@@ -513,7 +513,7 @@
       "active": true,
       "sort_order": 34,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-34",
       "has_study_map": false
     },
@@ -528,7 +528,7 @@
       "active": true,
       "sort_order": 35,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-35",
       "has_study_map": false
     },
@@ -543,7 +543,7 @@
       "active": true,
       "sort_order": 36,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-36",
       "has_study_map": true
     },
@@ -558,7 +558,7 @@
       "active": true,
       "sort_order": 37,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-37",
       "has_study_map": false
     },
@@ -573,7 +573,7 @@
       "active": true,
       "sort_order": 38,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-38",
       "has_study_map": false
     },
@@ -588,7 +588,7 @@
       "active": true,
       "sort_order": 39,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-39",
       "has_study_map": false
     },
@@ -603,7 +603,7 @@
       "active": true,
       "sort_order": 40,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-40",
       "has_study_map": false
     },
@@ -618,7 +618,7 @@
       "active": true,
       "sort_order": 41,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-41",
       "has_study_map": false
     },
@@ -633,7 +633,7 @@
       "active": true,
       "sort_order": 42,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-08-24T13:28:29.786554+00:00",
+      "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-42",
       "has_study_map": false
     }
@@ -663,7 +663,8 @@
       "active": true,
       "sort_order": 1,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
+      "status": "published"
     },
     {
       "offering_id": "hfnu-mtc-2026",
@@ -689,7 +690,8 @@
       "active": true,
       "sort_order": 2,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
+      "status": "published"
     },
     {
       "offering_id": "aiit-2026",
@@ -715,7 +717,8 @@
       "active": true,
       "sort_order": 3,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
+      "status": "published"
     },
     {
       "offering_id": "wenda-2026",
@@ -741,7 +744,8 @@
       "active": true,
       "sort_order": 4,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
+      "status": "published"
     }
   ],
   "syllabusPoints": [
@@ -758,9 +762,10 @@
       "canonical_topic": "c-language-basic",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-c-control",
@@ -775,9 +780,10 @@
       "canonical_topic": "c-language-control",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-c-array",
@@ -792,9 +798,10 @@
       "canonical_topic": "c-language-array",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-c-pointer",
@@ -809,9 +816,10 @@
       "canonical_topic": "c-language-pointer",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-cs-system",
@@ -826,9 +834,10 @@
       "canonical_topic": "computer-basics",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-cs-os",
@@ -843,9 +852,10 @@
       "canonical_topic": "computer-basics",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-cs-office",
@@ -860,9 +870,10 @@
       "canonical_topic": "computer-office",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "aiit-cs-network",
@@ -877,9 +888,10 @@
       "canonical_topic": "network-basic",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "math-function",
@@ -894,9 +906,10 @@
       "canonical_topic": "math-function",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "math-limit",
@@ -911,9 +924,10 @@
       "canonical_topic": "math-limit",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "math-derivative",
@@ -928,9 +942,10 @@
       "canonical_topic": "math-derivative",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "math-derivative-app",
@@ -945,9 +960,10 @@
       "canonical_topic": "math-derivative",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "math-integral",
@@ -962,9 +978,10 @@
       "canonical_topic": "math-integral",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "english-vocab",
@@ -979,9 +996,10 @@
       "canonical_topic": "english-vocabulary",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "english-grammar",
@@ -996,9 +1014,10 @@
       "canonical_topic": "english-grammar",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "english-reading",
@@ -1013,9 +1032,10 @@
       "canonical_topic": "english-reading",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "english-writing",
@@ -1030,9 +1050,10 @@
       "canonical_topic": "english-writing",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-c-basic",
@@ -1047,9 +1068,10 @@
       "canonical_topic": "c-language-basic",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-c-control",
@@ -1064,9 +1086,10 @@
       "canonical_topic": "c-language-control",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-c-array",
@@ -1081,9 +1104,10 @@
       "canonical_topic": "c-language-array",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-c-pointer",
@@ -1098,9 +1122,10 @@
       "canonical_topic": "c-language-pointer",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-ds-linear",
@@ -1115,9 +1140,10 @@
       "canonical_topic": "data-structure-linear",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-ds-tree",
@@ -1132,9 +1158,10 @@
       "canonical_topic": "data-structure-tree",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-ds-graph",
@@ -1149,9 +1176,10 @@
       "canonical_topic": "data-structure-graph",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "hfnu-ds-search",
@@ -1166,9 +1194,10 @@
       "canonical_topic": "data-structure-sort",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-c-basic",
@@ -1183,9 +1212,10 @@
       "canonical_topic": "c-language-basic",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-c-control",
@@ -1200,9 +1230,10 @@
       "canonical_topic": "c-language-control",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-c-array",
@@ -1217,9 +1248,10 @@
       "canonical_topic": "c-language-array",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-c-pointer",
@@ -1234,9 +1266,10 @@
       "canonical_topic": "c-language-pointer",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-net-model",
@@ -1251,9 +1284,10 @@
       "canonical_topic": "network-basic",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-net-data",
@@ -1268,9 +1302,10 @@
       "canonical_topic": "network-data",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-net-ip",
@@ -1285,9 +1320,10 @@
       "canonical_topic": "network-ip",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     },
     {
       "point_id": "wenda-net-tcp",
@@ -1302,9 +1338,10 @@
       "canonical_topic": "network-transport",
       "active": true,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-08-24T11:03:26.630305+00:00",
+      "updated_at": "2026-08-25T11:43:38.773969+00:00",
       "province_slug": "anhui",
-      "major_slug": "computer-science"
+      "major_slug": "computer-science",
+      "status": "published"
     }
   ],
   "resources": [
@@ -1326,9 +1363,9 @@
       "recommendation_reason": "函数极限导数和积分目录完整，讲解细致且方便反复观看",
       "priority": 1,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T06:22:30.952572+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-english-1",
@@ -1346,9 +1383,9 @@
       "recommendation_reason": "从简单句讲到从句和长难句，适合补语法并提升阅读拆句能力",
       "priority": 1,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-basic-1",
@@ -1366,9 +1403,9 @@
       "recommendation_reason": "具体课程页可直接查看大纲，覆盖系统组成信息编码操作系统和办公软件",
       "priority": 1,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-ds-1",
@@ -1388,9 +1425,9 @@
       "recommendation_reason": "王卓老师本人发布，按线性表栈队列树图查找和排序组织内容",
       "priority": 1,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-network-1",
@@ -1410,9 +1447,9 @@
       "recommendation_reason": "UP主本人发布，用动画讲解分层协议局域网IP和TCP等抽象概念",
       "priority": 1,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-c-1",
@@ -1432,9 +1469,9 @@
       "recommendation_reason": "从环境搭建讲到指针与内存管理，内容完整且明确适用于专升本复习",
       "priority": 1,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-c-2",
@@ -1454,9 +1491,9 @@
       "recommendation_reason": "作为第二种讲解思路，适合跟练基础语法并攻克数组函数和指针",
       "priority": 2,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-basic-2",
@@ -1474,9 +1511,9 @@
       "recommendation_reason": "具体课程页覆盖计算机原理软件平台网络平台与数据处理基础",
       "priority": 2,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-ds-2",
@@ -1496,9 +1533,9 @@
       "recommendation_reason": "章节短而清楚，适合在王卓课程之外补充算法思路与实现方法",
       "priority": 2,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-english-2",
@@ -1518,9 +1555,9 @@
       "recommendation_reason": "内容覆盖语法翻译做题技巧和写作，与学历提升英语备考较贴近",
       "priority": 2,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-math-1",
@@ -1540,9 +1577,9 @@
       "recommendation_reason": "国家精品在线开放课程，适合按章节建立微积分基础",
       "priority": 2,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T06:23:00.735172+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     },
     {
       "resource_id": "res-basic-3",
@@ -1560,9 +1597,9 @@
       "recommendation_reason": "适合学完系统课程后快速串联计算机基础与Office常考内容",
       "priority": 3,
       "verified_at": "2026-08-13",
-      "status": "active",
+      "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-13T05:40:46.040665+00:00"
+      "updated_at": "2026-08-25T11:43:38.773969+00:00"
     }
   ],
   "announcements": []

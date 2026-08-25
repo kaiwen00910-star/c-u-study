@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "validate:data": "node scripts/validate-content.mjs",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "snapshot:export": "node scripts/export-public-snapshot.mjs",
     "build:with-snapshot": "npm run snapshot:export && npm run build",
-    "build": "npm run validate:data && vite build",
+    "build": "npm run validate:data && npm run generate:sitemap && vite build",
     "lint": "oxlint",
     "test": "vitest run",
     "preview": "vite preview"
