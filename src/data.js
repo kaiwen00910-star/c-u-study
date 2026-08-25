@@ -61,8 +61,14 @@ export function mapAvailableSchoolSlugs(items = offerings, syllabusItems = sylla
 export function schoolGroups(items = offerings, academicSchools = fallbackAcademicSchools, scope = DEFAULT_SCOPE, syllabusItems = syllabus) {
   const normalized = normalizeScope(scope)
   const available = mapAvailableSchoolSlugs(items, syllabusItems, normalized)
+  return offeringSchoolGroups(items, academicSchools, normalized)
+    .filter((school) => available.has(school.school_slug))
+}
+
+export function offeringSchoolGroups(items = offerings, academicSchools = fallbackAcademicSchools, scope = DEFAULT_SCOPE) {
+  const normalized = normalizeScope(scope)
   const metadata = new Map(academicSchools
-    .filter((school) => school.active !== false && available.has(school.school_slug))
+    .filter((school) => school.active !== false)
     .map((school) => [school.school_slug, school]))
   const groups = Object.values(items
     .filter((item) => item.active !== false && matchesScope(item, normalized))

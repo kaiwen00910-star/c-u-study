@@ -1,6 +1,6 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
-import { resourcesForTopic, schoolGroups, schoolSyllabus, subjectNames } from './data'
+import { offeringSchoolGroups, resourcesForTopic, schoolGroups, schoolSyllabus, subjectNames } from './data'
 import { getFavorites, getProgress, progressKey, saveFavorites, saveLastSelection, saveProgress } from './storage'
 import { useContent } from './useContent'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
@@ -15,17 +15,58 @@ function Logo() {
   return <Link className="logo" to="/" aria-label="安徽升本导航首页"><span>皖</span><strong>安徽升本导航</strong></Link>
 }
 
+export function MobileNavigation({ favoritesCount }) {
+  const [open, setOpen] = useState(false)
+  const buttonRef = useRef(null)
+  const menuRef = useRef(null)
+  const location = useLocation()
+
+  useEffect(() => { setOpen(false) }, [location.pathname])
+  useEffect(() => {
+    if (!open) return undefined
+    menuRef.current?.querySelector('a')?.focus()
+    function closeOnEscape(event) {
+      if (event.key !== 'Escape') return
+      setOpen(false)
+      buttonRef.current?.focus()
+    }
+    function closeOnOutsideClick(event) {
+      if (!menuRef.current?.contains(event.target) && !buttonRef.current?.contains(event.target)) setOpen(false)
+    }
+    document.addEventListener('keydown', closeOnEscape)
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape)
+      document.removeEventListener('pointerdown', closeOnOutsideClick)
+    }
+  }, [open])
+
+  const close = () => setOpen(false)
+  return <div className="mobile-navigation">
+    <button ref={buttonRef} className="mobile-menu-trigger" type="button" aria-expanded={open} aria-controls="mobile-navigation-menu" aria-haspopup="true" onClick={() => setOpen((current) => !current)}>
+      <span aria-hidden="true">{open ? '×' : '☰'}</span><span>更多</span>
+    </button>
+    {open && <nav ref={menuRef} id="mobile-navigation-menu" className="mobile-menu" aria-label="移动端导航">
+      <NavLink to="/anhui" onClick={close}>院校与专业</NavLink>
+      <NavLink to={comparePath(DEFAULT_SCOPE)} onClick={close}>院校对比</NavLink>
+      <NavLink to="/sources" onClick={close}>资料来源</NavLink>
+      <span className="mobile-favorite-count" aria-label={`已收藏 ${favoritesCount} 条资源`}>★ 收藏数量 <b>{favoritesCount}</b></span>
+    </nav>}
+  </div>
+}
+
 function Layout({ children, favoritesCount, announcement, content }) {
   return <div className="site-shell">
     <header className="topbar">
       <div className="topbar-inner">
         <Logo />
-        <nav aria-label="主导航">
+        <nav className="desktop-navigation" aria-label="主导航">
           <NavLink to="/anhui">院校与专业</NavLink>
           <NavLink to={comparePath(DEFAULT_SCOPE)}>院校对比</NavLink>
           <NavLink to="/sources">资料来源</NavLink>
           <span className="favorite-pill" title="已收藏资源">★ {favoritesCount}</span>
         </nav>
+        <MobileNavigation favoritesCount={favoritesCount} />
       </div>
     </header>
     {content.loading && <aside className="data-status checking" role="status">正在核验在线数据；当前先显示版本化快照。</aside>}
@@ -232,17 +273,27 @@ function ResourceCard({ resource, favorites, toggleFavorite }) {
   return <article className="resource-card"><div className="resource-top"><span className={resource.platform.includes('哔哩') ? 'platform bili' : 'platform mooc'}>{resource.platform}</span><button onClick={() => toggleFavorite(resource.resource_id)} aria-label={saved ? '取消收藏' : '收藏资源'} aria-pressed={saved}>{saved ? '★' : '☆'}</button></div><h4>{resource.title}</h4><p className="creator">{resource.creator}</p><div className="resource-meta"><span>{resource.difficulty}</span><span>{resource.duration_text}</span><span>{resource.resource_type}</span></div><p>{resource.recommendation_reason}</p><a href={resource.url} target="_blank" rel="noreferrer">前往官方平台学习 ↗</a></article>
 }
 
-function LearningMap({ favorites, toggleFavorite, resources, schools, syllabusPoints, scope }) {
+export function LearningMap({ favorites, toggleFavorite, resources, schools, syllabusPoints, scope }) {
   const { schoolSlug } = useParams()
   const school = schools.find((item) => item.school_slug === schoolSlug)
   const [progress, setProgress] = useState(getProgress)
-  const [activeSubject, setActiveSubject] = useState('advanced-math')
-  if (!school) return <Navigate to={scopePath(scope)} replace />
-  const points = schoolSyllabus(schoolSlug, syllabusPoints, scope)
-  const subjectOrder = [...new Set([...school.publicSubjects, ...school.professionalSubjects].map((name) => points.find((point) => (point.subject_name || subjectNames[point.subject_slug]) === name)?.subject_slug).filter(Boolean))]
-  const shownSubjects = [activeSubject]
+  const [selectedSubject, setSelectedSubject] = useState('')
+  const points = useMemo(() => schoolSyllabus(schoolSlug, syllabusPoints, scope), [schoolSlug, syllabusPoints, scope])
+  const subjectOrder = useMemo(() => {
+    const declaredSubjects = school ? [...school.publicSubjects, ...school.professionalSubjects] : []
+    const declaredSubjectOrder = declaredSubjects.map((name) => points.find((point) => (point.subject_name || subjectNames[point.subject_slug]) === name)?.subject_slug).filter(Boolean)
+    return [...new Set([...declaredSubjectOrder, ...points.map((point) => point.subject_slug)])]
+  }, [points, school])
+  const activeSubject = subjectOrder.includes(selectedSubject) ? selectedSubject : subjectOrder[0] || ''
+  const shownSubjects = activeSubject ? [activeSubject] : []
   const completed = points.filter((point) => progress[progressKey(scope, schoolSlug, point.point_id)]).length
   const percent = points.length ? Math.round(completed / points.length * 100) : 0
+
+  useEffect(() => {
+    setSelectedSubject(subjectOrder[0] || '')
+  }, [schoolSlug, scope.year, scope.provinceSlug, scope.majorSlug, subjectOrder])
+
+  if (!school) return <Navigate to={scopePath(scope)} replace />
 
   function togglePoint(pointId) {
     const key = progressKey(scope, schoolSlug, pointId)
@@ -250,12 +301,21 @@ function LearningMap({ favorites, toggleFavorite, resources, schools, syllabusPo
     setProgress(next); saveProgress(next)
   }
 
-  return <div className="page-wrap learning-page">
+  const heading = <>
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>{school.school_name}</div>
     <section className="school-title" style={{ '--school-color': school.theme_color }}><SchoolLogo school={school} large /><div><span className="type-tag">{school.school_type} · {scope.year}</span><h1>{school.school_name}</h1><p>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug} · {school.sites.join(' / ')}</p></div><div className="official-links"><a href={school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a></div></section>
+  </>
+
+  if (!points.length) return <div className="page-wrap learning-page">
+    {heading}
+    <section className="syllabus-empty" role="status"><span aria-hidden="true">◇</span><h2>该院校暂无可展示考纲</h2><p>当前年份、省份和专业范围内尚未录入已核验的考纲内容；可能是官方考纲暂未发布，或本站仍在整理复核。</p><Link className="primary-btn" to={scopePath(scope)}>返回院校列表</Link></section>
+  </div>
+
+  return <div className="page-wrap learning-page">
+    {heading}
     <SubjectTags school={school} />
     <section className="progress-panel"><div className="progress-copy"><span>学习进度</span><strong>{completed} / {points.length} 个知识点</strong></div><div className="progress-track"><span style={{ width: `${percent}%` }} /></div><b>{percent}%</b></section>
-    <div className="subject-tabs" role="tablist" aria-label="选择考试科目">{subjectOrder.map((slug) => <button type="button" role="tab" aria-selected={activeSubject === slug} className={activeSubject === slug ? 'active' : ''} onClick={() => setActiveSubject(slug)} key={slug}>{points.find((point) => point.subject_slug === slug)?.subject_name || subjectNames[slug]}</button>)}</div>
+    <div className="subject-tabs" role="tablist" aria-label="选择考试科目">{subjectOrder.map((slug) => <button type="button" role="tab" aria-selected={activeSubject === slug} className={activeSubject === slug ? 'active' : ''} onClick={() => setSelectedSubject(slug)} key={slug}>{points.find((point) => point.subject_slug === slug)?.subject_name || subjectNames[slug]}</button>)}</div>
     <div className="syllabus-column">{shownSubjects.map((subjectSlug) => {
       const subjectPoints = points.filter((p) => p.subject_slug === subjectSlug)
       const sections = [...new Set(subjectPoints.map((p) => p.section_name))]
@@ -288,13 +348,14 @@ function PublicSite() {
   const academicSchools = content.academicSchools
   const wallSchools = useMemo(() => createSchoolWallSchools(academicSchools, content.offerings, content.syllabusPoints, scope), [academicSchools, content.offerings, content.syllabusPoints, scope])
   const schools = useMemo(() => schoolGroups(content.offerings, academicSchools, scope, content.syllabusPoints), [content.offerings, academicSchools, scope, content.syllabusPoints])
+  const routeSchools = useMemo(() => offeringSchoolGroups(content.offerings, academicSchools, scope), [content.offerings, academicSchools, scope])
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
   return <Layout favoritesCount={favorites.length} announcement={content.announcement} content={content}><Routes>
     <Route path="/" element={<Home resources={content.resources} wallSchools={wallSchools} syllabusPoints={content.syllabusPoints} schoolCount={schools.length} scope={scope} />} />
     <Route path="/anhui" element={<Navigate to={scopePath(DEFAULT_SCOPE)} replace />} />
     <Route path="/:provinceSlug/:year/:majorSlug" element={<AnhuiHub schools={schools} wallSchools={wallSchools} scope={scope} />} />
     <Route path="/:provinceSlug/:year/:majorSlug/compare" element={<Compare schools={schools} scope={scope} />} />
-    <Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} schools={schools} syllabusPoints={content.syllabusPoints} scope={scope} />} />
+    <Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} schools={routeSchools} syllabusPoints={content.syllabusPoints} scope={scope} />} />
     <Route path="/sources" element={<Sources schools={schools} scope={scope} />} />
     <Route path="*" element={<NotFound />} />
   </Routes></Layout>
