@@ -9,6 +9,10 @@ import { ReviewDate } from './ReviewDate'
 import { latestVerifiedDate } from './reviewFreshness'
 import { canPublish, formatPublicationCheck, PUBLICATION_STATUS, publicationChecks } from './adminWorkflow'
 import { applyPageMetadata } from './seo'
+import {
+  loadResourceAdminPage, loadSyllabusAdminPage, normalizeAdminPage,
+  staleReviewLabel, totalAdminPages, isStaleReview, updateAdminSearchParams,
+} from './adminPagination'
 
 const emptyResource = {
   resource_id: '', topic_tags: [], title: '', platform: '哔哩哔哩', creator: '', url: '',
@@ -19,8 +23,6 @@ const emptyAnnouncement = { id: null, title: '', content: '', enabled: false, st
 const emptyAcademicSchool = { school_id: '', school_slug: '', school_name: '', school_type: '公办', short_name: '', theme_color: '#1556a6', logo_url: '', active: true, has_study_map: false, sort_order: 1 }
 const emptyOffering = { offering_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: '', training_site: '', eligible_major_categories: '', public_subjects: '高等数学|英语', professional_subjects: '', plan_count: 1, charter_url: '', syllabus_url: '', source_status: '等待新年度官方文件核验', verified_at: '', active: false, status: 'draft', sort_order: 1 }
 const emptySyllabusPoint = { point_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'common', subject_slug: '', subject_name: '', section_order: 1, section_name: '', point_order: 1, point_title: '', canonical_topic: '', active: false, status: 'draft' }
-
-const PAGE_SIZE = 20
 
 function useAdminMeta() {
   const location = useLocation()
@@ -366,9 +368,13 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
   </form></div>
 }
 
-function AcademicDataPanel({ module, schools, setSchools, offerings, setOfferings, syllabusPoints, setSyllabusPoints, resources = [] }) {
+function AcademicDataPanel({ module, schools, setSchools, offerings, setOfferings, syllabusPoints, setSyllabusPoints }) {
   const [editor, setEditor] = useState(null)
   const [params, setParams] = useSearchParams()
+  const [syllabusCount, setSyllabusCount] = useState(0)
+  const [syllabusLoading, setSyllabusLoading] = useState(false)
+  const [syllabusError, setSyllabusError] = useState('')
+  const [syllabusRevision, setSyllabusRevision] = useState(0)
   const schoolNames = new Map(schools.map((school) => [school.school_slug, school.school_name]))
   const defaultMapSchools = mapAvailableSchoolSlugs(offerings, syllabusPoints, DEFAULT_SCOPE)
   const offeringSourcesForSchool = (schoolSlug, point) => offerings.filter((item) => item.school_slug === schoolSlug
@@ -380,11 +386,41 @@ function AcademicDataPanel({ module, schools, setSchools, offerings, setOffering
   const query = params.get('q') || ''
   const statusFilter = params.get('status') || 'all'
   const issueFilter = params.get('filter') || ''
-  const page = Math.max(1, Number(params.get('page')) || 1)
-  const visibleOfferings = offerings.filter((item) => (issueFilter !== 'missing-charter' || !/^https:\/\//.test(item.charter_url || '')) && (issueFilter !== 'missing-syllabus' || !/^https:\/\//.test(item.syllabus_url || '')) && (issueFilter !== 'no-syllabus' || !syllabusPoints.some((point) => point.school_slug === item.school_slug && point.year === item.year && point.status !== 'archived')))
-  const visiblePoints = syllabusPoints.filter((point) => `${point.point_title}${point.subject_name}${point.canonical_topic}`.toLowerCase().includes(query.toLowerCase()) && (statusFilter === 'all' || point.status === statusFilter) && (issueFilter !== 'no-resource' || !resources.some((resource) => resource.status !== 'archived' && resource.tags.includes(point.canonical_topic))) && (issueFilter !== 'no-offering' || !offerings.some((item) => item.school_slug === point.school_slug && item.year === point.year && item.status !== 'archived')))
-  const pagedPoints = visiblePoints.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  const setParam = (key, value) => { const next = new URLSearchParams(params); if (value && value !== 'all') next.set(key, value); else next.delete(key); if (key !== 'page') next.delete('page'); setParams(next, { replace: true }) }
+  const page = normalizeAdminPage(params.get('page'))
+  const pageCount = totalAdminPages(syllabusCount)
+  const visibleOfferings = offerings.filter((item) =>
+    (issueFilter !== 'missing-charter' || (item.status !== 'archived' && !/^https:\/\//.test(item.charter_url || '')))
+    && (issueFilter !== 'missing-syllabus' || (item.status !== 'archived' && !/^https:\/\//.test(item.syllabus_url || '')))
+    && (issueFilter !== 'stale' || (item.status !== 'archived' && isStaleReview(item.verified_at)))
+    && (issueFilter !== 'no-syllabus' || (item.status === 'published' && !syllabusPoints.some((point) => point.school_slug === item.school_slug && point.year === item.year && point.province_slug === item.province_slug && point.major_slug === item.major_slug && point.status === 'published')))
+    && (issueFilter !== 'draft-no-syllabus' || (item.status === 'draft' && !syllabusPoints.some((point) => point.school_slug === item.school_slug && point.year === item.year && point.province_slug === item.province_slug && point.major_slug === item.major_slug && ['draft', 'published'].includes(point.status))))
+  )
+  const setParam = (key, value) => setParams(updateAdminSearchParams(params, key, value), { replace: true })
+
+  useEffect(() => {
+    if (module !== 'syllabus') return undefined
+    let active = true
+    setSyllabusLoading(true); setSyllabusError('')
+    loadSyllabusAdminPage(supabase, { query, status: statusFilter, issueFilter, page })
+      .then(({ rows, count }) => {
+        if (!active) return
+        const lastPage = totalAdminPages(count)
+        setSyllabusCount(count)
+        if (page > lastPage) {
+          const next = new URLSearchParams()
+          if (query) next.set('q', query)
+          if (statusFilter !== 'all') next.set('status', statusFilter)
+          if (issueFilter) next.set('filter', issueFilter)
+          if (lastPage > 1) next.set('page', String(lastPage))
+          setParams(next, { replace: true })
+          return
+        }
+        setSyllabusPoints(rows.map(normalizeSyllabusPoint))
+      })
+      .catch((error) => { if (active) setSyllabusError(error.message) })
+      .finally(() => { if (active) setSyllabusLoading(false) })
+    return () => { active = false }
+  }, [module, query, statusFilter, issueFilter, page, syllabusRevision, setParams, setSyllabusPoints])
 
   async function refreshSchools() {
     const { data } = await supabase.from('academic_schools').select('*').order('sort_order').order('school_id')
@@ -394,7 +430,7 @@ function AcademicDataPanel({ module, schools, setSchools, offerings, setOffering
   function saved(kind, row) {
     if (kind === 'school') setSchools((current) => [...current.filter((item) => item.school_id !== row.school_id), row].sort((a, b) => a.sort_order - b.sort_order || a.school_id.localeCompare(b.school_id)))
     if (kind === 'offering') setOfferings((current) => [...current.filter((item) => item.offering_id !== row.offering_id), row].sort((a, b) => a.sort_order - b.sort_order))
-    if (kind === 'point') setSyllabusPoints((current) => [...current.filter((item) => !(item.point_id === row.point_id && item.year === row.year && item.province_slug === row.province_slug && item.major_slug === row.major_slug)), row].sort((a, b) => a.year - b.year || a.province_slug.localeCompare(b.province_slug) || a.major_slug.localeCompare(b.major_slug) || a.school_slug.localeCompare(b.school_slug) || a.subject_slug.localeCompare(b.subject_slug) || a.section_order - b.section_order || a.point_order - b.point_order))
+    if (kind === 'point') setSyllabusRevision((value) => value + 1)
     if (kind !== 'school') void refreshSchools()
   }
 
@@ -414,8 +450,8 @@ function AcademicDataPanel({ module, schools, setSchools, offerings, setOffering
   return <section className="admin-panel admin-academic-data">
     <div className="admin-panel-title"><div><span className="eyebrow">前台内容</span><h2>{module === 'schools' ? '院校' : module === 'offerings' ? '招生计划' : '考纲'}</h2><p>新建与编辑内容先保存为草稿，发布时执行完整性检查并再次确认。</p></div></div>
     {module === 'schools' && <div className="admin-data-section"><header><div><h3>院校资料</h3><span>{schools.length} 所 · 默认范围 {defaultMapSchools.size} 所已开放学习地图</span></div></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校</th><th>校徽</th><th>排序</th><th>学习地图</th><th>最后核验</th><th>状态</th><th>操作</th></tr></thead><tbody>{schools.map((school) => { const hasMap = defaultMapSchools.has(school.school_slug); const reviewDate = latestVerifiedDate(offeringSourcesForSchool(school.school_slug)); return <tr key={school.school_id}><td><strong>{school.school_name}</strong><small>{school.school_id} · {school.short_name} · {school.school_type}</small></td><td><span className="admin-table-logo">{school.logo_url ? <img src={school.logo_url} alt="" /> : school.short_name}</span></td><td>{school.sort_order}</td><td><span className={`admin-status ${hasMap ? 'active' : ''}`}>{hasMap ? '已开放' : '资料整理中'}</span></td><td><ReviewDate date={reviewDate} /></td><td><span className={`admin-status ${school.active ? 'active' : ''}`}>{school.active ? '启用' : '停用'}</span></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'school', initial: school })}>编辑</button></div></td></tr> })}</tbody></table></div></div>}
-    {module === 'offerings' && <div className="admin-data-section"><header><div><h3>招生计划</h3><span>{visibleOfferings.length} / {offerings.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'offering', initial: null })}>＋ 新增计划</button></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校与地点</th><th>考试科目</th><th>计划数</th><th>官方来源</th><th>最后核验</th><th>状态</th><th>操作</th></tr></thead><tbody>{visibleOfferings.map((item) => <tr key={item.offering_id}><td><strong>{schoolNames.get(item.school_slug) || item.school_slug}</strong><small>{item.year} · {item.training_site}</small></td><td><span>{item.publicSubjects.join(' · ')}</span><small>{item.professionalSubjects.join(' · ')}</small></td><td>{item.plan_count} 人</td><td>{item.charter_url ? <a href={item.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a> : <small>缺少章程</small>}{item.syllabus_url ? <a href={item.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a> : <small>缺少考纲</small>}</td><td><ReviewDate date={item.verified_at} /></td><td><PublicationBadge status={item.status} /></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'offering', initial: item })}>编辑</button>{item.status !== 'published' && <button onClick={() => changeStatus('offering', item, 'published')}>发布</button>}{item.status !== 'archived' && <button onClick={() => changeStatus('offering', item, 'archived')}>下架</button>}</div></td></tr>)}</tbody></table>{!visibleOfferings.length && <p className="admin-empty">没有匹配的招生计划。</p>}</div></div>}
-    {module === 'syllabus' && <div className="admin-data-section"><header><div><h3>考纲知识点</h3><span>{visiblePoints.length} / {syllabusPoints.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'point', initial: null })}>＋ 新增知识点</button></header><div className="admin-filters"><input type="search" value={query} onChange={(event) => setParam('q', event.target.value)} placeholder="搜索科目、知识点或 canonical_topic" /><select value={statusFilter} onChange={(event) => setParam('status', event.target.value)}><option value="all">全部状态</option><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已下架</option></select></div><div className="admin-table-wrap admin-points-table"><table className="admin-table"><thead><tr><th>科目</th><th>章节与知识点</th><th>适用范围</th><th>来源与核验</th><th>资源标签</th><th>状态与操作</th></tr></thead><tbody>{pagedPoints.map((point) => { const source = sourceForPoint(point); return <tr key={`${point.year}:${point.province_slug}:${point.major_slug}:${point.point_id}`}><td><strong>{point.subject_name}</strong><small>{point.subject_slug}</small></td><td><strong>{point.point_title}</strong><small>{point.section_name} · {point.section_order}-{point.point_order}</small></td><td>{point.year} · {point.province_slug} · {point.major_slug}<small>{point.school_slug === 'common' ? '所有院校' : schoolNames.get(point.school_slug) || point.school_slug}</small></td><td>{source?.syllabus_url && <a href={source.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a>}<ReviewDate date={latestVerifiedDate(reviewItemsForPoint(point))} /></td><td>{point.canonical_topic}</td><td><PublicationBadge status={point.status} /><div className="admin-actions"><button onClick={() => setEditor({ kind: 'point', initial: point })}>编辑</button>{point.status !== 'published' && <button onClick={() => changeStatus('point', point, 'published')}>发布</button>}{point.status !== 'archived' && <button onClick={() => changeStatus('point', point, 'archived')}>下架</button>}</div></td></tr> })}</tbody></table>{!pagedPoints.length && <p className="admin-empty">没有匹配的考纲知识点。</p>}</div><div className="admin-pagination"><button disabled={page <= 1} onClick={() => setParam('page', String(page - 1))}>上一页</button><span>第 {page} / {Math.max(1, Math.ceil(visiblePoints.length / PAGE_SIZE))} 页</span><button disabled={page * PAGE_SIZE >= visiblePoints.length} onClick={() => setParam('page', String(page + 1))}>下一页</button></div></div>}
+    {module === 'offerings' && <div className="admin-data-section"><header><div><h3>招生计划</h3><span>{visibleOfferings.length} / {offerings.length} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'offering', initial: null })}>＋ 新增计划</button></header><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>院校与地点</th><th>考试科目</th><th>计划数</th><th>官方来源</th><th>最后核验</th><th>状态</th><th>操作</th></tr></thead><tbody>{visibleOfferings.map((item) => <tr key={item.offering_id}><td><strong>{schoolNames.get(item.school_slug) || item.school_slug}</strong><small>{item.year} · {item.training_site}</small></td><td><span>{item.publicSubjects.join(' · ')}</span><small>{item.professionalSubjects.join(' · ')}</small></td><td>{item.plan_count} 人</td><td>{item.charter_url ? <a href={item.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a> : <small>缺少章程</small>}{item.syllabus_url ? <a href={item.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a> : <small>缺少考纲</small>}</td><td><ReviewDate date={item.verified_at} />{staleReviewLabel(item) && <small className="review-kind">{staleReviewLabel(item)}</small>}</td><td><PublicationBadge status={item.status} /></td><td><div className="admin-actions"><button onClick={() => setEditor({ kind: 'offering', initial: item })}>编辑</button>{item.status !== 'published' && <button onClick={() => changeStatus('offering', item, 'published')}>发布</button>}{item.status !== 'archived' && <button onClick={() => changeStatus('offering', item, 'archived')}>下架</button>}</div></td></tr>)}</tbody></table>{!visibleOfferings.length && <p className="admin-empty">{issueFilter === 'stale' ? '没有待复核的招生计划。' : '没有匹配的招生计划。'}</p>}</div></div>}
+    {module === 'syllabus' && <div className="admin-data-section"><header><div><h3>考纲知识点</h3><span>{syllabusCount} 条</span></div><button className="admin-primary" onClick={() => setEditor({ kind: 'point', initial: null })}>＋ 新增知识点</button></header><div className="admin-filters"><input type="search" value={query} onChange={(event) => setParam('q', event.target.value)} placeholder="搜索科目、知识点或 canonical_topic" /><select value={statusFilter} onChange={(event) => setParam('status', event.target.value)}><option value="all">全部状态</option><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已下架</option></select></div>{syllabusError && <p className="admin-message error">读取考纲失败：{syllabusError}</p>}{syllabusLoading && <p className="admin-loading">正在加载当前页…</p>}<div className="admin-table-wrap admin-points-table"><table className="admin-table"><thead><tr><th>科目</th><th>章节与知识点</th><th>适用范围</th><th>来源与核验</th><th>资源标签</th><th>状态与操作</th></tr></thead><tbody>{syllabusPoints.map((point) => { const source = sourceForPoint(point); return <tr key={`${point.year}:${point.province_slug}:${point.major_slug}:${point.point_id}`}><td><strong>{point.subject_name}</strong><small>{point.subject_slug}</small></td><td><strong>{point.point_title}</strong><small>{point.section_name} · {point.section_order}-{point.point_order}</small></td><td>{point.year} · {point.province_slug} · {point.major_slug}<small>{point.school_slug === 'common' ? '所有院校' : schoolNames.get(point.school_slug) || point.school_slug}</small></td><td>{source?.syllabus_url && <a href={source.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a>}<ReviewDate date={latestVerifiedDate(reviewItemsForPoint(point))} /></td><td>{point.canonical_topic}</td><td><PublicationBadge status={point.status} /><div className="admin-actions"><button onClick={() => setEditor({ kind: 'point', initial: point })}>编辑</button>{point.status !== 'published' && <button onClick={() => changeStatus('point', point, 'published')}>发布</button>}{point.status !== 'archived' && <button onClick={() => changeStatus('point', point, 'archived')}>下架</button>}</div></td></tr> })}</tbody></table>{!syllabusLoading && !syllabusPoints.length && <p className="admin-empty">没有匹配的考纲知识点。</p>}</div><div className="admin-pagination"><button disabled={page <= 1 || syllabusLoading} onClick={() => setParam('page', String(page - 1))}>上一页</button><span>第 {page} / {pageCount} 页</span><button disabled={page >= pageCount || syllabusLoading} onClick={() => setParam('page', String(page + 1))}>下一页</button></div></div>}
     {editor && <AcademicEditor kind={editor.kind} initial={editor.initial} schools={schools} onClose={() => setEditor(null)} onSaved={saved} />}
   </section>
 }
@@ -424,7 +460,8 @@ function OverviewPanel() {
   const [health, setHealth] = useState(null)
   const [error, setError] = useState('')
   useEffect(() => { supabase.rpc('admin_data_health').then(({ data, error: rpcError }) => { if (rpcError) setError(rpcError.message); else setHealth(data) }) }, [])
-  return <section className="admin-panel"><div className="admin-panel-title"><div><span className="eyebrow">数据体检</span><h2>概览</h2><p>这里只读取汇总 RPC，不会在进入后台时加载所有大表。</p></div></div>{error && <p className="admin-message error">读取体检结果失败：{error}</p>}{health && <><div className="admin-status-cards"><article><strong>{health.statuses?.draft || 0}</strong><span>草稿</span></article><article><strong>{health.statuses?.published || 0}</strong><span>已发布</span></article><article><strong>{health.statuses?.archived || 0}</strong><span>已下架</span></article></div><div className="health-grid">{health.issues.map((issue) => <Link key={issue.key} to={issue.href}><strong>{issue.count}</strong><span>{issue.label}</span><small>查看并处理 →</small></Link>)}</div></>}</section>
+  const cards = (issues = []) => <div className="health-grid">{issues.map((issue) => <Link key={issue.key} to={issue.href}><strong>{issue.count}</strong><span>{issue.label}</span><small>查看并处理 →</small></Link>)}</div>
+  return <section className="admin-panel"><div className="admin-panel-title"><div><span className="eyebrow">数据体检</span><h2>概览</h2><p>这里只读取汇总 RPC，不会在进入后台时加载所有大表。</p></div></div>{error && <p className="admin-message error">读取体检结果失败：{error}</p>}{health && <><div className="admin-status-cards"><article><strong>{health.statuses?.draft || 0}</strong><span>草稿</span></article><article><strong>{health.statuses?.published || 0}</strong><span>已发布</span></article><article><strong>{health.statuses?.archived || 0}</strong><span>已下架</span></article></div><h3>常规数据质量</h3>{cards(health.issues)}<h3>公开内容完整性</h3><p className="admin-system-note">这里只用已发布内容互相核对，草稿不会掩盖公开数据问题。</p>{cards(health.publishedIssues)}<h3>草稿准备情况</h3><p className="admin-system-note">草稿单独统计，不计入公开完整性。</p>{cards(health.draftIssues)}</>}</section>
 }
 
 function MaintenancePanel() {
@@ -446,24 +483,64 @@ function MaintenancePanel() {
     setMessage(`复制完成：新增 ${data.inserted.offerings} 条招生计划、${data.inserted.syllabus} 条考纲；全部等待新年度官方文件核验。`)
     await inspect()
   }
-  return <section className="admin-panel"><div className="admin-panel-title"><div><span className="eyebrow">年度维护</span><h2>年度复制向导</h2><p>复制招生计划与考纲到下一年度；不复制旧核验日期和官方链接，新数据默认草稿。</p></div></div><div className="year-copy-form"><label>源年份<input type="number" min="2020" max="2099" value={sourceYear} onChange={(event) => { setSourceYear(Number(event.target.value)); setPreview(null) }} /></label><label>目标年份<input value={targetYear} readOnly /></label><button className="admin-primary" onClick={inspect}>预检新增、跳过与冲突</button></div>{preview && <div className="copy-preview"><article><h3>招生计划</h3><p>新增 {preview.offerings.add} · 跳过 {preview.offerings.skip} · 冲突 {preview.offerings.conflict}</p></article><article><h3>考纲</h3><p>新增 {preview.syllabus.add} · 跳过 {preview.syllabus.skip} · 冲突 {preview.syllabus.conflict}</p></article><button disabled={preview.offerings.conflict + preview.syllabus.conflict > 0} onClick={copy}>事务性复制为草稿</button></div>}{message && <p className="admin-message" role="status">{message}</p>}</section>
+  return <section className="admin-panel"><div className="admin-panel-title"><div><span className="eyebrow">年度维护</span><h2>年度复制向导</h2><p>复制招生计划与考纲到下一年度；不复制旧核验日期和官方链接，新数据默认草稿。</p></div></div><p className="admin-system-note">新年份至少有一条招生计划发布后，前台年份选择器和 /anhui 会自动识别；sitemap 由构建时的公开快照生成，因此发布新年份后必须重新部署 Production。</p><div className="year-copy-form"><label>源年份<input type="number" min="2020" max="2099" value={sourceYear} onChange={(event) => { setSourceYear(Number(event.target.value)); setPreview(null) }} /></label><label>目标年份<input value={targetYear} readOnly /></label><button className="admin-primary" onClick={inspect}>预检新增、跳过与冲突</button></div>{preview && <div className="copy-preview"><article><h3>招生计划</h3><p>新增 {preview.offerings.add} · 跳过 {preview.offerings.skip} · 冲突 {preview.offerings.conflict}</p></article><article><h3>考纲</h3><p>新增 {preview.syllabus.add} · 跳过 {preview.syllabus.skip} · 冲突 {preview.syllabus.conflict}</p></article><button disabled={preview.offerings.conflict + preview.syllabus.conflict > 0} onClick={copy}>事务性复制为草稿</button></div>}{message && <p className="admin-message" role="status">{message}</p>}</section>
 }
 
-function ResourcesPanel({ resources, setResources, syllabusPoints, message, setMessage }) {
+function ResourcesPanel({ message, setMessage }) {
   const [params, setParams] = useSearchParams()
   const [editor, setEditor] = useState(null)
+  const [resources, setResources] = useState([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState('')
+  const [revision, setRevision] = useState(0)
+  const [filterOptions, setFilterOptions] = useState({ platforms: [], topics: [] })
   const query = params.get('q') || ''
   const platform = params.get('platform') || 'all'
   const status = params.get('status') || 'all'
   const issueFilter = params.get('filter') || ''
-  const page = Math.max(1, Number(params.get('page')) || 1)
-  const topics = useMemo(() => [...new Map(syllabusPoints.map((point) => [point.canonical_topic, `${point.subject_name} · ${point.point_title}`])).entries()], [syllabusPoints])
+  const page = normalizeAdminPage(params.get('page'))
+  const pageCount = totalAdminPages(total)
+  const topics = useMemo(() => filterOptions.topics.map((topic) => [topic.value, topic.label]), [filterOptions.topics])
   const validTopics = useMemo(() => new Set(topics.map(([value]) => value)), [topics])
-  const duplicateUrls = new Set(resources.filter((item, index) => resources.findIndex((other) => other.url === item.url) !== index).map((item) => item.url))
-  const filtered = resources.filter((item) => `${item.title}${item.creator}${item.resource_id}`.toLowerCase().includes(query.toLowerCase()) && (platform === 'all' || item.platform === platform) && (status === 'all' || item.status === status) && (issueFilter !== 'duplicate-url' || duplicateUrls.has(item.url)) && (issueFilter !== 'invalid-topic' || item.tags.some((tag) => !validTopics.has(tag))))
-  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  const setParam = (key, value) => { const next = new URLSearchParams(params); if (value && value !== 'all') next.set(key, value); else next.delete(key); if (key !== 'page') next.delete('page'); setParams(next, { replace: true }) }
-  function saved(item) { setResources((current) => [item, ...current.filter((resource) => resource.resource_id !== item.resource_id)]); setEditor(null); setMessage({ type: 'success', text: `“${item.title}”已保存为草稿。` }) }
+  const setParam = (key, value) => setParams(updateAdminSearchParams(params, key, value), { replace: true })
+
+  useEffect(() => {
+    let active = true
+    supabase.rpc('admin_content_filter_options').then(({ data, error }) => {
+      if (!active) return
+      if (error) setLoadError(error.message)
+      else setFilterOptions({ platforms: data?.platforms || [], topics: data?.topics || [] })
+    })
+    return () => { active = false }
+  }, [])
+
+  useEffect(() => {
+    let active = true
+    setLoading(true); setLoadError('')
+    loadResourceAdminPage(supabase, { query, platform, status, issueFilter, page })
+      .then(({ rows, count }) => {
+        if (!active) return
+        const lastPage = totalAdminPages(count)
+        setTotal(count)
+        if (page > lastPage) {
+          const next = new URLSearchParams()
+          if (query) next.set('q', query)
+          if (platform !== 'all') next.set('platform', platform)
+          if (status !== 'all') next.set('status', status)
+          if (issueFilter) next.set('filter', issueFilter)
+          if (lastPage > 1) next.set('page', String(lastPage))
+          setParams(next, { replace: true })
+          return
+        }
+        setResources(rows.map(normalizeResource))
+      })
+      .catch((error) => { if (active) setLoadError(error.message) })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [query, platform, status, issueFilter, page, revision, setParams])
+
+  function saved(item) { setEditor(null); setRevision((value) => value + 1); setMessage({ type: 'success', text: `“${item.title}”已保存为草稿。` }) }
   async function changeStatus(item, nextStatus) {
     const checks = publicationChecks('resource', item, validTopics)
     if (nextStatus === 'published' && !canPublish(checks)) return window.alert(`发布检查未通过：\n${formatPublicationCheck(checks)}`)
@@ -471,10 +548,10 @@ function ResourcesPanel({ resources, setResources, syllabusPoints, message, setM
     if (!window.confirm(`${formatPublicationCheck(checks)}\n\n确定${action}“${item.title}”吗？`)) return
     const { data, error } = await supabase.from('resources').update({ status: nextStatus }).eq('resource_id', item.resource_id).select().single()
     if (error) return setMessage({ type: 'error', text: `操作失败：${error.message}` })
-    const normalized = normalizeResource(data)
-    setResources((current) => [normalized, ...current.filter((resource) => resource.resource_id !== normalized.resource_id)])
+    setRevision((value) => value + 1)
+    setMessage({ type: 'success', text: `“${data.title}”状态已更新。` })
   }
-  return <section className="admin-panel admin-resources"><div className="admin-panel-title"><div><span className="eyebrow">学习内容</span><h2>学习资源</h2><p>{filtered.length} / {resources.length} 条 · 新建默认草稿</p></div><button className="admin-primary" onClick={() => setEditor('new')}>＋ 新增资源</button></div><Message state={message} /><div className="admin-filters"><input type="search" value={query} onChange={(event) => setParam('q', event.target.value)} placeholder="搜索标题、创建者或资源 ID" /><select value={platform} onChange={(event) => setParam('platform', event.target.value)}><option value="all">全部平台</option>{[...new Set(resources.map((item) => item.platform))].map((item) => <option key={item}>{item}</option>)}</select><select value={status} onChange={(event) => setParam('status', event.target.value)}><option value="all">全部状态</option><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已下架</option></select></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>资源</th><th>平台与标签</th><th>来源</th><th>最后核验</th><th>状态</th><th>操作</th></tr></thead><tbody>{paged.map((item) => <tr key={item.resource_id}><td><strong>{item.title}</strong><small>{item.resource_id} · {item.creator}</small></td><td><span>{item.platform}</span><small>{item.tags.join(' · ')}</small></td><td><a href={item.url} target="_blank" rel="noreferrer">打开资源 ↗</a></td><td><ReviewDate date={item.verified_at} /></td><td><PublicationBadge status={item.status} /></td><td><div className="admin-actions"><button onClick={() => setEditor(item)}>编辑</button><button onClick={() => setEditor({ ...item, resource_id: '', title: `${item.title}（副本）`, duplicate: true })}>复制</button>{item.status !== 'published' && <button onClick={() => changeStatus(item, 'published')}>发布</button>}{item.status !== 'archived' && <button onClick={() => changeStatus(item, 'archived')}>下架</button>}</div></td></tr>)}</tbody></table>{!paged.length && <p className="admin-empty">没有匹配的资源。</p>}</div><div className="admin-pagination"><button disabled={page <= 1} onClick={() => setParam('page', String(page - 1))}>上一页</button><span>第 {page} / {Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))} 页</span><button disabled={page * PAGE_SIZE >= filtered.length} onClick={() => setParam('page', String(page + 1))}>下一页</button></div>{editor && <ResourceEditor initial={editor === 'new' ? null : editor} onClose={() => setEditor(null)} onSaved={saved} topics={topics} />}</section>
+  return <section className="admin-panel admin-resources"><div className="admin-panel-title"><div><span className="eyebrow">学习内容</span><h2>学习资源</h2><p>{total} 条 · 每页 20 条 · 新建默认草稿</p></div><button className="admin-primary" onClick={() => setEditor('new')}>＋ 新增资源</button></div><Message state={message} />{loadError && <p className="admin-message error">读取资源失败：{loadError}</p>}<div className="admin-filters"><input type="search" value={query} onChange={(event) => setParam('q', event.target.value)} placeholder="搜索标题、创建者或资源 ID" /><select value={platform} onChange={(event) => setParam('platform', event.target.value)}><option value="all">全部平台</option>{filterOptions.platforms.map((item) => <option key={item}>{item}</option>)}</select><select value={status} onChange={(event) => setParam('status', event.target.value)}><option value="all">全部状态</option><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已下架</option></select></div>{loading && <p className="admin-loading">正在加载当前页…</p>}<div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>资源</th><th>平台与标签</th><th>来源</th><th>最后核验</th><th>状态</th><th>操作</th></tr></thead><tbody>{resources.map((item) => <tr key={item.resource_id}><td><strong>{item.title}</strong><small>{item.resource_id} · {item.creator}</small></td><td><span>{item.platform}</span><small>{item.tags.join(' · ')}</small></td><td><a href={item.url} target="_blank" rel="noreferrer">打开资源 ↗</a></td><td><ReviewDate date={item.verified_at} />{staleReviewLabel(item) && <small className="review-kind">{staleReviewLabel(item)}</small>}</td><td><PublicationBadge status={item.status} /></td><td><div className="admin-actions"><button onClick={() => setEditor(item)}>编辑</button><button onClick={() => setEditor({ ...item, resource_id: '', title: `${item.title}（副本）`, duplicate: true })}>复制</button>{item.status !== 'published' && <button onClick={() => changeStatus(item, 'published')}>发布</button>}{item.status !== 'archived' && <button onClick={() => changeStatus(item, 'archived')}>下架</button>}</div></td></tr>)}</tbody></table>{!loading && !resources.length && <p className="admin-empty">{issueFilter === 'stale' ? '没有待复核的学习资源。' : '没有匹配的资源。'}</p>}</div><div className="admin-pagination"><button disabled={page <= 1 || loading} onClick={() => setParam('page', String(page - 1))}>上一页</button><span>第 {page} / {pageCount} 页</span><button disabled={page >= pageCount || loading} onClick={() => setParam('page', String(page + 1))}>下一页</button></div>{editor && <ResourceEditor initial={editor === 'new' ? null : editor} onClose={() => setEditor(null)} onSaved={saved} topics={topics} />}</section>
 }
 
 const ADMIN_MODULES = [
@@ -488,7 +565,6 @@ export function AdminDashboard() {
   const module = location.pathname.split('/')[2] || 'overview'
   const validModule = ADMIN_MODULES.some(([key]) => key === module)
   const [authState, setAuthState] = useState({ loading: true, allowed: false, email: '' })
-  const [resources, setResources] = useState([])
   const [announcements, setAnnouncements] = useState([])
   const [academicSchools, setAcademicSchools] = useState([])
   const [offerings, setOfferings] = useState([])
@@ -515,19 +591,16 @@ export function AdminDashboard() {
     async function loadModule() {
       setLoadingModule(true); setMessage({ type: '', text: '' })
       const requests = []
-      if (module === 'resources') requests.push(['resources', supabase.from('resources').select('*').order('updated_at', { ascending: false })], ['syllabus', supabase.from('syllabus_points').select('*').order('subject_slug')])
       if (module === 'announcements') requests.push(['announcements', supabase.from('announcements').select('*').order('updated_at', { ascending: false })])
       if (['schools', 'offerings', 'syllabus'].includes(module)) requests.push(['schools', supabase.from('academic_schools').select('*').order('sort_order').order('school_id')])
       if (['schools', 'offerings', 'syllabus'].includes(module)) requests.push(['offerings', supabase.from('admission_offerings').select('*').order('year', { ascending: false }).order('sort_order')])
-      if (['schools', 'offerings', 'syllabus'].includes(module)) requests.push(['syllabus', supabase.from('syllabus_points').select('*').order('year', { ascending: false }).order('school_slug').order('subject_slug').order('section_order').order('point_order')])
-      if (module === 'syllabus') requests.push(['resources', supabase.from('resources').select('*').order('priority')])
+      if (['schools', 'offerings'].includes(module)) requests.push(['syllabus', supabase.from('syllabus_points').select('*').order('year', { ascending: false }).order('school_slug').order('subject_slug').order('section_order').order('point_order')])
       const results = await Promise.all(requests.map(async ([key, request]) => [key, await request]))
       if (!active) return
       const failed = results.find(([, result]) => result.error)
       if (failed) setMessage({ type: 'error', text: `读取${failed[0]}失败：${failed[1].error.message}` })
       results.forEach(([key, result]) => {
         if (!result.data) return
-        if (key === 'resources') setResources(result.data.map(normalizeResource))
         if (key === 'announcements') setAnnouncements(result.data)
         if (key === 'schools') setAcademicSchools(result.data.map(normalizeAcademicSchool))
         if (key === 'offerings') setOfferings(result.data.map(normalizeOffering))
@@ -543,5 +616,5 @@ export function AdminDashboard() {
   if (!validModule) return <Navigate to="/admin/overview" replace />
   if (authState.loading) return <div className="admin-loading">正在验证管理员身份…</div>
   if (!authState.allowed) return <Navigate to="/admin/login" replace />
-  return <div className="admin-shell"><header className="admin-header"><div><span className="eyebrow">升本导航</span><h1>内容管理后台</h1><p>{authState.email}</p></div><div><a href="/" target="_blank" rel="noreferrer">查看网站 ↗</a><button onClick={signOut}>安全退出</button></div></header><nav className="admin-module-nav" aria-label="后台模块">{ADMIN_MODULES.map(([key, label]) => <NavLink key={key} to={`/admin/${key}`}>{label}</NavLink>)}</nav><main className="admin-main">{loadingModule && <div className="admin-loading">正在加载当前模块…</div>}{!loadingModule && module === 'overview' && <OverviewPanel />}{!loadingModule && module === 'maintenance' && <MaintenancePanel />}{!loadingModule && module === 'resources' && <ResourcesPanel resources={resources} setResources={setResources} syllabusPoints={syllabusPoints} message={message} setMessage={setMessage} />}{!loadingModule && module === 'announcements' && <AnnouncementsPanel announcements={announcements} setAnnouncements={setAnnouncements} />}{!loadingModule && ['schools', 'offerings', 'syllabus'].includes(module) && <><Message state={message} /><AcademicDataPanel module={module} schools={academicSchools} setSchools={setAcademicSchools} offerings={offerings} setOfferings={setOfferings} syllabusPoints={syllabusPoints} setSyllabusPoints={setSyllabusPoints} resources={resources} /></>}</main></div>
+  return <div className="admin-shell"><header className="admin-header"><div><span className="eyebrow">升本导航</span><h1>内容管理后台</h1><p>{authState.email}</p></div><div><a href="/" target="_blank" rel="noreferrer">查看网站 ↗</a><button onClick={signOut}>安全退出</button></div></header><nav className="admin-module-nav" aria-label="后台模块">{ADMIN_MODULES.map(([key, label]) => <NavLink key={key} to={`/admin/${key}`}>{label}</NavLink>)}</nav><main className="admin-main">{loadingModule && <div className="admin-loading">正在加载当前模块…</div>}{!loadingModule && module === 'overview' && <OverviewPanel />}{!loadingModule && module === 'maintenance' && <MaintenancePanel />}{!loadingModule && module === 'resources' && <ResourcesPanel message={message} setMessage={setMessage} />}{!loadingModule && module === 'announcements' && <AnnouncementsPanel announcements={announcements} setAnnouncements={setAnnouncements} />}{!loadingModule && ['schools', 'offerings', 'syllabus'].includes(module) && <><Message state={message} /><AcademicDataPanel module={module} schools={academicSchools} setSchools={setAcademicSchools} offerings={offerings} setOfferings={setOfferings} syllabusPoints={syllabusPoints} setSyllabusPoints={setSyllabusPoints} /></>}</main></div>
 }

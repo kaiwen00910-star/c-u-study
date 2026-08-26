@@ -426,18 +426,35 @@ function scopeFromLocation(pathname) {
   return match ? normalizeScope({ provinceSlug: match[1], year: match[2], majorSlug: match[3] }) : DEFAULT_SCOPE
 }
 
-function PublicSite() {
+const snapshotPublishedScopes = [...new Map(snapshotOfferings
+  .filter((item) => item.status ? item.status === 'published' : item.active !== false)
+  .map((item) => [`${item.year}:${item.province_slug}:${item.major_slug}`, normalizeScope(item)]))
+  .values()].sort((a, b) => b.year - a.year)
+
+export function PublicSite() {
   const [favorites, setFavorites] = useState(getFavorites)
   const location = useLocation()
   const scope = useMemo(() => scopeFromLocation(location.pathname), [location.pathname])
   const content = useContent(scope)
-  const [publishedScopes, setPublishedScopes] = useState(() => [...new Map(snapshotOfferings.filter((item) => item.active !== false).map((item) => [`${item.year}:${item.province_slug}:${item.major_slug}`, normalizeScope(item)])).values()].sort((a, b) => b.year - a.year))
+  const [publishedScopeState, setPublishedScopeState] = useState({ status: 'loading', items: snapshotPublishedScopes })
+  const publishedScopes = publishedScopeState.items
   const academicSchools = content.academicSchools
   const wallSchools = useMemo(() => createSchoolWallSchools(academicSchools, content.offerings, content.syllabusPoints, scope), [academicSchools, content.offerings, content.syllabusPoints, scope])
   const schools = useMemo(() => schoolGroups(content.offerings, academicSchools, scope, content.syllabusPoints), [content.offerings, academicSchools, scope, content.syllabusPoints])
   const routeSchools = useMemo(() => offeringSchoolGroups(content.offerings, academicSchools, scope), [content.offerings, academicSchools, scope])
-  const defaultPublishedScope = publishedScopes[0] || DEFAULT_SCOPE
-  useEffect(() => { loadPublishedScopes().then((items) => { if (items.length) setPublishedScopes(items.sort((a, b) => b.year - a.year)) }).catch(() => {}) }, [])
+  const defaultPublishedScope = publishedScopes.find((item) => item.provinceSlug === 'anhui' && item.majorSlug === 'computer-science') || publishedScopes[0] || null
+  const requestedScopeFallback = publishedScopes.find((item) => item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug) || defaultPublishedScope
+  useEffect(() => {
+    let active = true
+    loadPublishedScopes()
+      .then((items) => {
+        if (active) setPublishedScopeState({ status: 'ready', items: [...items].sort((a, b) => b.year - a.year) })
+      })
+      .catch(() => {
+        if (active) setPublishedScopeState({ status: 'fallback', items: snapshotPublishedScopes })
+      })
+    return () => { active = false }
+  }, [])
   useEffect(() => {
     const match = location.pathname.match(/^\/[a-z0-9-]+\/\d{4}\/[a-z0-9-]+\/([a-z0-9-]+)/)
     applyPageMetadata(location.pathname, routeSchools.find((school) => school.school_slug === match?.[1])?.school_name || '')
@@ -445,12 +462,16 @@ function PublicSite() {
   function toggleFavorite(id) { const next = favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id]; setFavorites(next); saveFavorites(next) }
   function clearInvalid(ids) { const invalid = new Set(ids); const next = favorites.filter((id) => !invalid.has(id)); setFavorites(next); saveFavorites(next) }
   const pathHasScope = /^\/[a-z0-9-]+\/\d{4}\/[a-z0-9-]+/.test(location.pathname)
+  const waitsForPublishedScopes = pathHasScope || location.pathname === '/anhui'
   const scopeIsPublished = publishedScopes.some((item) => item.year === scope.year && item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug)
-  if (pathHasScope && !scopeIsPublished) return <Navigate to={scopePath(defaultPublishedScope)} replace />
+  if (waitsForPublishedScopes && publishedScopeState.status === 'loading') return <div className="public-scope-loading" role="status">正在加载已发布年份…</div>
+  if (waitsForPublishedScopes && !defaultPublishedScope) return <div className="public-scope-loading" role="status">暂时没有已发布年份。</div>
+  if (location.pathname === '/anhui') return <Navigate to={scopePath(defaultPublishedScope)} replace />
+  if (pathHasScope && !scopeIsPublished) return <Navigate to={scopePath(requestedScopeFallback)} replace />
   return <Layout favoritesCount={favorites.length} announcement={content.announcement} content={content}><Routes>
     <Route path="/" element={<Home resources={content.resources} wallSchools={wallSchools} syllabusPoints={content.syllabusPoints} schools={schools} schoolCount={schools.length} scope={scope} />} />
     <Route path="/anhui" element={<Navigate to={scopePath(defaultPublishedScope)} replace />} />
-    <Route path="/favorites" element={<Favorites favorites={favorites} resources={content.resources} toggleFavorite={toggleFavorite} clearInvalid={clearInvalid} onImported={(imported) => setFavorites(imported.favorites)} scope={defaultPublishedScope} />} />
+    <Route path="/favorites" element={<Favorites favorites={favorites} resources={content.resources} toggleFavorite={toggleFavorite} clearInvalid={clearInvalid} onImported={(imported) => setFavorites(imported.favorites)} scope={defaultPublishedScope || DEFAULT_SCOPE} />} />
     <Route path="/:provinceSlug/:year/:majorSlug" element={<AnhuiHub schools={schools} wallSchools={wallSchools} scope={scope} publishedScopes={publishedScopes} />} />
     <Route path="/:provinceSlug/:year/:majorSlug/compare" element={<Compare schools={schools} scope={scope} />} />
     <Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap favorites={favorites} toggleFavorite={toggleFavorite} resources={content.resources} schools={routeSchools} syllabusPoints={content.syllabusPoints} scope={scope} />} />

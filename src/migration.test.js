@@ -6,6 +6,7 @@ const migrationDirectory = path.join(process.cwd(), 'supabase', 'migrations')
 const migrationFiles = fs.readdirSync(migrationDirectory).filter((name) => name.endsWith('.sql')).sort()
 const allSql = migrationFiles.map((name) => fs.readFileSync(path.join(migrationDirectory, name), 'utf8')).join('\n').toLowerCase()
 const scopedMigration = fs.readFileSync(path.join(migrationDirectory, '20260825062221_enforce_scoped_content_integrity.sql'), 'utf8').toLowerCase()
+const healthMigration = fs.readFileSync(path.join(migrationDirectory, '20260826061234_fix_admin_health_and_pagination.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -38,5 +39,28 @@ describe('Supabase migration 安全与完整性', () => {
     expect(allSql).toContain("'等待新年度官方文件核验'")
     expect(allSql).toContain('where user_id = (select auth.uid())')
     expect(allSql).toContain('revoke all on function public.copy_academic_year')
+  })
+
+  it('公开体检只用 published 对照，草稿体检独立统计', () => {
+    expect(healthMigration).toContain("point.status = 'published'")
+    expect(healthMigration).toContain("resource.status = 'published'")
+    expect(healthMigration).toContain("offering.status = 'published'")
+    expect(healthMigration).toContain("'publishedissues'")
+    expect(healthMigration).toContain("'draftissues'")
+    expect(healthMigration).toContain("'draft-no-resource'")
+  })
+
+  it('分页与筛选 RPC 保持 SECURITY INVOKER 并拒绝 anon', () => {
+    expect(healthMigration).toContain('create or replace function public.admin_resources_page')
+    expect(healthMigration).toContain('create or replace function public.admin_syllabus_page')
+    expect(healthMigration.match(/security invoker/g)?.length).toBeGreaterThanOrEqual(4)
+    expect(healthMigration).toContain('revoke all on function public.admin_resources_page(text, text, text, text) from public, anon, authenticated')
+    expect(healthMigration).toContain('grant execute on function public.admin_resources_page(text, text, text, text) to authenticated')
+  })
+
+  it('stale 体检拆分并链接到实际筛选模块', () => {
+    expect(healthMigration).toContain("'href','/admin/offerings?filter=stale'")
+    expect(healthMigration).toContain("'href','/admin/resources?filter=stale'")
+    expect(healthMigration).not.toContain('/admin/overview?filter=stale')
   })
 })
