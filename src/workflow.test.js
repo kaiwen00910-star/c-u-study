@@ -36,6 +36,7 @@ describe('资源去重、发布检查与 SEO', () => {
   it('生成可复制的深链接、独立标题和差异字段', () => {
     expect(learningDeepLink(DEFAULT_SCOPE, 'hfnu', { subject_slug: 'c-language', point_id: 'p' })).toContain('subject=c-language&point=p')
     expect(metadataForPath('/favorites').title).toContain('我的收藏')
+    expect(metadataForPath('/favorites').robots).toBe('noindex,follow')
     expect(metadataForPath('/admin/overview').robots).toBe('noindex,nofollow')
     expect(differingCompareFields([{ sites: ['A'], eligible_major_categories: 'x', totalPlan: 1, professionalSubjects: ['C'] }, { sites: ['B'], eligible_major_categories: 'x', totalPlan: 1, professionalSubjects: ['C'] }])).toContain('sites')
   })

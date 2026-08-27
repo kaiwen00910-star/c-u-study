@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "validate:data": "node scripts/validate-content.mjs",
+    "check:migrations": "node scripts/check-migrations.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "snapshot:export": "node scripts/export-public-snapshot.mjs",
     "build:with-snapshot": "npm run snapshot:export && npm run build",
     "build": "npm run validate:data && npm run generate:sitemap && vite build",
     "lint": "oxlint",
-    "test": "vitest run",
+    "test": "vitest run --pool=threads --maxWorkers=1",
     "preview": "vite preview"
   },
   "dependencies": {

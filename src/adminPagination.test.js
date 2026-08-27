@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   ADMIN_PAGE_SIZE, adminPageRange, loadResourceAdminPage, loadSyllabusAdminPage,
-  staleReviewLabel, totalAdminPages, updateAdminSearchParams,
+  isStaleReview, staleReviewLabel, totalAdminPages, updateAdminSearchParams,
 } from './adminPagination'
 
 function mockClient(result = { data: [], count: 0, error: null }) {
@@ -45,6 +45,11 @@ describe('Supabase 服务端分页', () => {
 })
 
 describe('stale 复核口径', () => {
+  it('使用与数据库相同的上海自然日边界：第 90 天不超期、第 91 天超期', () => {
+    expect(isStaleReview('2026-01-01', new Date('2026-04-01T15:59:59Z'))).toBe(false)
+    expect(isStaleReview('2026-01-01', new Date('2026-04-01T16:00:00Z'))).toBe(true)
+  })
+
   it('明确区分草稿待核验和已发布内容过期', () => {
     expect(staleReviewLabel({ status: 'draft', verified_at: null })).toBe('草稿待核验')
     expect(staleReviewLabel({ status: 'published', verified_at: '2020-01-01' })).toBe('已发布内容过期')

@@ -19,6 +19,12 @@
     X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
+  for = "/favorites"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, follow"
+
+[[headers]]
   for = "/sources"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"

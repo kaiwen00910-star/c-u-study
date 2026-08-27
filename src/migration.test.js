@@ -5,8 +5,9 @@ import { describe, expect, it } from 'vitest'
 const migrationDirectory = path.join(process.cwd(), 'supabase', 'migrations')
 const migrationFiles = fs.readdirSync(migrationDirectory).filter((name) => name.endsWith('.sql')).sort()
 const allSql = migrationFiles.map((name) => fs.readFileSync(path.join(migrationDirectory, name), 'utf8')).join('\n').toLowerCase()
-const scopedMigration = fs.readFileSync(path.join(migrationDirectory, '20260825062221_enforce_scoped_content_integrity.sql'), 'utf8').toLowerCase()
-const healthMigration = fs.readFileSync(path.join(migrationDirectory, '20260826061234_fix_admin_health_and_pagination.sql'), 'utf8').toLowerCase()
+const scopedMigration = fs.readFileSync(path.join(migrationDirectory, '20260825073452_enforce_scoped_content_integrity.sql'), 'utf8').toLowerCase()
+const healthMigration = fs.readFileSync(path.join(migrationDirectory, '20260826062947_fix_admin_health_and_pagination.sql'), 'utf8').toLowerCase()
+const freshnessMigration = fs.readFileSync(path.join(migrationDirectory, '20260827064340_unify_review_staleness_rule.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -62,5 +63,11 @@ describe('Supabase migration 安全与完整性', () => {
     expect(healthMigration).toContain("'href','/admin/offerings?filter=stale'")
     expect(healthMigration).toContain("'href','/admin/resources?filter=stale'")
     expect(healthMigration).not.toContain('/admin/overview?filter=stale')
+  })
+
+  it('核验过期统一通过上海自然日函数计算，供后台筛选与体检共用', () => {
+    expect(freshnessMigration).toContain("time zone 'asia/shanghai'")
+    expect(freshnessMigration).toContain('p_verified_at < p_as_of - 90')
+    expect(freshnessMigration.match(/public\.review_stale_on\(verified_at\)/g)?.length).toBeGreaterThanOrEqual(2)
   })
 })

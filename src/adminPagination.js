@@ -1,3 +1,5 @@
+import { isStaleReview as isStaleReviewDate } from './reviewFreshness'
+
 export const ADMIN_PAGE_SIZE = 20
 
 export function normalizeAdminPage(value) {
@@ -52,9 +54,7 @@ export function loadSyllabusAdminPage(client, filters) {
 }
 
 export function isStaleReview(date, now = new Date()) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date || ''))) return true
-  const verifiedAt = new Date(`${date}T00:00:00Z`)
-  return now.getTime() - verifiedAt.getTime() > 90 * 24 * 60 * 60 * 1000
+  return isStaleReviewDate(date, now)
 }
 
 export function staleReviewLabel(item) {
