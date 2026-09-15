@@ -1,9 +1,9 @@
 {
   "metadata": {
     "schemaVersion": 2,
-    "version": 14,
-    "generatedAt": "2026-08-25T11:45:47.477Z",
-    "sourceUpdatedAt": "2026-08-25T11:44:16.19573+00:00",
+    "version": 15,
+    "generatedAt": "2026-09-15T01:00:00.000Z",
+    "sourceUpdatedAt": "2026-09-15T01:00:00+00:00",
     "source": "supabase-public-rest-rls"
   },
   "academicSchools": [
@@ -158,19 +158,19 @@
       "has_study_map": false
     },
     {
-      "school_slug": "anhui-school-11",
+      "school_slug": "bbc",
       "wall_school_id": "anhui-school-11",
       "school_name": "蚌埠学院",
       "school_type": "公办",
       "short_name": "蚌埠",
-      "theme_color": "#1556a6",
+      "theme_color": "#0b5794",
       "logo_url": "/school-wall/bengbu-university.webp",
       "active": true,
       "sort_order": 11,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
       "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-11",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "anhui-school-12",
@@ -398,19 +398,19 @@
       "has_study_map": false
     },
     {
-      "school_slug": "anhui-school-27",
+      "school_slug": "axhu",
       "wall_school_id": "anhui-school-27",
       "school_name": "安徽新华学院",
       "school_type": "民办",
       "short_name": "新华",
-      "theme_color": "#1556a6",
+      "theme_color": "#176a9d",
       "logo_url": "https://vyioqbyyecueuydckrnq.supabase.co/storage/v1/object/public/school-logos/anhui-school-27/logo-1786719569297.jpg",
       "active": true,
       "sort_order": 27,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
       "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-27",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "anhui-school-28",
@@ -458,19 +458,19 @@
       "has_study_map": false
     },
     {
-      "school_slug": "anhui-school-31",
+      "school_slug": "slu",
       "wall_school_id": "anhui-school-31",
       "school_name": "安徽三联学院",
       "school_type": "民办",
       "short_name": "三联",
-      "theme_color": "#1556a6",
+      "theme_color": "#a5242c",
       "logo_url": "/school-wall/anhui-sanlian-college.webp",
       "active": true,
       "sort_order": 31,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
       "updated_at": "2026-08-25T11:44:16.19573+00:00",
       "school_id": "anhui-school-31",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "anhui-school-32",
@@ -745,6 +745,69 @@
       "sort_order": 4,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
       "updated_at": "2026-08-25T11:43:38.773969+00:00",
+      "status": "published"
+    },
+    {
+      "offering_id": "bbc-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "school_slug": "bbc",
+      "training_site": "安徽电子信息职业技术学院（安徽省蚌埠市龙子湖区曹山路1000号）",
+      "eligible_major_categories": "电子与信息大类、装备制造大类",
+      "public_subjects": ["高等数学", "英语"],
+      "professional_subjects": ["计算机专业基础", "C语言程序设计"],
+      "plan_count": 40,
+      "charter_url": "https://zhaoban.bbc.edu.cn/2026/0318/c1269a125714/page.htm",
+      "syllabus_url": "https://zhaoban.bbc.edu.cn/_upload/article/files/54/14/5f899cd247438281d1ff2c2ba381/143ba54a-3ca6-4163-8596-6bd7117ec2b8.pdf",
+      "source_status": "正式章程与官方考纲",
+      "verified_at": "2026-09-15",
+      "active": true,
+      "sort_order": 5,
+      "created_at": "2026-09-15T01:00:00+00:00",
+      "updated_at": "2026-09-15T01:00:00+00:00",
+      "status": "published"
+    },
+    {
+      "offering_id": "axhu-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "school_slug": "axhu",
+      "training_site": "安徽新华学院校本部（安徽省合肥市高新区望江西路555号）",
+      "eligible_major_categories": "财经商贸大类、医药卫生大类、电子与信息大类、教育与体育大类、装备制造大类、土木建筑大类、交通运输大类、文化艺术大类、旅游大类、公安与司法大类、公共管理与服务大类、食品药品与粮食大类、新闻传播大类、农林牧渔大类、水利大类、能源动力与材料大类、轻工纺织大类、资源环境与安全大类、生物与化工大类",
+      "public_subjects": ["高等数学", "英语"],
+      "professional_subjects": ["计算机专业基础", "C语言程序设计"],
+      "plan_count": 320,
+      "charter_url": "https://zhaosheng.axhu.edu.cn/upload/2026/3/1818192298.pdf",
+      "syllabus_url": "https://zhaosheng.axhu.edu.cn/contents/2685/257592.html",
+      "source_status": "正式章程与官方考纲",
+      "verified_at": "2026-09-15",
+      "active": true,
+      "sort_order": 6,
+      "created_at": "2026-09-15T01:00:00+00:00",
+      "updated_at": "2026-09-15T01:00:00+00:00",
+      "status": "published"
+    },
+    {
+      "offering_id": "slu-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "school_slug": "slu",
+      "training_site": "安徽三联学院校本部（安徽省合肥市经济技术开发区合安路47号）",
+      "eligible_major_categories": "财经商贸大类、医药卫生大类、电子与信息大类、教育与体育大类、装备制造大类、土木建筑大类、交通运输大类、文化艺术大类、旅游大类、公安与司法大类、公共管理与服务大类、食品药品与粮食大类、新闻传播大类、农林牧渔大类、水利大类、能源动力与材料大类、轻工纺织大类、资源环境与安全大类、生物与化工大类",
+      "public_subjects": ["高等数学", "英语"],
+      "professional_subjects": ["计算机专业基础", "C语言程序设计"],
+      "plan_count": 360,
+      "charter_url": "https://zsb.slu.edu.cn/2026/0312/c462a56211/page.htm",
+      "syllabus_url": "https://zsb.slu.edu.cn/2025/1104/c462a54468/page.htm",
+      "source_status": "正式章程与官方考纲",
+      "verified_at": "2026-09-15",
+      "active": true,
+      "sort_order": 7,
+      "created_at": "2026-09-15T01:00:00+00:00",
+      "updated_at": "2026-09-15T01:00:00+00:00",
       "status": "published"
     }
   ],
@@ -1342,6 +1405,69 @@
       "province_slug": "anhui",
       "major_slug": "computer-science",
       "status": "published"
+    },
+    {
+      "point_id": "bbc-cs-system", "year": 2026, "school_slug": "bbc", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 1, "section_name": "计算机基础", "point_order": 1, "point_title": "计算机系统组成、信息表示与安全", "canonical_topic": "computer-basics", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "bbc-cs-office", "year": 2026, "school_slug": "bbc", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 2, "section_name": "操作系统与办公软件", "point_order": 1, "point_title": "Windows、Word、Excel与PowerPoint", "canonical_topic": "computer-office", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "bbc-cs-network", "year": 2026, "school_slug": "bbc", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 3, "section_name": "网络基础", "point_order": 1, "point_title": "局域网与Internet基础应用", "canonical_topic": "network-basic", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "bbc-c-basic", "year": 2026, "school_slug": "bbc", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 1, "section_name": "C语言基础", "point_order": 1, "point_title": "程序结构、数据类型与输入输出", "canonical_topic": "c-language-basic", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "bbc-c-control", "year": 2026, "school_slug": "bbc", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 1, "section_name": "C语言基础", "point_order": 2, "point_title": "选择、循环与结构化程序设计", "canonical_topic": "c-language-control", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "bbc-c-array", "year": 2026, "school_slug": "bbc", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 2, "section_name": "复合程序设计", "point_order": 1, "point_title": "一维数组、二维数组与字符数组", "canonical_topic": "c-language-array", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "bbc-c-pointer", "year": 2026, "school_slug": "bbc", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 2, "section_name": "复合程序设计", "point_order": 2, "point_title": "函数、指针与结构体", "canonical_topic": "c-language-pointer", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-cs-system", "year": 2026, "school_slug": "axhu", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 1, "section_name": "计算机基础", "point_order": 1, "point_title": "计算机系统组成、信息表示与安全", "canonical_topic": "computer-basics", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-cs-office", "year": 2026, "school_slug": "axhu", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 2, "section_name": "操作系统与办公软件", "point_order": 1, "point_title": "Windows 10、Word、Excel与PowerPoint", "canonical_topic": "computer-office", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-cs-network", "year": 2026, "school_slug": "axhu", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 3, "section_name": "网络与数据库", "point_order": 1, "point_title": "计算机网络与Internet基础", "canonical_topic": "network-basic", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-c-basic", "year": 2026, "school_slug": "axhu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 1, "section_name": "C语言基础", "point_order": 1, "point_title": "程序结构、数据类型与输入输出", "canonical_topic": "c-language-basic", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-c-control", "year": 2026, "school_slug": "axhu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 1, "section_name": "C语言基础", "point_order": 2, "point_title": "顺序、选择与循环结构", "canonical_topic": "c-language-control", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-c-array", "year": 2026, "school_slug": "axhu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 2, "section_name": "复合程序设计", "point_order": 1, "point_title": "数组与字符串", "canonical_topic": "c-language-array", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "axhu-c-pointer", "year": 2026, "school_slug": "axhu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 2, "section_name": "复合程序设计", "point_order": 2, "point_title": "函数、指针与结构体", "canonical_topic": "c-language-pointer", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-cs-system", "year": 2026, "school_slug": "slu", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 1, "section_name": "计算机基础", "point_order": 1, "point_title": "计算机系统、数制编码与安全", "canonical_topic": "computer-basics", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-cs-office", "year": 2026, "school_slug": "slu", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 2, "section_name": "操作系统与办公软件", "point_order": 1, "point_title": "操作系统、Word、Excel与PowerPoint", "canonical_topic": "computer-office", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-cs-network", "year": 2026, "school_slug": "slu", "subject_slug": "computer-basics", "subject_name": "计算机专业基础", "section_order": 3, "section_name": "网络基础", "point_order": 1, "point_title": "计算机网络与Internet基础", "canonical_topic": "network-basic", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-c-basic", "year": 2026, "school_slug": "slu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 1, "section_name": "C语言基础", "point_order": 1, "point_title": "数据类型、运算与输入输出", "canonical_topic": "c-language-basic", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-c-control", "year": 2026, "school_slug": "slu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 1, "section_name": "C语言基础", "point_order": 2, "point_title": "顺序、选择与循环结构", "canonical_topic": "c-language-control", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-c-array", "year": 2026, "school_slug": "slu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 2, "section_name": "复合程序设计", "point_order": 1, "point_title": "数组与字符串", "canonical_topic": "c-language-array", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
+    },
+    {
+      "point_id": "slu-c-pointer", "year": 2026, "school_slug": "slu", "subject_slug": "c-language", "subject_name": "C语言程序设计", "section_order": 2, "section_name": "复合程序设计", "point_order": 2, "point_title": "函数、指针与复合类型", "canonical_topic": "c-language-pointer", "active": true, "created_at": "2026-09-15T01:00:00+00:00", "updated_at": "2026-09-15T01:00:00+00:00", "province_slug": "anhui", "major_slug": "computer-science", "status": "published"
     }
   ],
   "resources": [

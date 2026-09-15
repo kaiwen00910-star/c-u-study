@@ -32,3 +32,24 @@ year,province_slug,major_slug,school_slug,subject_slug,section_order,section_nam
 2026,anhui,computer-science,wenda,computer-network,2,数据通信与局域网,1,wenda-net-data,数据通信与介质访问,network-data
 2026,anhui,computer-science,wenda,computer-network,3,网络层与传输层,1,wenda-net-ip,IP地址与路由,network-ip
 2026,anhui,computer-science,wenda,computer-network,3,网络层与传输层,2,wenda-net-tcp,TCP与UDP,network-transport
+2026,anhui,computer-science,bbc,computer-basics,1,计算机基础,1,bbc-cs-system,计算机系统组成、信息表示与安全,computer-basics
+2026,anhui,computer-science,bbc,computer-basics,2,操作系统与办公软件,1,bbc-cs-office,Windows、Word、Excel与PowerPoint,computer-office
+2026,anhui,computer-science,bbc,computer-basics,3,网络基础,1,bbc-cs-network,局域网与Internet基础应用,network-basic
+2026,anhui,computer-science,bbc,c-language,1,C语言基础,1,bbc-c-basic,程序结构、数据类型与输入输出,c-language-basic
+2026,anhui,computer-science,bbc,c-language,1,C语言基础,2,bbc-c-control,选择、循环与结构化程序设计,c-language-control
+2026,anhui,computer-science,bbc,c-language,2,复合程序设计,1,bbc-c-array,一维数组、二维数组与字符数组,c-language-array
+2026,anhui,computer-science,bbc,c-language,2,复合程序设计,2,bbc-c-pointer,函数、指针与结构体,c-language-pointer
+2026,anhui,computer-science,axhu,computer-basics,1,计算机基础,1,axhu-cs-system,计算机系统组成、信息表示与安全,computer-basics
+2026,anhui,computer-science,axhu,computer-basics,2,操作系统与办公软件,1,axhu-cs-office,Windows 10、Word、Excel与PowerPoint,computer-office
+2026,anhui,computer-science,axhu,computer-basics,3,网络与数据库,1,axhu-cs-network,计算机网络与Internet基础,network-basic
+2026,anhui,computer-science,axhu,c-language,1,C语言基础,1,axhu-c-basic,程序结构、数据类型与输入输出,c-language-basic
+2026,anhui,computer-science,axhu,c-language,1,C语言基础,2,axhu-c-control,顺序、选择与循环结构,c-language-control
+2026,anhui,computer-science,axhu,c-language,2,复合程序设计,1,axhu-c-array,数组与字符串,c-language-array
+2026,anhui,computer-science,axhu,c-language,2,复合程序设计,2,axhu-c-pointer,函数、指针与结构体,c-language-pointer
+2026,anhui,computer-science,slu,computer-basics,1,计算机基础,1,slu-cs-system,计算机系统、数制编码与安全,computer-basics
+2026,anhui,computer-science,slu,computer-basics,2,操作系统与办公软件,1,slu-cs-office,操作系统、Word、Excel与PowerPoint,computer-office
+2026,anhui,computer-science,slu,computer-basics,3,网络基础,1,slu-cs-network,计算机网络与Internet基础,network-basic
+2026,anhui,computer-science,slu,c-language,1,C语言基础,1,slu-c-basic,数据类型、运算与输入输出,c-language-basic
+2026,anhui,computer-science,slu,c-language,1,C语言基础,2,slu-c-control,顺序、选择与循环结构,c-language-control
+2026,anhui,computer-science,slu,c-language,2,复合程序设计,1,slu-c-array,数组与字符串,c-language-array
+2026,anhui,computer-science,slu,c-language,2,复合程序设计,2,slu-c-pointer,函数、指针与复合类型,c-language-pointer

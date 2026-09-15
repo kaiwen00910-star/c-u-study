@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { fallbackAcademicSchools, offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
 import { validateAnnouncement, validateResource } from './resourceValidation'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
-import { fallbackContent } from './useContent'
+import { fallbackContent, isOnlineContentCurrent } from './useContent'
 import { DEFAULT_SCOPE } from './contentScope'
 import { progressKey } from './storage'
 import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
-  it('仅包含计划中的三所院校', () => {
+  it('仅包含六所已完成计划与考纲闭环的院校', () => {
     expect(schoolGroups().map((school) => school.school_name)).toEqual([
-      '合肥师范学院', '安徽信息工程学院', '安徽文达信息工程学院',
+      '蚌埠学院', '合肥师范学院', '安徽新华学院', '安徽三联学院', '安徽信息工程学院', '安徽文达信息工程学院',
     ])
     expect(JSON.stringify(offerings)).not.toContain('安徽建筑大学')
   })
@@ -92,11 +92,17 @@ describe('招生内容', () => {
     expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
   })
 
-  it('Supabase 不可用时的静态回退仍包含完整院校墙与三所学习地图', () => {
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与六所学习地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(3)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(6)
+  })
+
+  it('不允许旧版在线数据覆盖已核验的内置快照', () => {
+    expect(isOnlineContentCurrent({ version: fallbackContent.metadata.version - 1 })).toBe(false)
+    expect(isOnlineContentCurrent({ version: fallbackContent.metadata.version })).toBe(true)
+    expect(isOnlineContentCurrent({ version: fallbackContent.metadata.version + 1 })).toBe(true)
   })
 
   it('同一学校的 2026 与 2027 招生计划严格隔离', () => {

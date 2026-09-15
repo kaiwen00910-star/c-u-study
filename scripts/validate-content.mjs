@@ -51,7 +51,7 @@ fallbackAcademicSchools.forEach((school, index) => {
   if (school.school_id !== expectedId) errors.push(`院校回退数据第 ${index + 1} 所 ID 或顺序错误`)
   if (!school.school_name || !school.short_name) errors.push(`院校回退数据 ${expectedId} 缺少名称或简称`)
 })
-if (fallbackAcademicSchools.filter((school) => school.has_study_map).length !== 3) errors.push('院校回退数据必须仅开放 3 所学习地图')
+if (fallbackAcademicSchools.filter((school) => school.has_study_map).length < 6) errors.push('院校回退数据至少应开放 6 所学习地图')
 if (!snapshot.metadata?.version || !snapshot.metadata?.generatedAt || !snapshot.metadata?.sourceUpdatedAt) errors.push('公开快照缺少版本、生成时间或源数据更新时间')
 if (fallbackAcademicSchools.find((school) => school.school_id === 'anhui-school-09')?.school_name !== '安徽科技工程大学') errors.push('公开快照中的 anhui-school-09 未与线上有效校名同步')
 
@@ -60,6 +60,10 @@ snapshot.syllabusPoints.forEach((row, index) => {
   if (row.school_slug !== 'common' && !snapshotSchoolSlugs.has(row.school_slug)) errors.push(`公开快照考纲第 ${index + 1} 条引用未知院校 ${row.school_slug}`)
 })
 const activeSnapshotTopics = new Set(snapshot.syllabusPoints.filter((row) => row.active !== false).map((row) => row.canonical_topic))
+const publishedSnapshotTopics = new Set(snapshot.resources.filter((row) => row.status === 'published').flatMap((row) => row.topic_tags))
+snapshot.syllabusPoints.filter((row) => row.status === 'published').forEach((row, index) => {
+  if (!publishedSnapshotTopics.has(row.canonical_topic)) errors.push(`公开快照已发布考纲第 ${index + 1} 条没有已发布学习资源`)
+})
 snapshot.resources.filter((row) => row.status === 'active' || row.status === 'published').forEach((row, index) => {
   const tags = Array.isArray(row.topic_tags) ? row.topic_tags : String(row.topic_tags || '').split('|').filter(Boolean)
   tags.forEach((tag) => { if (!activeSnapshotTopics.has(tag)) errors.push(`公开快照资源第 ${index + 1} 条引用无有效考纲的主题 ${tag}`) })
@@ -70,6 +74,12 @@ snapshot.offerings.forEach((row, index) => {
   const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase()].join('|')
   if (snapshotOfferingCombinations.has(combination)) errors.push(`公开快照招生计划第 ${index + 1} 条范围/院校/培养地点组合重复`)
   snapshotOfferingCombinations.add(combination)
+  if (row.status === 'published' && !snapshot.syllabusPoints.some((point) => point.status === 'published' && point.year === row.year && point.province_slug === row.province_slug && point.major_slug === row.major_slug && point.school_slug === row.school_slug)) {
+    errors.push(`公开快照已发布招生计划第 ${index + 1} 条没有对应的已发布学校考纲`)
+  }
+  if (row.year === 2027 && (row.status === 'published' || row.source_status !== '等待新年度官方文件核验')) {
+    errors.push(`公开快照 2027 招生计划第 ${index + 1} 条必须保持待核验草稿`)
+  }
 })
 
 const offeringCombinations = new Set()
@@ -94,6 +104,12 @@ resources.forEach((row, index) => {
   if (row.platform === '哔哩哔哩' && !/^https:\/\/www\.bilibili\.com\/video\/(?:BV[\w]+|av\d+)\/?$/.test(row.url)) {
     errors.push(`resources.csv 第 ${index + 2} 行不是规范的哔哩哔哩视频链接`)
   }
+})
+const resourceUrls = new Set()
+resources.forEach((row, index) => {
+  const normalized = row.url.trim().replace(/\/$/, '')
+  if (resourceUrls.has(normalized)) errors.push(`resources.csv 第 ${index + 2} 行资源链接重复`)
+  resourceUrls.add(normalized)
 })
 const forbidden = ['安徽建筑大学', 'ahjzu.edu.cn']
 for (const file of ['offerings.csv','syllabus.csv','resources.csv']) {

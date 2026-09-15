@@ -27,6 +27,13 @@ export function fallbackContentForScope(scope = DEFAULT_SCOPE) {
 
 export const fallbackContent = fallbackContentForScope(DEFAULT_SCOPE)
 
+export function isOnlineContentCurrent(metadata, snapshot = snapshotMetadata) {
+  const onlineVersion = Number(metadata?.version)
+  const snapshotVersion = Number(snapshot?.version)
+  if (!Number.isFinite(snapshotVersion)) return true
+  return Number.isFinite(onlineVersion) && onlineVersion >= snapshotVersion
+}
+
 function normalizeContent(next) {
   return {
     resources: next.resources.map(normalizeResource),
@@ -52,7 +59,12 @@ export function useContent(scope = DEFAULT_SCOPE) {
     let active = true
     setContent(fallbackContentForScope(normalized))
     loadPublicContent(normalized)
-      .then((next) => { if (active) setContent(normalizeContent(next)) })
+      .then((next) => {
+        if (!isOnlineContentCurrent(next.metadata)) {
+          throw new Error(`在线内容版本 ${next.metadata?.version ?? '未知'} 低于内置快照版本 ${snapshotMetadata.version}`)
+        }
+        if (active) setContent(normalizeContent(next))
+      })
       .catch((error) => {
         if (active) setContent({ ...fallbackContentForScope(normalized), loading: false, offline: true, error: error.message })
       })
