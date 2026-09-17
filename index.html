@@ -13,21 +13,22 @@
     <meta name="theme-color" content="#0b5c53" />
     <title>安徽专升本院校、考纲与学习地图｜安徽升本导航</title>
     <script>
-      (() => {
-        const siteId = '%VITE_BAIDU_TONGJI_ID%'.trim()
-        const scriptUrl = 'https://hm.baidu.com/hm.js?%VITE_BAIDU_TONGJI_ID%'
-        const validSiteId = !siteId.startsWith('YOUR_') && /^[a-zA-Z0-9_-]{8,64}$/.test(siteId)
-        if (!validSiteId || window.location.pathname.startsWith('/admin')) return
+      var _hmt = _hmt || [];
+      (function() {
+        var siteId = '%VITE_BAIDU_TONGJI_ID%'.trim();
+        var isProduction = '%MODE%' === 'production';
+        var validSiteId = !siteId.startsWith('YOUR_') && /^[a-zA-Z0-9_-]{8,64}$/.test(siteId);
+        if (!isProduction || !validSiteId || window.location.pathname.startsWith('/admin')) return;
 
-        window._hmt = window._hmt || []
-        window._hmt.push(['_setAutoPageview', false])
-        const script = document.createElement('script')
-        script.id = 'baidu-tongji-script'
-        script.async = true
-        script.src = scriptUrl
-        script.onerror = () => { script.dataset.loadState = 'failed' }
-        document.head.appendChild(script)
-      })()
+        _hmt.push(['_setAutoPageview', false]);
+        var hm = document.createElement('script');
+        hm.id = 'baidu-tongji-script';
+        hm.async = true;
+        hm.src = 'https://hm.baidu.com/hm.js?%VITE_BAIDU_TONGJI_ID%';
+        hm.onerror = function() { hm.dataset.loadState = 'failed'; };
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
     </script>
   </head>
   <body>
