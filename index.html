@@ -12,6 +12,23 @@
     <link rel="canonical" href="https://splendid-duckanoo-926f44.netlify.app/" />
     <meta name="theme-color" content="#0b5c53" />
     <title>安徽专升本院校、考纲与学习地图｜安徽升本导航</title>
+    <script>
+      (() => {
+        const siteId = '%VITE_BAIDU_TONGJI_ID%'.trim()
+        const scriptUrl = 'https://hm.baidu.com/hm.js?%VITE_BAIDU_TONGJI_ID%'
+        const validSiteId = !siteId.startsWith('YOUR_') && /^[a-zA-Z0-9_-]{8,64}$/.test(siteId)
+        if (!validSiteId || window.location.pathname.startsWith('/admin')) return
+
+        window._hmt = window._hmt || []
+        window._hmt.push(['_setAutoPageview', false])
+        const script = document.createElement('script')
+        script.id = 'baidu-tongji-script'
+        script.async = true
+        script.src = scriptUrl
+        script.onerror = () => { script.dataset.loadState = 'failed' }
+        document.head.appendChild(script)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
