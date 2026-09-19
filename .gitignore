@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .netlify
 supabase/.temp/
+work/
 
 # Editor directories and files
 .vscode/*
