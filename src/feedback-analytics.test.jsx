@@ -80,8 +80,36 @@ describe('Netlify Forms 内容反馈', () => {
     fireEvent.click(submit)
     fireEvent.submit(submit.closest('form'))
     expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(submit).toBeDisabled()
+    expect(submit).toHaveTextContent('正在提交…')
+    const params = new URLSearchParams(fetchMock.mock.calls[0][1].body)
+    expect(params.get('page_url')).toBe(window.location.href)
+    expect(params.get('context_id')).toBe('resource:res-c-1')
     resolveRequest({ ok: true, status: 200 })
     await waitFor(() => expect(screen.getByText('提交成功，感谢你的反馈。')).toBeVisible())
+  })
+
+  it('超过 500 字时不能提交并显示校验提示', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    render(<FeedbackForm contextId="resource:res-c-1" />)
+    fireEvent.click(screen.getByText('内容纠错 / 链接失效'))
+    const description = screen.getByLabelText('反馈说明')
+    fireEvent.change(description, { target: { value: '测'.repeat(501) } })
+    fireEvent.submit(description.closest('form'))
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(screen.getByText(/500 字以内/)).toBeVisible()
+  })
+
+  it('缺少关联 ID 时不能提交', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    render(<FeedbackForm />)
+    fireEvent.click(screen.getByText('内容纠错 / 链接失效'))
+    fireEvent.change(screen.getByLabelText('反馈说明'), { target: { value: '测试反馈' } })
+    fireEvent.submit(screen.getByRole('button', { name: '提交反馈' }).closest('form'))
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(screen.getByText(/关联内容信息完整/)).toBeVisible()
   })
 
   it('区分服务失败和网络异常提示', async () => {

@@ -51,7 +51,7 @@ fallbackAcademicSchools.forEach((school, index) => {
   if (school.school_id !== expectedId) errors.push(`院校回退数据第 ${index + 1} 所 ID 或顺序错误`)
   if (!school.school_name || !school.short_name) errors.push(`院校回退数据 ${expectedId} 缺少名称或简称`)
 })
-if (fallbackAcademicSchools.filter((school) => school.has_study_map).length < 6) errors.push('院校回退数据至少应开放 6 所学习地图')
+if (fallbackAcademicSchools.filter((school) => school.has_study_map).length < 9) errors.push('院校回退数据至少应开放 9 所学习地图')
 if (!snapshot.metadata?.version || !snapshot.metadata?.generatedAt || !snapshot.metadata?.sourceUpdatedAt) errors.push('公开快照缺少版本、生成时间或源数据更新时间')
 if (fallbackAcademicSchools.find((school) => school.school_id === 'anhui-school-09')?.school_name !== '安徽科技工程大学') errors.push('公开快照中的 anhui-school-09 未与线上有效校名同步')
 

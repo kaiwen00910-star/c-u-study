@@ -20,9 +20,9 @@ function setReducedMotion(matches) {
 describe('首页院校墙键盘导航', () => {
   beforeEach(() => setReducedMotion(false))
 
-  it('动画模式只有六所已开放院校生成可聚焦链接，复制轨道不生成链接', () => {
+  it('动画模式只有九所已开放院校生成可聚焦链接，复制轨道不生成链接', () => {
     const { container } = render(<BrowserRouter><SchoolLogoWall schools={wallSchools} /></BrowserRouter>)
-    expect(container.querySelectorAll('a.wall-school-card')).toHaveLength(6)
+    expect(container.querySelectorAll('a.wall-school-card')).toHaveLength(9)
     expect(container.querySelectorAll('[aria-hidden="true"] a')).toHaveLength(0)
   })
 
@@ -30,6 +30,6 @@ describe('首页院校墙键盘导航', () => {
     setReducedMotion(true)
     const { container } = render(<BrowserRouter><SchoolLogoWall schools={wallSchools} /></BrowserRouter>)
     expect(container.querySelectorAll('.logo-track')).toHaveLength(0)
-    expect(container.querySelectorAll('a.wall-school-card')).toHaveLength(6)
+    expect(container.querySelectorAll('a.wall-school-card')).toHaveLength(9)
   })
 })
