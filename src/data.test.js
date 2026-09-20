@@ -8,12 +8,11 @@ import { progressKey } from './storage'
 import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
-  it('仅包含十二所已完成计划与考纲闭环的院校', () => {
+  it('仅包含十四所已完成计划与考纲闭环的院校', () => {
     expect(schoolGroups().map((school) => school.school_name)).toEqual([
-      '蚌埠学院', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院', '安徽三联学院', '安徽信息工程学院',
+      '安徽建筑大学', '蚌埠学院', '合肥大学', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院', '安徽三联学院', '安徽信息工程学院',
       '淮北理工学院', '皖江工学院', '安徽文达信息工程学院', '阜阳理工学院',
     ])
-    expect(JSON.stringify(offerings)).not.toContain('安徽建筑大学')
   })
 
   it('合肥师范学院合并两个培养点并使用正确专业课', () => {
@@ -93,11 +92,11 @@ describe('招生内容', () => {
     expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
   })
 
-  it('Supabase 不可用时的静态回退仍包含完整院校墙与十二所学习地图', () => {
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与十四所学习地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(12)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(14)
   })
 
   it('不允许旧版在线数据覆盖已核验的内置快照', () => {

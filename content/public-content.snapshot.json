@@ -1,9 +1,9 @@
 {
   "metadata": {
     "schemaVersion": 2,
-    "version": 38,
-    "generatedAt": "2026-09-19T17:08:57.527Z",
-    "sourceUpdatedAt": "2026-09-19T17:08:15.145+00:00",
+    "version": 46,
+    "generatedAt": "2026-09-20T10:20:28.640Z",
+    "sourceUpdatedAt": "2026-09-20T10:15:52.579514+00:00",
     "source": "supabase-public-rest-rls"
   },
   "academicSchools": [
@@ -18,7 +18,7 @@
       "active": true,
       "sort_order": 1,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-01",
       "has_study_map": false
     },
@@ -33,7 +33,7 @@
       "active": true,
       "sort_order": 2,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-02",
       "has_study_map": false
     },
@@ -48,7 +48,7 @@
       "active": true,
       "sort_order": 3,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-03",
       "has_study_map": false
     },
@@ -63,7 +63,7 @@
       "active": true,
       "sort_order": 4,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-04",
       "has_study_map": false
     },
@@ -78,7 +78,7 @@
       "active": true,
       "sort_order": 5,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-05",
       "has_study_map": false
     },
@@ -93,7 +93,7 @@
       "active": true,
       "sort_order": 6,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-06",
       "has_study_map": false
     },
@@ -108,24 +108,24 @@
       "active": true,
       "sort_order": 7,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-07",
       "has_study_map": false
     },
     {
-      "school_slug": "anhui-school-08",
+      "school_slug": "ahjzu",
       "wall_school_id": "anhui-school-08",
       "school_name": "安徽建筑大学",
       "school_type": "公办",
       "short_name": "建筑",
-      "theme_color": "#1556a6",
+      "theme_color": "#1c4f91",
       "logo_url": "/school-wall/anhui-jianzhu-university.webp",
       "active": true,
       "sort_order": 8,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-08",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "anhui-school-09",
@@ -138,7 +138,7 @@
       "active": true,
       "sort_order": 9,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-09",
       "has_study_map": false
     },
@@ -153,7 +153,7 @@
       "active": true,
       "sort_order": 10,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-10",
       "has_study_map": false
     },
@@ -168,7 +168,7 @@
       "active": true,
       "sort_order": 11,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-11",
       "has_study_map": true
     },
@@ -183,7 +183,7 @@
       "active": true,
       "sort_order": 12,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-12",
       "has_study_map": false
     },
@@ -198,24 +198,24 @@
       "active": true,
       "sort_order": 13,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-13",
       "has_study_map": false
     },
     {
-      "school_slug": "anhui-school-14",
+      "school_slug": "hfuu",
       "wall_school_id": "anhui-school-14",
       "school_name": "合肥大学",
       "school_type": "公办",
       "short_name": "合大",
-      "theme_color": "#1556a6",
+      "theme_color": "#0b6f62",
       "logo_url": "/school-wall/hefei-university.webp",
       "active": true,
       "sort_order": 14,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-14",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "anhui-school-15",
@@ -228,7 +228,7 @@
       "active": true,
       "sort_order": 15,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-15",
       "has_study_map": false
     },
@@ -243,7 +243,7 @@
       "active": true,
       "sort_order": 16,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-16",
       "has_study_map": false
     },
@@ -258,7 +258,7 @@
       "active": true,
       "sort_order": 17,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-17",
       "has_study_map": false
     },
@@ -273,7 +273,7 @@
       "active": true,
       "sort_order": 18,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-18",
       "has_study_map": false
     },
@@ -288,7 +288,7 @@
       "active": true,
       "sort_order": 19,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-19",
       "has_study_map": false
     },
@@ -303,7 +303,7 @@
       "active": true,
       "sort_order": 20,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-20",
       "has_study_map": false
     },
@@ -318,7 +318,7 @@
       "active": true,
       "sort_order": 21,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-21",
       "has_study_map": false
     },
@@ -333,7 +333,7 @@
       "active": true,
       "sort_order": 22,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-22",
       "has_study_map": true
     },
@@ -348,7 +348,7 @@
       "active": true,
       "sort_order": 23,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-23",
       "has_study_map": true
     },
@@ -363,7 +363,7 @@
       "active": true,
       "sort_order": 24,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-24",
       "has_study_map": false
     },
@@ -378,7 +378,7 @@
       "active": true,
       "sort_order": 25,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-25",
       "has_study_map": false
     },
@@ -393,7 +393,7 @@
       "active": true,
       "sort_order": 26,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-26",
       "has_study_map": true
     },
@@ -408,7 +408,7 @@
       "active": true,
       "sort_order": 27,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-27",
       "has_study_map": true
     },
@@ -423,7 +423,7 @@
       "active": true,
       "sort_order": 28,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-28",
       "has_study_map": true
     },
@@ -438,7 +438,7 @@
       "active": true,
       "sort_order": 29,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-29",
       "has_study_map": false
     },
@@ -453,7 +453,7 @@
       "active": true,
       "sort_order": 30,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-30",
       "has_study_map": false
     },
@@ -468,7 +468,7 @@
       "active": true,
       "sort_order": 31,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-31",
       "has_study_map": true
     },
@@ -483,7 +483,7 @@
       "active": true,
       "sort_order": 32,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-32",
       "has_study_map": false
     },
@@ -498,7 +498,7 @@
       "active": true,
       "sort_order": 33,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-33",
       "has_study_map": true
     },
@@ -513,7 +513,7 @@
       "active": true,
       "sort_order": 34,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-34",
       "has_study_map": true
     },
@@ -528,7 +528,7 @@
       "active": true,
       "sort_order": 35,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-35",
       "has_study_map": true
     },
@@ -543,7 +543,7 @@
       "active": true,
       "sort_order": 36,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-36",
       "has_study_map": true
     },
@@ -558,7 +558,7 @@
       "active": true,
       "sort_order": 37,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-37",
       "has_study_map": false
     },
@@ -573,7 +573,7 @@
       "active": true,
       "sort_order": 38,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-38",
       "has_study_map": true
     },
@@ -588,7 +588,7 @@
       "active": true,
       "sort_order": 39,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-39",
       "has_study_map": false
     },
@@ -603,7 +603,7 @@
       "active": true,
       "sort_order": 40,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-40",
       "has_study_map": false
     },
@@ -618,7 +618,7 @@
       "active": true,
       "sort_order": 41,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-41",
       "has_study_map": false
     },
@@ -633,7 +633,7 @@
       "active": true,
       "sort_order": 42,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-19T17:08:15.145+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
       "school_id": "anhui-school-42",
       "has_study_map": false
     }
@@ -1070,9 +1070,261 @@
       "created_at": "2026-09-19T16:55:28.636428+00:00",
       "updated_at": "2026-09-19T16:55:28.636428+00:00",
       "status": "published"
+    },
+    {
+      "offering_id": "ahjzu-cs-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "school_slug": "ahjzu",
+      "training_site": "计算机科学与技术：安徽城市管理职业学院（安徽省合肥市新站区淮海大道300号）",
+      "eligible_major_categories": "电子与信息大类、装备制造大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "计算机专业基础",
+        "C语言程序设计"
+      ],
+      "plan_count": 60,
+      "charter_url": "https://www.ahjzu.edu.cn/zsw/2026/0204/c2390a263781/page.htm",
+      "syllabus_url": "https://www.ahjzu.edu.cn/_upload/article/files/6f/84/3e9dfa6d499a97167aaece606f6b/cf2e1b8f-26d3-45d9-9296-e6356d16bf62.pdf",
+      "source_status": "2026正式章程与官方考纲",
+      "verified_at": "2026-09-20",
+      "active": true,
+      "sort_order": 17,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "status": "published"
+    },
+    {
+      "offering_id": "hfuu-cs-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "school_slug": "hfuu",
+      "training_site": "计算机科学与技术：合肥大学（安徽省合肥市经济技术开发区锦绣大道99号、158号）",
+      "eligible_major_categories": "电子与信息大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "计算机专业基础",
+        "C语言程序设计"
+      ],
+      "plan_count": 50,
+      "charter_url": "https://www.hfuu.edu.cn/zs/5d/08/c12151a154888/page.htm",
+      "syllabus_url": "https://www.hfuu.edu.cn/zs/59/f7/c3032a154103/page.htm",
+      "source_status": "2026正式章程与官方考纲",
+      "verified_at": "2026-09-20",
+      "active": true,
+      "sort_order": 18,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "status": "published"
     }
   ],
   "syllabusPoints": [
+    {
+      "point_id": "ahjzu-c-basic",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 1,
+      "section_name": "程序设计基础",
+      "point_order": 1,
+      "point_title": "C程序结构、算法、数据类型与输入输出",
+      "canonical_topic": "c-language-basic",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-c-control",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 1,
+      "section_name": "程序设计基础",
+      "point_order": 2,
+      "point_title": "顺序、分支、循环与结构化程序设计",
+      "canonical_topic": "c-language-control",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-c-array",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 2,
+      "section_name": "复合程序设计",
+      "point_order": 1,
+      "point_title": "数组、排序算法、函数与递归",
+      "canonical_topic": "c-language-array",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-c-pointer",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 2,
+      "section_name": "复合程序设计",
+      "point_order": 2,
+      "point_title": "指针、自定义类型、单链表与文件操作",
+      "canonical_topic": "c-language-pointer",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-system",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 1,
+      "section_name": "计算机与数据表示",
+      "point_order": 1,
+      "point_title": "计算机基础、数制转换与数据表示",
+      "canonical_topic": "computer-basics",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-hardware",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 1,
+      "section_name": "计算机与数据表示",
+      "point_order": 2,
+      "point_title": "硬件系统、处理器、存储与输入输出设备",
+      "canonical_topic": "computer-basics",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-os",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 2,
+      "section_name": "操作系统与网络",
+      "point_order": 1,
+      "point_title": "操作系统基础与Windows基本使用",
+      "canonical_topic": "computer-basics",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-network",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 2,
+      "section_name": "操作系统与网络",
+      "point_order": 2,
+      "point_title": "网络体系、局域网、IP地址与网络安全",
+      "canonical_topic": "network-basic",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-web",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 3,
+      "section_name": "Web与数据库",
+      "point_order": 1,
+      "point_title": "万维网、HTML、HTTP与网页设计基础",
+      "canonical_topic": "network-basic",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-database",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 3,
+      "section_name": "Web与数据库",
+      "point_order": 2,
+      "point_title": "数据库系统、数据模型与关系数据库基础",
+      "canonical_topic": "database-basic",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "ahjzu-cs-sql",
+      "year": 2026,
+      "school_slug": "ahjzu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 3,
+      "section_name": "Web与数据库",
+      "point_order": 3,
+      "point_title": "关系数据库与SQL查询语句基本使用",
+      "canonical_topic": "database-sql",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
     {
       "point_id": "aiit-c-basic",
       "year": 2026,
@@ -2226,6 +2478,222 @@
       "status": "published"
     },
     {
+      "point_id": "hfuu-c-basic",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 1,
+      "section_name": "C语言基础",
+      "point_order": 1,
+      "point_title": "数据类型、运算、输入输出与文件读写",
+      "canonical_topic": "c-language-basic",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-c-control",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 1,
+      "section_name": "C语言基础",
+      "point_order": 2,
+      "point_title": "顺序、选择、循环与嵌套结构",
+      "canonical_topic": "c-language-control",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-c-array",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 2,
+      "section_name": "复合程序设计",
+      "point_order": 1,
+      "point_title": "数组、字符串、函数与递归调用",
+      "canonical_topic": "c-language-array",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-c-pointer",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 2,
+      "section_name": "复合程序设计",
+      "point_order": 2,
+      "point_title": "指针、结构体、共用体、枚举与链表",
+      "canonical_topic": "c-language-pointer",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-c-linear",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 3,
+      "section_name": "数据结构与算法",
+      "point_order": 1,
+      "point_title": "线性表、链式存储、栈与队列",
+      "canonical_topic": "data-structure-linear",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-c-sort",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 3,
+      "section_name": "数据结构与算法",
+      "point_order": 2,
+      "point_title": "二叉树、图、查找与排序基础",
+      "canonical_topic": "data-structure-sort",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-cs-system",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 1,
+      "section_name": "计算机基础知识",
+      "point_order": 1,
+      "point_title": "计算机系统、数据表示、病毒防治与信息安全",
+      "canonical_topic": "computer-basics",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-cs-os",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 2,
+      "section_name": "操作系统与办公应用",
+      "point_order": 1,
+      "point_title": "Windows操作系统、资源管理器与文件管理",
+      "canonical_topic": "computer-basics",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-cs-word",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 2,
+      "section_name": "操作系统与办公应用",
+      "point_order": 2,
+      "point_title": "Word文档编辑、排版与打印",
+      "canonical_topic": "computer-office",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-cs-excel",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 2,
+      "section_name": "操作系统与办公应用",
+      "point_order": 3,
+      "point_title": "Excel公式函数、数据处理与图表",
+      "canonical_topic": "computer-office",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-cs-powerpoint",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 2,
+      "section_name": "操作系统与办公应用",
+      "point_order": 4,
+      "point_title": "PowerPoint编辑、设计、动画与放映",
+      "canonical_topic": "computer-office",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "hfuu-cs-network",
+      "year": 2026,
+      "school_slug": "hfuu",
+      "subject_slug": "computer-basics",
+      "subject_name": "计算机专业基础",
+      "section_order": 3,
+      "section_name": "网络与Internet",
+      "point_order": 1,
+      "point_title": "计算机网络、Internet服务与电子邮件",
+      "canonical_topic": "network-basic",
+      "active": true,
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
       "point_id": "hnnu-c-basic",
       "year": 2026,
       "school_slug": "hnnu",
@@ -2946,10 +3414,10 @@
       "duration_text": "149讲",
       "recommendation_reason": "函数极限导数和积分目录完整，讲解细致且方便反复观看",
       "priority": 1,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-english-1",
@@ -2966,10 +3434,29 @@
       "duration_text": "6个专题约24小时",
       "recommendation_reason": "从简单句讲到从句和长难句，适合补语法并提升阅读拆句能力",
       "priority": 1,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+    },
+    {
+      "resource_id": "res-english-vocabulary-1",
+      "topic_tags": [
+        "english-vocabulary"
+      ],
+      "title": "大学英语词汇",
+      "platform": "中国大学MOOC",
+      "creator": "北京交通大学",
+      "url": "https://www.icourse163.org/course/NJTU-1002528009",
+      "resource_type": "专项课程",
+      "difficulty": "入门",
+      "duration_text": "12单元",
+      "recommendation_reason": "具体课程页系统讲解大学英语高频词汇、词组、记忆方法与语境应用，适合补强专升本英语词汇基础",
+      "priority": 1,
+      "verified_at": "2026-09-20",
+      "status": "published",
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-basic-1",
@@ -2986,10 +3473,29 @@
       "duration_text": "完整学期",
       "recommendation_reason": "具体课程页可直接查看大纲，覆盖系统组成信息编码操作系统和办公软件",
       "priority": 1,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+    },
+    {
+      "resource_id": "res-english-writing-1",
+      "topic_tags": [
+        "english-writing"
+      ],
+      "title": "实用英语写作",
+      "platform": "中国大学MOOC",
+      "creator": "郑州工程技术学院",
+      "url": "https://www.icourse163.org/course/ZHZHU-1206695856",
+      "resource_type": "专项课程",
+      "difficulty": "入门",
+      "duration_text": "4章",
+      "recommendation_reason": "具体课程页覆盖句子与段落组织、常用文体、应用文和应试写作，能直接补强英语写作知识点",
+      "priority": 1,
+      "verified_at": "2026-09-20",
+      "status": "published",
+      "created_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-db-1",
@@ -3010,7 +3516,7 @@
       "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-09-19T16:55:28.636428+00:00",
-      "updated_at": "2026-09-19T16:55:28.636428+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-ds-1",
@@ -3029,10 +3535,10 @@
       "duration_text": "173讲",
       "recommendation_reason": "王卓老师本人发布，按线性表栈队列树图查找和排序组织内容",
       "priority": 1,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-network-1",
@@ -3051,10 +3557,10 @@
       "duration_text": "73讲",
       "recommendation_reason": "UP主本人发布，用动画讲解分层协议局域网IP和TCP等抽象概念",
       "priority": 1,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-c-1",
@@ -3073,10 +3579,10 @@
       "duration_text": "165讲",
       "recommendation_reason": "从环境搭建讲到指针与内存管理，内容完整且明确适用于专升本复习",
       "priority": 1,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-c-2",
@@ -3095,10 +3601,10 @@
       "duration_text": "231讲",
       "recommendation_reason": "作为第二种讲解思路，适合跟练基础语法并攻克数组函数和指针",
       "priority": 2,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-basic-2",
@@ -3115,10 +3621,10 @@
       "duration_text": "完整学期",
       "recommendation_reason": "具体课程页覆盖计算机原理软件平台网络平台与数据处理基础",
       "priority": 2,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-db-2",
@@ -3139,7 +3645,7 @@
       "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-09-19T16:55:28.636428+00:00",
-      "updated_at": "2026-09-19T16:55:28.636428+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-ds-2",
@@ -3158,10 +3664,10 @@
       "duration_text": "149讲",
       "recommendation_reason": "章节短而清楚，适合在王卓课程之外补充算法思路与实现方法",
       "priority": 2,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-english-2",
@@ -3180,10 +3686,10 @@
       "duration_text": "20讲",
       "recommendation_reason": "内容覆盖语法翻译做题技巧和写作，与学历提升英语备考较贴近",
       "priority": 2,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-math-1",
@@ -3202,10 +3708,10 @@
       "duration_text": "完整学期",
       "recommendation_reason": "国家精品在线开放课程，适合按章节建立微积分基础",
       "priority": 2,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     },
     {
       "resource_id": "res-basic-3",
@@ -3222,10 +3728,10 @@
       "duration_text": "约1小时",
       "recommendation_reason": "适合学完系统课程后快速串联计算机基础与Office常考内容",
       "priority": 3,
-      "verified_at": "2026-08-13",
+      "verified_at": "2026-09-20",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-08-25T11:43:38.773969+00:00"
+      "updated_at": "2026-09-20T10:15:52.579514+00:00"
     }
   ],
   "announcements": []

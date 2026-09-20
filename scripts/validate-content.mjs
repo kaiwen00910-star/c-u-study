@@ -111,12 +111,6 @@ resources.forEach((row, index) => {
   if (resourceUrls.has(normalized)) errors.push(`resources.csv 第 ${index + 2} 行资源链接重复`)
   resourceUrls.add(normalized)
 })
-const forbidden = ['安徽建筑大学', 'ahjzu.edu.cn']
-for (const file of ['offerings.csv','syllabus.csv','resources.csv']) {
-  const text = fs.readFileSync(path.join(root, 'content', file), 'utf8')
-  forbidden.forEach((word) => { if (text.includes(word)) errors.push(`${file} 残留禁止内容: ${word}`) })
-}
-
 if (errors.length) {
   console.error(`内容校验失败（${errors.length} 项）：\n- ${errors.join('\n- ')}`)
   process.exit(1)

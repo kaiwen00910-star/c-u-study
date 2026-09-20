@@ -7,6 +7,7 @@
     "validate:data": "node scripts/validate-content.mjs",
     "check:migrations": "node scripts/check-migrations.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
+    "audit:links": "node scripts/audit-links.mjs",
     "snapshot:export": "node scripts/export-public-snapshot.mjs",
     "build:with-snapshot": "npm run snapshot:export && npm run build",
     "build": "npm run validate:data && npm run generate:sitemap && vite build",

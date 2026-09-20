@@ -1,6 +1,6 @@
 # 升本导航
 
-专注安徽省的专升本考纲学习资源导航站。当前覆盖 2026 年计算机类，已开放合肥师范学院、安徽信息工程学院、安徽文达信息工程学院、蚌埠学院、安徽新华学院、安徽三联学院、淮南师范学院、马鞍山学院、合肥经济学院、淮北理工学院、皖江工学院和阜阳理工学院 12 所学习地图；不扩展其他省份。
+专注安徽省的专升本考纲学习资源导航站。当前覆盖 2026 年计算机类，已开放安徽建筑大学、蚌埠学院、合肥大学、淮南师范学院、合肥师范学院、马鞍山学院、安徽新华学院、合肥经济学院、安徽三联学院、安徽信息工程学院、淮北理工学院、皖江工学院、安徽文达信息工程学院和阜阳理工学院 14 所学习地图；不扩展其他省份。
 
 ## 本地运行
 
@@ -41,6 +41,17 @@ npm run build
 ```
 
 数据校验会检查必填字段、范围维度、重复 ID/招生组合、日期、HTTPS 链接、院校引用、主题引用和快照 metadata。
+
+### 只读链接巡检
+
+使用已提交的公开快照检查招生章程、专业课考纲和学习资源链接：
+
+    npm run audit:links
+    npm run audit:links -- --timeout=20000 --concurrency=3 --output work/link-audit.json
+
+巡检默认只读，不提交表单，也不会自动修改、下架或删除数据。结果会记录关联 ID、原始/最终 URL、HTTP 状态、内容类型、跳转链、页面标题和结论。结论区分 accessible、redirect、automated-request-blocked、verification-page、login-required、not-found、tls-error 与 network-error；自动化请求被拦截或高校站点 TLS 链异常不等同于真实链接失效。
+
+在线巡检不进入 GitHub Actions，避免第三方高校网站或课程平台的偶发超时影响持续集成。需要定期人工运行并复核 automated-request-blocked、verification-page 和 tls-error 结果。
 
 ## Supabase 后台
 
