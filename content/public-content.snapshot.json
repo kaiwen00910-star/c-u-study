@@ -1,9 +1,9 @@
 {
   "metadata": {
     "schemaVersion": 2,
-    "version": 46,
-    "generatedAt": "2026-09-20T10:20:28.640Z",
-    "sourceUpdatedAt": "2026-09-20T10:15:52.579514+00:00",
+    "version": 53,
+    "generatedAt": "2026-09-21T12:37:55.750Z",
+    "sourceUpdatedAt": "2026-09-21T12:35:56.303846+00:00",
     "source": "supabase-public-rest-rls"
   },
   "academicSchools": [
@@ -18,7 +18,7 @@
       "active": true,
       "sort_order": 1,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-01",
       "has_study_map": false
     },
@@ -33,7 +33,7 @@
       "active": true,
       "sort_order": 2,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-02",
       "has_study_map": false
     },
@@ -48,7 +48,7 @@
       "active": true,
       "sort_order": 3,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-03",
       "has_study_map": false
     },
@@ -63,7 +63,7 @@
       "active": true,
       "sort_order": 4,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-04",
       "has_study_map": false
     },
@@ -78,7 +78,7 @@
       "active": true,
       "sort_order": 5,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-05",
       "has_study_map": false
     },
@@ -93,7 +93,7 @@
       "active": true,
       "sort_order": 6,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-06",
       "has_study_map": false
     },
@@ -108,7 +108,7 @@
       "active": true,
       "sort_order": 7,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-07",
       "has_study_map": false
     },
@@ -123,7 +123,7 @@
       "active": true,
       "sort_order": 8,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-08",
       "has_study_map": true
     },
@@ -138,12 +138,12 @@
       "active": true,
       "sort_order": 9,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-09",
       "has_study_map": false
     },
     {
-      "school_slug": "anhui-school-10",
+      "school_slug": "tlu",
       "wall_school_id": "anhui-school-10",
       "school_name": "铜陵学院",
       "school_type": "公办",
@@ -153,9 +153,9 @@
       "active": true,
       "sort_order": 10,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-10",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "bbc",
@@ -168,7 +168,7 @@
       "active": true,
       "sort_order": 11,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-11",
       "has_study_map": true
     },
@@ -183,7 +183,7 @@
       "active": true,
       "sort_order": 12,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-12",
       "has_study_map": false
     },
@@ -198,7 +198,7 @@
       "active": true,
       "sort_order": 13,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-13",
       "has_study_map": false
     },
@@ -213,7 +213,7 @@
       "active": true,
       "sort_order": 14,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-14",
       "has_study_map": true
     },
@@ -228,7 +228,7 @@
       "active": true,
       "sort_order": 15,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-15",
       "has_study_map": false
     },
@@ -243,7 +243,7 @@
       "active": true,
       "sort_order": 16,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-16",
       "has_study_map": false
     },
@@ -258,7 +258,7 @@
       "active": true,
       "sort_order": 17,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-17",
       "has_study_map": false
     },
@@ -273,7 +273,7 @@
       "active": true,
       "sort_order": 18,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-18",
       "has_study_map": false
     },
@@ -288,7 +288,7 @@
       "active": true,
       "sort_order": 19,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-19",
       "has_study_map": false
     },
@@ -303,7 +303,7 @@
       "active": true,
       "sort_order": 20,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-20",
       "has_study_map": false
     },
@@ -318,7 +318,7 @@
       "active": true,
       "sort_order": 21,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-21",
       "has_study_map": false
     },
@@ -333,7 +333,7 @@
       "active": true,
       "sort_order": 22,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-22",
       "has_study_map": true
     },
@@ -348,7 +348,7 @@
       "active": true,
       "sort_order": 23,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-23",
       "has_study_map": true
     },
@@ -363,7 +363,7 @@
       "active": true,
       "sort_order": 24,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-24",
       "has_study_map": false
     },
@@ -378,7 +378,7 @@
       "active": true,
       "sort_order": 25,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-25",
       "has_study_map": false
     },
@@ -393,7 +393,7 @@
       "active": true,
       "sort_order": 26,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-26",
       "has_study_map": true
     },
@@ -408,7 +408,7 @@
       "active": true,
       "sort_order": 27,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-27",
       "has_study_map": true
     },
@@ -423,7 +423,7 @@
       "active": true,
       "sort_order": 28,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-28",
       "has_study_map": true
     },
@@ -438,7 +438,7 @@
       "active": true,
       "sort_order": 29,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-29",
       "has_study_map": false
     },
@@ -453,7 +453,7 @@
       "active": true,
       "sort_order": 30,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-30",
       "has_study_map": false
     },
@@ -468,7 +468,7 @@
       "active": true,
       "sort_order": 31,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-31",
       "has_study_map": true
     },
@@ -483,7 +483,7 @@
       "active": true,
       "sort_order": 32,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-32",
       "has_study_map": false
     },
@@ -498,7 +498,7 @@
       "active": true,
       "sort_order": 33,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-33",
       "has_study_map": true
     },
@@ -513,7 +513,7 @@
       "active": true,
       "sort_order": 34,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-34",
       "has_study_map": true
     },
@@ -528,7 +528,7 @@
       "active": true,
       "sort_order": 35,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-35",
       "has_study_map": true
     },
@@ -543,7 +543,7 @@
       "active": true,
       "sort_order": 36,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-36",
       "has_study_map": true
     },
@@ -558,7 +558,7 @@
       "active": true,
       "sort_order": 37,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-37",
       "has_study_map": false
     },
@@ -573,7 +573,7 @@
       "active": true,
       "sort_order": 38,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-38",
       "has_study_map": true
     },
@@ -588,7 +588,7 @@
       "active": true,
       "sort_order": 39,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-39",
       "has_study_map": false
     },
@@ -603,7 +603,7 @@
       "active": true,
       "sort_order": 40,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-40",
       "has_study_map": false
     },
@@ -618,7 +618,7 @@
       "active": true,
       "sort_order": 41,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-41",
       "has_study_map": false
     },
@@ -633,7 +633,7 @@
       "active": true,
       "sort_order": 42,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "school_id": "anhui-school-42",
       "has_study_map": false
     }
@@ -1123,6 +1123,33 @@
       "sort_order": 18,
       "created_at": "2026-09-20T10:15:52.579514+00:00",
       "updated_at": "2026-09-20T10:15:52.579514+00:00",
+      "status": "published"
+    },
+    {
+      "offering_id": "tlu-digital-media-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "school_slug": "tlu",
+      "training_site": "数字媒体技术：铜陵职业技术学院（安徽省铜陵市铜官区翠湖四路2689号）",
+      "eligible_major_categories": "电子与信息大类、文化艺术大类、新闻传播大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "多媒体技术基础",
+        "C语言程序设计"
+      ],
+      "plan_count": 30,
+      "charter_url": "https://zsb.tlu.edu.cn/2026/0319/c1751a126213/page.htm",
+      "syllabus_url": "https://zsb.tlu.edu.cn/_upload/article/files/27/af/27d9464d4a5986457707170fa3ec/94f5c5a3-fc1c-4051-bbc9-511012319951.pdf",
+      "source_status": "2026正式章程与官方考纲",
+      "verified_at": "2026-09-21",
+      "active": true,
+      "sort_order": 19,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
       "status": "published"
     }
   ],
@@ -3108,6 +3135,168 @@
       "status": "published"
     },
     {
+      "point_id": "tlu-c-basic",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 1,
+      "section_name": "C语言基础",
+      "point_order": 1,
+      "point_title": "程序结构、数据类型、运算与输入输出",
+      "canonical_topic": "c-language-basic",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-c-control",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 1,
+      "section_name": "C语言基础",
+      "point_order": 2,
+      "point_title": "顺序、选择与循环结构",
+      "canonical_topic": "c-language-control",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-c-array",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 2,
+      "section_name": "复合程序设计",
+      "point_order": 1,
+      "point_title": "数组、字符串与函数",
+      "canonical_topic": "c-language-array",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-c-pointer",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "c-language",
+      "subject_name": "C语言程序设计",
+      "section_order": 2,
+      "section_name": "复合程序设计",
+      "point_order": 2,
+      "point_title": "指针、结构体、链表与文件",
+      "canonical_topic": "c-language-pointer",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-mm-concepts",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "multimedia",
+      "subject_name": "多媒体技术基础",
+      "section_order": 1,
+      "section_name": "多媒体基础",
+      "point_order": 1,
+      "point_title": "媒体与多媒体概念、主要特征、相关技术与素材分类",
+      "canonical_topic": "multimedia-basic",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-mm-audio",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "multimedia",
+      "subject_name": "多媒体技术基础",
+      "section_order": 1,
+      "section_name": "多媒体基础",
+      "point_order": 2,
+      "point_title": "声音三要素、采样参数与常见音频文件格式",
+      "canonical_topic": "multimedia-basic",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-mm-image",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "multimedia",
+      "subject_name": "多媒体技术基础",
+      "section_order": 2,
+      "section_name": "图形图像",
+      "point_order": 1,
+      "point_title": "色彩模式、图像分辨率、文件格式、矢量图与位图",
+      "canonical_topic": "multimedia-basic",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-mm-animation",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "multimedia",
+      "subject_name": "多媒体技术基础",
+      "section_order": 3,
+      "section_name": "动画与视频",
+      "point_order": 1,
+      "point_title": "动画原理、分类、制作流程、帧类型与文件格式",
+      "canonical_topic": "multimedia-basic",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
+      "point_id": "tlu-mm-video",
+      "year": 2026,
+      "school_slug": "tlu",
+      "subject_slug": "multimedia",
+      "subject_name": "多媒体技术基础",
+      "section_order": 3,
+      "section_name": "动画与视频",
+      "point_order": 2,
+      "point_title": "视频信号源、分类、文件格式、拍摄技巧与制式",
+      "canonical_topic": "multimedia-basic",
+      "active": true,
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00",
+      "province_slug": "anhui",
+      "major_slug": "computer-science",
+      "status": "published"
+    },
+    {
       "point_id": "wenda-c-basic",
       "year": 2026,
       "school_slug": "wenda",
@@ -3414,10 +3603,10 @@
       "duration_text": "149讲",
       "recommendation_reason": "函数极限导数和积分目录完整，讲解细致且方便反复观看",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-english-1",
@@ -3434,10 +3623,29 @@
       "duration_text": "6个专题约24小时",
       "recommendation_reason": "从简单句讲到从句和长难句，适合补语法并提升阅读拆句能力",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
+    },
+    {
+      "resource_id": "res-multimedia-1",
+      "topic_tags": [
+        "multimedia-basic"
+      ],
+      "title": "多媒体技术与应用",
+      "platform": "中国大学MOOC",
+      "creator": "同济大学",
+      "url": "https://www.icourse163.org/course/TONGJI-1002215007",
+      "resource_type": "系统课程",
+      "difficulty": "入门",
+      "duration_text": "7单元",
+      "recommendation_reason": "具体课程页覆盖多媒体基础、音频、图像、动画、视频与压缩编码，和铜陵学院多媒体技术基础考纲直接匹配",
+      "priority": 1,
+      "verified_at": "2026-09-21",
+      "status": "published",
+      "created_at": "2026-09-21T12:35:56.303846+00:00",
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-english-vocabulary-1",
@@ -3453,10 +3661,10 @@
       "duration_text": "12单元",
       "recommendation_reason": "具体课程页系统讲解大学英语高频词汇、词组、记忆方法与语境应用，适合补强专升本英语词汇基础",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-09-20T10:15:52.579514+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-basic-1",
@@ -3473,10 +3681,10 @@
       "duration_text": "完整学期",
       "recommendation_reason": "具体课程页可直接查看大纲，覆盖系统组成信息编码操作系统和办公软件",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-english-writing-1",
@@ -3492,10 +3700,10 @@
       "duration_text": "4章",
       "recommendation_reason": "具体课程页覆盖句子与段落组织、常用文体、应用文和应试写作，能直接补强英语写作知识点",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-09-20T10:15:52.579514+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-db-1",
@@ -3513,10 +3721,10 @@
       "duration_text": "完整学期",
       "recommendation_reason": "具体课程页覆盖数据模型、关系数据库、SQL、完整性、安全性与数据库设计，可对应皖江工学院正式考纲",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-09-19T16:55:28.636428+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-ds-1",
@@ -3535,10 +3743,10 @@
       "duration_text": "173讲",
       "recommendation_reason": "王卓老师本人发布，按线性表栈队列树图查找和排序组织内容",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-network-1",
@@ -3557,10 +3765,10 @@
       "duration_text": "73讲",
       "recommendation_reason": "UP主本人发布，用动画讲解分层协议局域网IP和TCP等抽象概念",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-c-1",
@@ -3579,10 +3787,10 @@
       "duration_text": "165讲",
       "recommendation_reason": "从环境搭建讲到指针与内存管理，内容完整且明确适用于专升本复习",
       "priority": 1,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-c-2",
@@ -3601,10 +3809,10 @@
       "duration_text": "231讲",
       "recommendation_reason": "作为第二种讲解思路，适合跟练基础语法并攻克数组函数和指针",
       "priority": 2,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-basic-2",
@@ -3621,10 +3829,10 @@
       "duration_text": "完整学期",
       "recommendation_reason": "具体课程页覆盖计算机原理软件平台网络平台与数据处理基础",
       "priority": 2,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-db-2",
@@ -3642,10 +3850,10 @@
       "duration_text": "80个知识点",
       "recommendation_reason": "具体课程页覆盖ER模型、关系模型、SQL、完整性、安全性与数据库设计，适合作为第二套系统讲解",
       "priority": 2,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-09-19T16:55:28.636428+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-ds-2",
@@ -3664,10 +3872,10 @@
       "duration_text": "149讲",
       "recommendation_reason": "章节短而清楚，适合在王卓课程之外补充算法思路与实现方法",
       "priority": 2,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-english-2",
@@ -3686,10 +3894,10 @@
       "duration_text": "20讲",
       "recommendation_reason": "内容覆盖语法翻译做题技巧和写作，与学历提升英语备考较贴近",
       "priority": 2,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-math-1",
@@ -3708,10 +3916,10 @@
       "duration_text": "完整学期",
       "recommendation_reason": "国家精品在线开放课程，适合按章节建立微积分基础",
       "priority": 2,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     },
     {
       "resource_id": "res-basic-3",
@@ -3728,10 +3936,10 @@
       "duration_text": "约1小时",
       "recommendation_reason": "适合学完系统课程后快速串联计算机基础与Office常考内容",
       "priority": 3,
-      "verified_at": "2026-09-20",
+      "verified_at": "2026-09-21",
       "status": "published",
       "created_at": "2026-08-13T05:40:46.040665+00:00",
-      "updated_at": "2026-09-20T10:15:52.579514+00:00"
+      "updated_at": "2026-09-21T12:35:56.303846+00:00"
     }
   ],
   "announcements": []

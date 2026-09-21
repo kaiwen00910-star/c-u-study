@@ -125,3 +125,12 @@ year,province_slug,major_slug,school_slug,subject_slug,section_order,section_nam
 2026,anhui,computer-science,hfuu,c-language,2,复合程序设计,2,hfuu-c-pointer,指针、结构体、共用体、枚举与链表,c-language-pointer
 2026,anhui,computer-science,hfuu,c-language,3,数据结构与算法,1,hfuu-c-linear,线性表、链式存储、栈与队列,data-structure-linear
 2026,anhui,computer-science,hfuu,c-language,3,数据结构与算法,2,hfuu-c-sort,二叉树、图、查找与排序基础,data-structure-sort
+2026,anhui,computer-science,tlu,multimedia,1,多媒体基础,1,tlu-mm-concepts,媒体与多媒体概念、主要特征、相关技术与素材分类,multimedia-basic
+2026,anhui,computer-science,tlu,multimedia,1,多媒体基础,2,tlu-mm-audio,声音三要素、采样参数与常见音频文件格式,multimedia-basic
+2026,anhui,computer-science,tlu,multimedia,2,图形图像,1,tlu-mm-image,色彩模式、图像分辨率、文件格式、矢量图与位图,multimedia-basic
+2026,anhui,computer-science,tlu,multimedia,3,动画与视频,1,tlu-mm-animation,动画原理、分类、制作流程、帧类型与文件格式,multimedia-basic
+2026,anhui,computer-science,tlu,multimedia,3,动画与视频,2,tlu-mm-video,视频信号源、分类、文件格式、拍摄技巧与制式,multimedia-basic
+2026,anhui,computer-science,tlu,c-language,1,C语言基础,1,tlu-c-basic,程序结构、数据类型、运算与输入输出,c-language-basic
+2026,anhui,computer-science,tlu,c-language,1,C语言基础,2,tlu-c-control,顺序、选择与循环结构,c-language-control
+2026,anhui,computer-science,tlu,c-language,2,复合程序设计,1,tlu-c-array,数组、字符串与函数,c-language-array
+2026,anhui,computer-science,tlu,c-language,2,复合程序设计,2,tlu-c-pointer,指针、结构体、链表与文件,c-language-pointer
