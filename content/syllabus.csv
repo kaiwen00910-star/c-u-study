@@ -149,3 +149,14 @@ year,province_slug,major_slug,school_slug,subject_slug,section_order,section_nam
 2026,anhui,computer-science,ahut,c-language,2,数组与函数,2,ahut-c-preprocessor,宏定义与文件包含预处理命令,c-language-basic
 2026,anhui,computer-science,ahut,c-language,3,指针与复合类型,1,ahut-c-pointer,指针、数组指针、函数参数与字符串指针,c-language-pointer
 2026,anhui,computer-science,ahut,c-language,3,指针与复合类型,2,ahut-c-struct-file,结构体、共用体、枚举、typedef与文件操作,c-language-pointer
+2026,anhui,computer-science,auta,computer-basics,1,计算机与数据,1,auta-basic-data,计算机基础、数制转换与数据表示,computer-basics
+2026,anhui,computer-science,auta,computer-basics,1,计算机与数据,2,auta-basic-hardware,硬件系统、工作原理与输入输出设备,computer-basics
+2026,anhui,computer-science,auta,computer-basics,2,系统与办公,1,auta-basic-os,操作系统基础与 Windows 10 基本使用,computer-basics
+2026,anhui,computer-science,auta,computer-basics,2,系统与办公,2,auta-basic-office,Office 与 WPS 文档、表格和演示文稿,computer-office
+2026,anhui,computer-science,auta,c-language,1,程序设计基础,1,auta-c-program-algorithm,C程序构成、预处理、执行过程与算法描述,c-language-basic
+2026,anhui,computer-science,auta,c-language,1,程序设计基础,2,auta-c-basic,数据类型、变量、运算符、表达式与输入输出,c-language-basic
+2026,anhui,computer-science,auta,c-language,1,程序设计基础,3,auta-c-control,分支、循环、跳转与嵌套控制结构,c-language-control
+2026,anhui,computer-science,auta,c-language,2,数组与函数,1,auta-c-array-sort,一维、二维和字符数组与简单排序,c-language-array
+2026,anhui,computer-science,auta,c-language,2,数组与函数,2,auta-c-function,函数、递归、变量作用域与存储方式,c-language-array
+2026,anhui,computer-science,auta,c-language,3,指针与复合类型,1,auta-c-pointer-types,指针、字符串指针、结构体、共用体、枚举与单链表,c-language-pointer
+2026,anhui,computer-science,auta,c-language,3,指针与复合类型,2,auta-c-file,文件指针、文件读写与文件操作库函数,c-language-pointer
