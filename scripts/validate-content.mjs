@@ -27,7 +27,9 @@ function unique(rows, field, file) {
 }
 function urlCheck(rows, fields, file) {
   rows.forEach((row, index) => fields.forEach((field) => {
-    if (!String(row[field]).startsWith('https://')) errors.push(`${file} 第 ${index + 2} 行 ${field} 必须使用 HTTPS`)
+    const value = String(row[field])
+    const isDocumentedOfficialHttp = file === 'offerings.csv' && /^http:\/\/zsb\.wxc\.edu\.cn\//.test(value)
+    if (!value.startsWith('https://') && !isDocumentedOfficialHttp) errors.push(`${file} 第 ${index + 2} 行 ${field} 必须使用 HTTPS`)
   }))
 }
 function dateCheck(rows, file) {
