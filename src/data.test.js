@@ -8,9 +8,9 @@ import { progressKey } from './storage'
 import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
-  it('仅包含十九所已完成计划与考纲闭环的院校', () => {
+  it('仅包含二十所已完成计划与考纲闭环的院校', () => {
     expect(schoolGroups().map((school) => school.school_name)).toEqual([
-      '安徽工业大学', '安徽建筑大学', '铜陵学院', '蚌埠学院', '合肥大学', '皖西学院', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院',
+      '安徽工业大学', '安徽师范大学', '安徽建筑大学', '铜陵学院', '蚌埠学院', '合肥大学', '皖西学院', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院',
       '安徽三联学院', '安徽信息工程学院', '淮北理工学院', '皖江工学院', '安徽文达信息工程学院', '芜湖学院', '阜阳理工学院', '安徽职业技术大学',
     ])
   })
@@ -66,6 +66,20 @@ describe('招生内容', () => {
     })
     expect(school.sites).toEqual(['网络工程：皖西学院本部（安徽省六安市云露桥西月亮岛）'])
     expect(schoolSyllabus('wxc').filter((point) => point.school_slug === 'wxc')).toHaveLength(19)
+  })
+
+  it('安徽师范大学使用同一正式发布页和已核验附件生成学校专属学习地图', () => {
+    const school = schoolGroups().find((item) => item.school_slug === 'ahnu')
+    expect(school).toMatchObject({
+      school_name: '安徽师范大学',
+      totalPlan: 80,
+      publicSubjects: ['高等数学', '英语'],
+      professionalSubjects: ['计算机专业基础', 'C语言程序设计'],
+    })
+    expect(school.sites).toEqual(['软件工程：安徽师范大学天门山校区（安徽省芜湖市九华北路171号）'])
+    expect(school.charter_url).toBe('https://zsxx.ahnu.edu.cn/info/1042/4133.htm')
+    expect(school.syllabus_url).toBe('https://zsxx.ahnu.edu.cn/info/1042/4133.htm')
+    expect(schoolSyllabus('ahnu').filter((point) => point.school_slug === 'ahnu')).toHaveLength(19)
   })
 
   it('院校列表和学习地图可由后台数据动态替换', () => {
@@ -129,11 +143,11 @@ describe('招生内容', () => {
     expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
   })
 
-  it('Supabase 不可用时的静态回退仍包含完整院校墙与十九所学习地图', () => {
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与二十所学习地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(19)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(20)
   })
 
   it('不允许旧版在线数据覆盖已核验的内置快照', () => {

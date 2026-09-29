@@ -433,3 +433,41 @@
 - 公开快照版本：75
 - sitemap：待构建后应为 23 个已发布页面
 - Supabase 迁移：`20260927151902_publish_verified_west_anhui_university_2026.sql`
+
+## 2026-09-29 安徽师范大学附件核验与上线
+
+用户明确确认：安徽师范大学可以使用同一个正式官方发布页面作为招生章程和专业课考纲入口，并在核验记录中注明附件下载需要验证码、考纲内容依据用户提供的官方附件核验。本次没有绕过验证码，也没有再次密集请求受限附件。
+
+### 已发布：安徽师范大学
+
+- 正式院校名称：安徽师范大学；school_slug：`ahnu`；办学性质：公办普通本科高等学校
+- 招生专业及计划：软件工程 80 人
+- 培养地点和完整地址：安徽师范大学天门山校区，安徽省芜湖市九华北路 171 号
+- 报考专业范围：电子与信息大类
+- 公共课：高等数学、英语；专业课：计算机专业基础、C 语言程序设计
+- 正式章程页面 URL：https://zsxx.ahnu.edu.cn/info/1042/4133.htm
+- 正式章程附件 URL：上述正式页面所列 PDF 下载入口，下载时需要验证码；本次依据用户提供的官方 PDF 核验
+- 考纲页面 URL：https://zsxx.ahnu.edu.cn/info/1042/4133.htm
+- 考纲附件 URL：上述正式页面所列“附件3-1：安徽师范大学2026年普通专升本招生专业课考试大纲.docx”下载入口，下载时需要验证码；本次依据用户提供的官方考纲 PDF 核验
+- 用户提供章程文件：`安徽师范大学.pdf`，15 页，SHA-256：`57A3CB813929396258EDBD82B593B0D8EC9BDC7124321707DFEA8C523EB02D0D`
+- 用户提供考纲文件：`安徽师范大学2026年普通专升本拟招生专业的专业课考试大纲及参考书目.pdf`，15 页，SHA-256：`1CC24610CC1EFE2B2BCAB0A005325629AFFDFA04E4C6FDFB981D73C854CC5998`
+- 官方来源访问状态：正式发布页面稳定公开、无需登录；页面同时列出正式章程和考纲附件，附件下载需要验证码。用户已明确授权按上述例外上线，正文内容从用户提供的官方附件逐项核验
+- 最后核验日期：2026-09-29
+- 学校专属知识点：19 个。其中计算机专业基础 11 个，覆盖计算机概述、数据表示与运算、软硬件系统、操作系统与工具、网络与移动互联网、信息安全、数据库、SQL、数据库设计、算法和数据结构；C 语言程序设计 8 个，覆盖程序结构、数据类型与运算、输入输出、选择、循环、数组、函数和指针
+- canonical_topic：`computer-basics`、`network-basic`、`information-security`、`database-basic`、`database-sql`、`database-design`、`data-structure-linear`、`c-language-basic`、`c-language-control`、`c-language-array`、`c-language-pointer`
+- 匹配资源：`res-basic-1`、`res-basic-2`、`res-basic-3`、`res-network-1`、`res-information-security-1`、`res-db-1`、`res-db-2`、`res-ds-1`、`res-ds-2`、`res-c-1`、`res-c-2`
+- 发布理由：正式章程、计划、培养地址、报考范围、考试科目和完整考纲均已从学校正式发布页及对应官方附件核验；用户明确同意验证码附件例外；每个新增知识点均有 published 资源覆盖
+
+### 本次上线后的目标状态
+
+- 安徽院校目录：42 所
+- 完整学习地图：20 所
+- published 招生点：25 个
+- published 知识点：218 个
+- published 学习资源：19 条
+- published 知识点无资源覆盖：0；published 招生点无考纲：0；重复资源 URL：0
+- 2027 招生点：4 条，全部保持 draft；2027 非 draft：0
+- draft 知识点：33 条，均不改动、不发布
+- sitemap：24 个已发布页面
+- 公开快照版本：80
+- Supabase 迁移：`20260929120111_publish_verified_anhui_normal_university_2026.sql`
