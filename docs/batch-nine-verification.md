@@ -571,3 +571,41 @@
 - 2027 招生点：4 条，全部保持 draft/inactive；2027 非 draft：0；draft 知识点：33 条，全部保持 inactive
 - sitemap：构建后应为 27 个已发布页面
 - Supabase 迁移：`20260929163216_publish_verified_computer_schools_batch_nine_followup.sql`
+
+## 2026-10-02 阜阳师范大学软件工程考纲补充核验与发布
+
+本次开始前已检查上次中断状态：本地工作区无未提交修改，local main、origin/main 与 GitHub main 均为 `a2566effd234a046b05271f1b2af727e1641793c`；Supabase 中 `anhui-school-06` 仍无招生点或知识点，未发现半成品迁移。4 条 2027 招生点仍为 draft/inactive，33 条 draft 知识点仍为 inactive，未覆盖、删除或发布任何后台草稿。
+
+### 已发布：阜阳师范大学
+
+- 正式院校名称：阜阳师范大学；school_slug：`fynu`；办学性质：公办普通本科高校
+- 招生专业及计划：软件工程 100 人
+- 培养地点和完整地址：安徽工商职业学院双凤校区，安徽省合肥市双凤经济开发区金宁路北 16 号
+- 报考专业范围：能源动力与材料大类、装备制造大类、电子与信息大类、交通运输大类
+- 公共课：高等数学、英语；专业课：计算机专业基础、C 语言程序设计
+- 正式章程页面 URL：https://www.fynu.edu.cn/bkzsxxw/info/1010/5876.htm
+- 正式章程附件 URL：章程正文由学校官方招生信息网页发布，页面未提供独立章程附件直链
+- 考纲页面 URL：https://www.fynu.edu.cn/bkzsxxw/info/1010/5675.htm
+- 考纲附件 URL：页面所列“附件2：阜阳师范大学2026年普通高校专升本拟招生专业课考试大纲.zip”下载要求验证码；未绕过验证码，软件工程考纲正文依据用户提供的学校官方 PDF 核验
+- 计划与报考范围佐证：https://www.fynu.edu.cn/__local/6/2D/1D/1192A3E70A12363497636A47D84_7C35BF83_14819.pdf
+- 培养地址佐证：https://www.ahbvc.edu.cn/xxgk/xxjj.htm
+- 官方来源访问状态：正式章程、拟招生方案、考纲目录和联合培养院校地址均公开且无需登录；考纲 ZIP 受验证码保护，按用户明确授权使用其提供的官方副本
+- 用户提供考纲文件：`阜阳师范大学软件工程专业专升本考试大纲.pdf`，6 页，159343 字节，SHA-256：`F5C56DF9D5FAB4879B296C29AF20023E0E1468CA5801449A62A153AF84EB561E`
+- 最后核验日期：2026-10-02
+- 学校专属知识点：30 个，其中计算机专业基础 19 个，覆盖计算机系统、软件与文件管理、局域网、因特网、Web、社交媒体、多媒体、信息系统、数据库、SQL、新技术、安全和职业道德；C 语言程序设计 11 个，覆盖程序结构、算法、类型与表达式、输入输出、选择与循环、数组、函数、指针、结构体和文件
+- canonical_topic：`computer-basics`、`computer-office`、`network-basic`、`network-ip`、`information-security`、`multimedia-basic`、`software-engineering`、`database-basic`、`database-sql`、`big-data`、`artificial-intelligence`、`c-language-basic`、`c-language-control`、`c-language-array`、`c-language-pointer`
+- 匹配资源：`res-basic-1`、`res-basic-2`、`res-basic-3`、`res-network-1`、`res-information-security-1`、`res-multimedia-1`、`res-software-engineering-1`、`res-db-1`、`res-db-2`、`res-big-data-1`、`res-artificial-intelligence-1`、`res-c-1`、`res-c-2`
+- 发布理由：正式章程、招生计划、培养地点、报考范围、公共课、专业课和学校专属考纲已经闭环，且每个新增知识点都有现有 published 资源覆盖
+
+### 暂不上线：合肥城市学院
+
+按用户本次明确要求，合肥城市学院保持未发布。本次未修改其目录 slug、未插入招生点或知识点，也未使用 2025 考纲代替 2026 材料。
+
+### 本次迁移后的目标状态
+
+- 安徽院校目录：42 所；完整学习地图：24 所
+- published 招生点：31 个；published 知识点：319 个；published 学习资源：21 条
+- published 知识点无资源覆盖：0；published 招生点无考纲：0；重复资源 URL：0
+- 2027 招生点：4 条，全部保持 draft/inactive；2027 非 draft：0；draft 知识点：33 条，全部保持 inactive
+- sitemap：构建后应为 28 个已发布页面
+- Supabase 迁移：`20261002062534_publish_verified_fuyang_normal_university_2026.sql`
