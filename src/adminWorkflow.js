@@ -19,6 +19,7 @@ export function publicationChecks(kind, item, validTopics = new Set()) {
     { label: '招生章程为 HTTPS 官方链接', pass: /^https:\/\//.test(item.charter_url || '') },
     { label: '考试大纲为 HTTPS 官方链接', pass: /^https:\/\//.test(item.syllabus_url || '') },
     { label: '招生人数、地点、范围和科目完整', pass: Number(item.plan_count) > 0 && Boolean(item.training_site?.trim()) && Boolean(item.eligible_major_categories?.trim()) && (item.public_subjects || item.publicSubjects || []).length > 0 && (item.professional_subjects || item.professionalSubjects || []).length > 0 },
+    { label: '招生专业和考试方案关系完整', pass: (item.program_names || item.programNames || []).length > 0 && /^[a-z0-9-]+$/.test(item.exam_scheme_id || '') },
     { label: '已完成新年度官方文件核验', pass: /^\d{4}-\d{2}-\d{2}$/.test(item.verified_at || '') && item.source_status !== '等待新年度官方文件核验' },
   ]
   return [

@@ -1,6 +1,8 @@
 import snapshot from '../content/public-content.snapshot.json'
 import { DEFAULT_SCOPE, matchesScope, normalizeScope } from './contentScope'
 
+const asList = (value) => Array.isArray(value) ? value : String(value || '').split('|').filter(Boolean)
+
 export const snapshotMetadata = snapshot.metadata
 export const fallbackAnnouncements = snapshot.announcements ?? []
 
@@ -12,8 +14,9 @@ export const offerings = snapshot.offerings.map((item) => ({
   year: Number(item.year),
   plan_count: Number(item.plan_count),
   sort_order: Number(item.sort_order),
-  publicSubjects: Array.isArray(item.public_subjects) ? item.public_subjects : String(item.public_subjects || '').split('|').filter(Boolean),
-  professionalSubjects: Array.isArray(item.professional_subjects) ? item.professional_subjects : String(item.professional_subjects || '').split('|').filter(Boolean),
+  programNames: asList(item.program_names),
+  publicSubjects: asList(item.public_subjects),
+  professionalSubjects: asList(item.professional_subjects),
 }))
 
 export const syllabus = snapshot.syllabusPoints.map((item) => ({
@@ -75,12 +78,47 @@ export function offeringSchoolGroups(items = offerings, academicSchools = fallba
     .reduce((acc, item) => {
       const school = metadata.get(item.school_slug)
       if (!school) return acc
-      acc[item.school_slug] ??= { ...item, ...school, sites: [], totalPlan: 0 }
+      acc[item.school_slug] ??= { ...item, ...school, offerings: [], sites: [], totalPlan: 0, publicSubjects: [], professionalSubjects: [], programNames: [] }
+      acc[item.school_slug].offerings.push(item)
       acc[item.school_slug].sites.push(item.training_site)
       acc[item.school_slug].totalPlan += item.plan_count
+      acc[item.school_slug].publicSubjects.push(...asList(item.publicSubjects || item.public_subjects))
+      acc[item.school_slug].professionalSubjects.push(...asList(item.professionalSubjects || item.professional_subjects))
+      acc[item.school_slug].programNames.push(...asList(item.programNames || item.program_names))
       return acc
     }, {}))
+  groups.forEach((school) => {
+    school.sites = [...new Set(school.sites)]
+    school.publicSubjects = [...new Set(school.publicSubjects)]
+    school.professionalSubjects = [...new Set(school.professionalSubjects)]
+    school.programNames = [...new Set(school.programNames)]
+    school.examSchemes = examSchemesForOfferings(school.offerings)
+  })
   return groups.sort((a, b) => a.sort_order - b.sort_order)
+}
+
+export function examSchemesForOfferings(items = []) {
+  return Object.values(items.reduce((acc, item) => {
+    const publicSubjects = asList(item.publicSubjects || item.public_subjects)
+    const professionalSubjects = asList(item.professionalSubjects || item.professional_subjects)
+    const fallbackId = `legacy:${item.school_slug}:${[...publicSubjects, ...professionalSubjects].join('|')}`
+    const examSchemeId = item.exam_scheme_id || fallbackId
+    acc[examSchemeId] ??= {
+      examSchemeId,
+      publicSubjects: [...publicSubjects],
+      professionalSubjects: [...professionalSubjects],
+      offerings: [],
+      programNames: [],
+      totalPlan: 0,
+    }
+    acc[examSchemeId].offerings.push(item)
+    acc[examSchemeId].programNames.push(...asList(item.programNames || item.program_names))
+    acc[examSchemeId].totalPlan += Number(item.plan_count)
+    return acc
+  }, {})).map((scheme) => ({
+    ...scheme,
+    programNames: [...new Set(scheme.programNames)],
+  }))
 }
 
 export function schoolSyllabus(slug, items = syllabus, scope = DEFAULT_SCOPE) {
@@ -88,6 +126,13 @@ export function schoolSyllabus(slug, items = syllabus, scope = DEFAULT_SCOPE) {
   return items.filter((item) => item.active !== false
     && matchesScope(item, normalized)
     && (item.school_slug === 'common' || item.school_slug === slug))
+}
+
+export function schoolSyllabusForScheme(slug, scheme, items = syllabus, scope = DEFAULT_SCOPE) {
+  const allowedSubjects = new Set([...(scheme?.publicSubjects || []), ...(scheme?.professionalSubjects || [])])
+  const points = schoolSyllabus(slug, items, scope)
+  if (!allowedSubjects.size) return points
+  return points.filter((point) => allowedSubjects.has(point.subject_name || subjectNames[point.subject_slug]))
 }
 
 export function resourcesForTopic(topic, items = resources) {

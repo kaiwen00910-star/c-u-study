@@ -16,6 +16,7 @@ export function normalizeOffering(row) {
     year: Number(row.year), status: row.status || (row.active === false ? 'archived' : 'published'),
     plan_count: Number(row.plan_count),
     sort_order: Number(row.sort_order),
+    programNames: Array.isArray(row.program_names) ? row.program_names : [],
     publicSubjects: Array.isArray(row.public_subjects) ? row.public_subjects : [],
     professionalSubjects: Array.isArray(row.professional_subjects) ? row.professional_subjects : [],
   }

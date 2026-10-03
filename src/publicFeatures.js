@@ -1,8 +1,9 @@
-import { scopePath } from './contentScope'
+import { schoolPath } from './contentScope'
 
-export function learningDeepLink(scope, schoolSlug, point) {
+export function learningDeepLink(scope, schoolSlug, point, examSchemeId = '') {
   const params = new URLSearchParams({ subject: point.subject_slug, point: point.point_id })
-  return `${scopePath(scope, schoolSlug)}?${params}`
+  if (examSchemeId) params.set('scheme', examSchemeId)
+  return `${schoolPath(scope, schoolSlug)}?${params}`
 }
 
 export function sanitizeCompareSelection(value, schools) {

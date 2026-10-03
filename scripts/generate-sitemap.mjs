@@ -12,7 +12,7 @@ for (const scope of scopes) {
   urls.add(base); urls.add(`${base}/compare`)
   const offeringSchools = new Set(snapshot.offerings.filter((row) => published(row) && row.year === scope.year && row.province_slug === scope.province_slug && row.major_slug === scope.major_slug).map((row) => row.school_slug))
   const syllabusSchools = new Set(snapshot.syllabusPoints.filter((row) => published(row) && row.year === scope.year && row.province_slug === scope.province_slug && row.major_slug === scope.major_slug && row.school_slug !== 'common').map((row) => row.school_slug))
-  ;[...offeringSchools].filter((slug) => syllabusSchools.has(slug)).forEach((slug) => urls.add(`${base}/${slug}`))
+  ;[...offeringSchools].filter((slug) => syllabusSchools.has(slug)).forEach((slug) => urls.add(`/${scope.province_slug}/${scope.year}/schools/${slug}`))
 }
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...urls].map((url) => `  <url><loc>${origin}${url}</loc></url>`).join('\n')}\n</urlset>\n`

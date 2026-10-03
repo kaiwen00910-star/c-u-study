@@ -36,6 +36,11 @@ export function scopePath(scope = DEFAULT_SCOPE, schoolSlug = '') {
   return schoolSlug ? `${base}/${schoolSlug}` : base
 }
 
+export function schoolPath(scope = DEFAULT_SCOPE, schoolSlug) {
+  const normalized = normalizeScope(scope)
+  return `/${normalized.provinceSlug}/${normalized.year}/schools/${schoolSlug}`
+}
+
 export function comparePath(scope = DEFAULT_SCOPE) {
   return `${scopePath(scope)}/compare`
 }

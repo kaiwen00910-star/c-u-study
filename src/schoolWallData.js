@@ -1,4 +1,4 @@
-import { DEFAULT_SCOPE, scopePath } from './contentScope'
+import { DEFAULT_SCOPE, schoolPath } from './contentScope'
 import { mapAvailableSchoolSlugs } from './data'
 
 export function createSchoolWallSchools(schools, offerings = [], syllabusPoints = [], scope = DEFAULT_SCOPE) {
@@ -16,7 +16,7 @@ export function createSchoolWallSchools(schools, offerings = [], syllabusPoints 
         schoolType: school.school_type,
         logo: school.logo_url || '',
         logoSource: school.logo_url?.startsWith('https://') ? 'database' : school.logo_url ? 'local' : 'missing',
-        href: hasDetails ? scopePath(scope, school.school_slug) : null,
+        href: hasDetails ? schoolPath(scope, school.school_slug) : null,
         hasDetails,
       }
     })

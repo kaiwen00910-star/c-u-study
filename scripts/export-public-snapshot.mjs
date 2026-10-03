@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const url = process.env.SNAPSHOT_SUPABASE_URL
-const publishableKey = process.env.SNAPSHOT_SUPABASE_PUBLISHABLE_KEY
+const url = process.env.SNAPSHOT_SUPABASE_URL || process.env.VITE_SUPABASE_URL
+const publishableKey = process.env.SNAPSHOT_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY
 if (!url || !publishableKey) {
   console.error('请设置 SNAPSHOT_SUPABASE_URL 和 SNAPSHOT_SUPABASE_PUBLISHABLE_KEY（仅使用 publishable key）。')
   process.exit(1)

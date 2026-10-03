@@ -182,6 +182,25 @@ td small { display: block; color: var(--muted); font-size: 10px; }
 .school-title p { margin: 0; color: var(--muted); font-size: 13px; }
 .official-links { margin-left: auto; display: flex; flex-wrap: wrap; gap: 9px; }
 .official-links a { padding: 8px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--green); font-size: 11px; font-weight: 600; }
+.school-offering-overview { margin: 26px 0; }
+.offering-detail-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 14px; }
+.offering-detail-grid article { padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.offering-detail-grid article > div, .offering-detail-grid nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.offering-detail-grid article > div span { color: var(--green); font-weight: 700; }
+.offering-detail-grid dl { margin: 16px 0; display: grid; gap: 10px; }
+.offering-detail-grid dl div { display: grid; gap: 3px; }
+.offering-detail-grid dt, .offering-detail-grid p { color: var(--muted); font-size: 11px; }
+.offering-detail-grid dd { margin: 0; font-size: 13px; line-height: 1.7; }
+.offering-detail-grid nav a { color: var(--green-2); font-size: 12px; font-weight: 700; }
+.exam-scheme-panel { margin: 26px 0 14px; padding: 22px; border-radius: 12px; background: #eef5f1; }
+.exam-scheme-panel h2 { margin: 5px 0; font: 700 23px 'Noto Serif SC',serif; }
+.exam-scheme-panel p { margin: 0; color: var(--muted); font-size: 12px; }
+.exam-scheme-tabs { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 10px; margin-top: 17px; }
+.exam-scheme-tabs button { padding: 14px; display: grid; gap: 5px; text-align: left; border: 1px solid #cadbd2; border-radius: 9px; background: #fff; color: var(--text); cursor: pointer; }
+.exam-scheme-tabs button strong { color: var(--green); }
+.exam-scheme-tabs button small, .exam-scheme-tabs button span { color: var(--muted); }
+.exam-scheme-tabs button.active { border-color: var(--green); background: var(--green); box-shadow: 0 8px 20px rgba(8,86,77,.14); }
+.exam-scheme-tabs button.active strong, .exam-scheme-tabs button.active small, .exam-scheme-tabs button.active span { color: #fff; }
 .learning-page > .subject-groups { padding: 14px 18px; border: 1px solid var(--line); border-radius: 8px; background: white; }
 .progress-panel { margin: 24px 0; padding: 18px 22px; display: grid; grid-template-columns: 210px 1fr 50px; align-items: center; gap: 20px; color: white; background: var(--green); border-radius: 10px; }
 .progress-copy { display: grid; gap: 3px; }
@@ -500,6 +519,8 @@ footer strong { font-size: 12px; }
   .school-title > div:nth-child(2) { flex: 1; }
   .school-title h1 { font-size: 25px; }
   .official-links { width: 100%; margin-left: 0; }
+  .offering-detail-grid, .exam-scheme-tabs { grid-template-columns: 1fr; }
+  .exam-scheme-panel { padding: 18px; }
   .progress-panel { grid-template-columns: 1fr 42px; gap: 12px; }
   .progress-copy { grid-column: 1 / -1; }
   .resource-row { grid-template-columns: 1fr; }

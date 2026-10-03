@@ -18,7 +18,7 @@ describe('搜索深链接和刷新恢复', () => {
   it('搜索结果携带院校、科目和知识点参数', () => {
     render(<MemoryRouter><SearchBox resources={[]} syllabusPoints={[cPoint]} schools={[school]} scope={DEFAULT_SCOPE} /></MemoryRouter>)
     fireEvent.change(screen.getByPlaceholderText(/搜索知识点/), { target: { value: '指针' } })
-    expect(screen.getByRole('link', { name: /函数与指针/ })).toHaveAttribute('href', '/anhui/2026/computer-science/demo?subject=c-language&point=demo-pointer')
+    expect(screen.getByRole('link', { name: /函数与指针/ })).toHaveAttribute('href', '/anhui/2026/schools/demo?subject=c-language&point=demo-pointer')
   })
 
   it('直接打开深链接会选择科目并短暂高亮目标；错误参数安全降级', () => {

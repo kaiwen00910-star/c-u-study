@@ -21,7 +21,7 @@ const emptyResource = {
 }
 const emptyAnnouncement = { id: null, title: '', content: '', enabled: false, starts_at: '', ends_at: '' }
 const emptyAcademicSchool = { school_id: '', school_slug: '', school_name: '', school_type: '公办', short_name: '', theme_color: '#1556a6', logo_url: '', active: true, has_study_map: false, sort_order: 1 }
-const emptyOffering = { offering_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: '', training_site: '', eligible_major_categories: '', public_subjects: '高等数学|英语', professional_subjects: '', plan_count: 1, charter_url: '', syllabus_url: '', source_status: '等待新年度官方文件核验', verified_at: '', active: false, status: 'draft', sort_order: 1 }
+const emptyOffering = { offering_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: '', program_names: '', exam_scheme_id: '', training_site: '', eligible_major_categories: '', public_subjects: '高等数学|英语', professional_subjects: '', plan_count: 1, charter_url: '', syllabus_url: '', source_status: '等待新年度官方文件核验', verified_at: '', active: false, status: 'draft', sort_order: 1 }
 const emptySyllabusPoint = { point_id: '', year: 2026, province_slug: 'anhui', major_slug: 'computer-science', school_slug: 'common', subject_slug: '', subject_name: '', section_order: 1, section_name: '', point_order: 1, point_title: '', canonical_topic: '', active: false, status: 'draft' }
 
 function useAdminMeta() {
@@ -234,7 +234,7 @@ const schoolLogoTypes = {
 function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
   const defaults = kind === 'school' ? emptyAcademicSchool : kind === 'offering' ? emptyOffering : emptySyllabusPoint
   const prepared = initial && kind === 'offering'
-    ? { ...initial, public_subjects: (initial.public_subjects || initial.publicSubjects || []).join('|'), professional_subjects: (initial.professional_subjects || initial.professionalSubjects || []).join('|') }
+    ? { ...initial, program_names: (initial.program_names || initial.programNames || []).join('|'), public_subjects: (initial.public_subjects || initial.publicSubjects || []).join('|'), professional_subjects: (initial.professional_subjects || initial.professionalSubjects || []).join('|') }
     : initial
   const initialForm = prepared ? { ...prepared } : { ...defaults, school_slug: kind !== 'school' ? (schools[0]?.school_slug || defaults.school_slug) : defaults.school_slug }
   const [form, setForm] = useState(initialForm)
@@ -297,8 +297,8 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
       }
     } else if (kind === 'offering') {
       table = 'admission_offerings'; key = 'offering_id'; normalize = normalizeOffering
-      payload = { ...form, year: Number(form.year), plan_count: Number(form.plan_count), sort_order: Number(form.sort_order), public_subjects: form.public_subjects.split('|').map((item) => item.trim()).filter(Boolean), professional_subjects: form.professional_subjects.split('|').map((item) => item.trim()).filter(Boolean), charter_url: form.charter_url || null, syllabus_url: form.syllabus_url || null, verified_at: form.verified_at || null, active: false, status: 'draft' }
-      delete payload.publicSubjects; delete payload.professionalSubjects
+      payload = { ...form, year: Number(form.year), plan_count: Number(form.plan_count), sort_order: Number(form.sort_order), program_names: form.program_names.split('|').map((item) => item.trim()).filter(Boolean), exam_scheme_id: form.exam_scheme_id.trim() || null, public_subjects: form.public_subjects.split('|').map((item) => item.trim()).filter(Boolean), professional_subjects: form.professional_subjects.split('|').map((item) => item.trim()).filter(Boolean), charter_url: form.charter_url || null, syllabus_url: form.syllabus_url || null, verified_at: form.verified_at || null, active: false, status: 'draft' }
+      delete payload.programNames; delete payload.publicSubjects; delete payload.professionalSubjects; delete payload.examSchemes; delete payload.offerings
     } else {
       table = 'syllabus_points'; key = 'point_id'; normalize = normalizeSyllabusPoint
       payload = { ...form, year: Number(form.year), section_order: Number(form.section_order), point_order: Number(form.point_order), active: false, status: 'draft' }
@@ -337,6 +337,8 @@ function AcademicEditor({ kind, initial, schools, onClose, onSaved }) {
       <label>院校<select required value={form.school_slug} onChange={(e) => set('school_slug', e.target.value)}>{schools.map((school) => <option key={school.school_slug} value={school.school_slug}>{school.school_name}</option>)}</select></label>
       <label>年份<input type="number" min="2020" max="2100" required value={form.year} onChange={(e) => set('year', e.target.value)} /></label>
       <label>计划人数<input type="number" min="1" required value={form.plan_count} onChange={(e) => set('plan_count', e.target.value)} /></label>
+      <label className="wide">招生专业（多个专业用 | 分隔）<input required value={form.program_names} onChange={(e) => set('program_names', e.target.value)} /></label>
+      <label className="wide">考试方案 ID<input required pattern="[a-z0-9-]+" value={form.exam_scheme_id || ''} onChange={(e) => set('exam_scheme_id', e.target.value.trim())} /><small>同校且考试科目完全相同的招生点使用同一个 ID。</small></label>
       <label className="wide">培养地点<input required value={form.training_site} onChange={(e) => set('training_site', e.target.value)} /></label>
       <label className="wide">招生范围<input required value={form.eligible_major_categories} onChange={(e) => set('eligible_major_categories', e.target.value)} /></label>
       <label>公共课（用 | 分隔）<input required value={form.public_subjects} onChange={(e) => set('public_subjects', e.target.value)} /></label>

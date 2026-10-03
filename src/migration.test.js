@@ -8,6 +8,7 @@ const allSql = migrationFiles.map((name) => fs.readFileSync(path.join(migrationD
 const scopedMigration = fs.readFileSync(path.join(migrationDirectory, '20260825073452_enforce_scoped_content_integrity.sql'), 'utf8').toLowerCase()
 const healthMigration = fs.readFileSync(path.join(migrationDirectory, '20260826062947_fix_admin_health_and_pagination.sql'), 'utf8').toLowerCase()
 const freshnessMigration = fs.readFileSync(path.join(migrationDirectory, '20260827064340_unify_review_staleness_rule.sql'), 'utf8').toLowerCase()
+const schoolFirstMigration = fs.readFileSync(path.join(migrationDirectory, '20261003034212_add_offering_exam_schemes.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -69,5 +70,14 @@ describe('Supabase migration 安全与完整性', () => {
     expect(freshnessMigration).toContain("time zone 'asia/shanghai'")
     expect(freshnessMigration).toContain('p_verified_at < p_as_of - 90')
     expect(freshnessMigration.match(/public\.review_stale_on\(verified_at\)/g)?.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('院校主地图使用结构化专业和考试方案且年度复制保持关系', () => {
+    expect(schoolFirstMigration).toContain('add column if not exists program_names text[]')
+    expect(schoolFirstMigration).toContain('add column if not exists exam_scheme_id text')
+    expect(schoolFirstMigration).toContain("and offering.status = 'published'")
+    expect(schoolFirstMigration).toContain('source.program_names, source.exam_scheme_id')
+    expect(schoolFirstMigration).toContain('security invoker')
+    expect(schoolFirstMigration).toContain('admission_offerings_published_school_scheme_idx')
   })
 })
