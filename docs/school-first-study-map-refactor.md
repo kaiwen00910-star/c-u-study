@@ -101,9 +101,9 @@
 
 ## 上线记录
 
-- GitHub SHA：待本次推送完成后回填
-- GitHub Actions：待本次推送完成后回填
-- Netlify Production deploy ID：待本次推送完成后回填
+- 功能上线 GitHub SHA：`a3442c829ba615d3c54525dd5e749f9fc02deb67`
+- GitHub Actions：[37094901748](https://github.com/kaiwen00910-star/c-u-study/actions/runs/37094901748)，`success`
+- Netlify Production deploy ID：`6ac07d1cf893d700088c6881`，`ready`，`commit_ref=a3442c829ba615d3c54525dd5e749f9fc02deb67`
 - Supabase 迁移：`20261003034212_add_offering_exam_schemes`
 
 ## 已知限制与后续建议
