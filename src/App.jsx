@@ -67,7 +67,7 @@ export function MobileNavigation({ favoritesCount }) {
 }
 
 function Layout({ children, favoritesCount, announcement, content }) {
-  return <div className="site-shell">
+  return <div className="site-shell" data-content-release="batch-ten">
     <header className="topbar">
       <div className="topbar-inner">
         <Logo />
