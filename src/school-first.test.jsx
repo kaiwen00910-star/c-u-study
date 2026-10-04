@@ -17,16 +17,16 @@ function LocationProbe() {
 }
 
 describe('院校主导型学习地图', () => {
-  it('三十一所已开放院校全部生成 canonical 院校主路由', () => {
+  it('三十八所已开放院校全部生成 canonical 院校主路由', () => {
     const paths = schoolGroups().map((school) => schoolPath(DEFAULT_SCOPE, school.school_slug))
-    expect(paths).toHaveLength(31)
-    expect(new Set(paths).size).toBe(31)
+    expect(paths).toHaveLength(38)
+    expect(new Set(paths).size).toBe(38)
     expect(paths.every((value) => /^\/anhui\/2026\/schools\/[a-z0-9-]+$/.test(value))).toBe(true)
   })
 
   it('首页院校墙只给已开放院校生成新主路由', () => {
     const wall = createSchoolWallSchools(fallbackAcademicSchools, offerings, syllabus, DEFAULT_SCOPE)
-    expect(wall.filter((school) => school.hasDetails)).toHaveLength(31)
+    expect(wall.filter((school) => school.hasDetails)).toHaveLength(38)
     expect(wall.filter((school) => school.hasDetails).every((school) => school.href === `/anhui/2026/schools/${school.schoolSlug}`)).toBe(true)
     expect(wall.find((school) => school.name === '合肥城市学院')).toMatchObject({ hasDetails: false, href: null })
   })
@@ -84,17 +84,41 @@ describe('院校主导型学习地图', () => {
     expect(new Set(schoolSyllabusForScheme('chu', chinese).map((point) => point.subject_name))).not.toContain('心理学')
   })
 
+  it('第十一批七所院校全部开放，文理方案与共享知识点正确隔离', () => {
+    const batch = new Map(schoolGroups().filter((school) => ['bzuu', 'chzu', 'ahszu', 'hsu', 'ahua', 'aycc', 'aisu'].includes(school.school_slug)).map((school) => [school.school_slug, school]))
+    expect([...batch.keys()].sort()).toEqual(['ahszu', 'ahua', 'aisu', 'aycc', 'bzuu', 'chzu', 'hsu'])
+    expect(batch.get('bzuu').offerings).toHaveLength(6)
+    expect(batch.get('chzu').offerings).toHaveLength(4)
+    expect(batch.get('ahszu').offerings).toHaveLength(9)
+    expect(batch.get('hsu').offerings).toHaveLength(8)
+    expect(batch.get('ahua').offerings).toHaveLength(8)
+    expect(batch.get('aycc').offerings).toHaveLength(8)
+    expect(batch.get('aisu').offerings).toHaveLength(22)
+
+    const accountingWen = batch.get('aisu').examSchemes.find((scheme) => scheme.examSchemeId === 'aisu-accounting-wen')
+    const accountingLi = batch.get('aisu').examSchemes.find((scheme) => scheme.examSchemeId === 'aisu-accounting-li')
+    expect(accountingWen.publicSubjects).toEqual(['大学语文', '英语'])
+    expect(accountingLi.publicSubjects).toEqual(['高等数学', '英语'])
+    expect(accountingWen.offerings).toHaveLength(2)
+    expect(accountingLi.offerings).toHaveLength(2)
+    expect(new Set(schoolSyllabusForScheme('aisu', accountingWen).filter((point) => point.school_slug === 'aisu').map((point) => point.point_id))).toEqual(new Set(schoolSyllabusForScheme('aisu', accountingLi).filter((point) => point.school_slug === 'aisu').map((point) => point.point_id)))
+
+    const visual = batch.get('ahua').examSchemes.find((scheme) => scheme.examSchemeId === 'ahua-visual')
+    expect(visual.offerings).toHaveLength(3)
+    expect(new Set(schoolSyllabusForScheme('ahua', visual).map((point) => point.point_id)).size).toBe(schoolSyllabusForScheme('ahua', visual).length)
+  })
+
   it('SEO 将旧路由 canonical 到院校主路由，院校页描述包含考试方案', () => {
     expect(canonicalPathForPath('/anhui/2026/computer-science/aufe')).toBe('/anhui/2026/schools/aufe')
     expect(canonicalPathForPath('/anhui/2026/schools/aufe')).toBe('/anhui/2026/schools/aufe')
     expect(metadataForPath('/anhui/2026/schools/aufe', '安徽财经大学').description).toContain('考试方案')
   })
 
-  it('sitemap 只收录 canonical 院校主路由且保持三十五页', () => {
+  it('sitemap 只收录 canonical 院校主路由且保持四十二页', () => {
     const xml = fs.readFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), 'utf8')
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
-    expect(locations).toHaveLength(35)
-    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(31)
+    expect(locations).toHaveLength(42)
+    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(38)
     expect(locations.some((url) => /\/anhui\/2026\/computer-science\/(?!compare$)[a-z0-9-]+$/.test(url))).toBe(false)
   })
 })

@@ -56,9 +56,9 @@ urlCheck(offerings, ['charter_url','syllabus_url'], 'offerings.csv'); urlCheck(r
 dateCheck(offerings, 'offerings.csv'); dateCheck(resources, 'resources.csv')
 
 if (fallbackAcademicSchools.length !== 42) errors.push(`院校回退数据应为 42 所，当前为 ${fallbackAcademicSchools.length} 所`)
-if (snapshot.offerings.length !== 67) errors.push(`公开快照应为 67 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
-if (snapshot.syllabusPoints.length !== 568) errors.push(`公开快照应为 568 个已发布知识点，当前为 ${snapshot.syllabusPoints.length} 个`)
-if (snapshot.resources.filter((row) => row.status === 'published').length !== 58) errors.push('公开快照应为 58 条已发布学习资源')
+if (snapshot.offerings.length !== 132) errors.push(`公开快照应为 132 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
+if (snapshot.syllabusPoints.length !== 1033) errors.push(`公开快照应为 1033 个已发布知识点，当前为 ${snapshot.syllabusPoints.length} 个`)
+if (snapshot.resources.filter((row) => row.status === 'published').length !== 80) errors.push('公开快照应为 80 条已发布学习资源')
 unique(fallbackAcademicSchools, 'school_id', '院校回退数据')
 unique(fallbackAcademicSchools, 'school_slug', '院校回退数据')
 fallbackAcademicSchools.forEach((school, index) => {
@@ -86,7 +86,7 @@ snapshot.resources.filter((row) => row.status === 'active' || row.status === 'pu
 
 const snapshotOfferingCombinations = new Set()
 snapshot.offerings.forEach((row, index) => {
-  const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase(), JSON.stringify(row.program_names)].join('|')
+  const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase(), JSON.stringify(row.program_names), row.exam_scheme_id].join('|')
   if (snapshotOfferingCombinations.has(combination)) errors.push(`公开快照招生计划第 ${index + 1} 条范围/院校/培养地点组合重复`)
   snapshotOfferingCombinations.add(combination)
   if (row.status === 'published' && (!Array.isArray(row.program_names) || row.program_names.length === 0 || !/^[a-z0-9-]+$/.test(row.exam_scheme_id || ''))) {
@@ -109,13 +109,13 @@ snapshot.offerings.filter((row) => row.status === 'published').forEach((row, ind
 })
 const mapSchools = new Set(snapshot.syllabusPoints.filter((row) => row.status === 'published' && row.school_slug !== 'common').map((row) => row.school_slug))
 const publishedMapSchools = new Set(snapshot.offerings.filter((row) => row.status === 'published' && mapSchools.has(row.school_slug)).map((row) => row.school_slug))
-if (publishedMapSchools.size !== 31) errors.push(`公开快照应为 31 所完整学习地图，当前为 ${publishedMapSchools.size} 所`)
+if (publishedMapSchools.size !== 38) errors.push(`公开快照应为 38 所完整学习地图，当前为 ${publishedMapSchools.size} 所`)
 const hefeiCitySlug = fallbackAcademicSchools.find((school) => school.school_name === '合肥城市学院')?.school_slug
 if (snapshot.offerings.some((row) => row.status === 'published' && row.school_slug === hefeiCitySlug)) errors.push('合肥城市学院不得出现已发布招生点')
 
 const offeringCombinations = new Set()
 offerings.forEach((row, index) => {
-  const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase(), row.program_names].join('|')
+  const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase(), row.program_names, row.exam_scheme_id].join('|')
   if (offeringCombinations.has(combination)) errors.push(`offerings.csv 第 ${index + 2} 行年份/省份/专业/院校/培养地点组合重复`)
   offeringCombinations.add(combination)
 })

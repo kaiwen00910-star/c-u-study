@@ -17,12 +17,22 @@ async function read(table, params = {}) {
   return response.json()
 }
 
+async function readAll(table, params = {}) {
+  const pageSize = 1000
+  const rows = []
+  for (let offset = 0; ; offset += pageSize) {
+    const page = await read(table, { ...params, limit: String(pageSize), offset: String(offset) })
+    rows.push(...page)
+    if (page.length < pageSize) return rows
+  }
+}
+
 const [academicSchools, offerings, rawSyllabusPoints, resources, announcements] = await Promise.all([
-  read('academic_schools', { order: 'sort_order.asc,school_id.asc' }),
-  read('admission_offerings', { order: 'year.asc,province_slug.asc,major_slug.asc,sort_order.asc' }),
-  read('syllabus_points', { order: 'year.asc,province_slug.asc,major_slug.asc,school_slug.asc,subject_slug.asc,section_order.asc,point_order.asc' }),
-  read('resources', { order: 'priority.asc,title.asc' }),
-  read('announcements', { order: 'updated_at.desc' }),
+  readAll('academic_schools', { order: 'sort_order.asc,school_id.asc' }),
+  readAll('admission_offerings', { order: 'year.asc,province_slug.asc,major_slug.asc,sort_order.asc' }),
+  readAll('syllabus_points', { order: 'year.asc,province_slug.asc,major_slug.asc,school_slug.asc,subject_slug.asc,section_order.asc,point_order.asc' }),
+  readAll('resources', { order: 'priority.asc,title.asc' }),
+  readAll('announcements', { order: 'updated_at.desc' }),
 ])
 
 let versionRows = []

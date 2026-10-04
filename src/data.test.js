@@ -8,9 +8,9 @@ import { progressKey } from './storage'
 import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
-  it('仅包含三十一所已完成计划与考纲闭环的院校', () => {
+  it('仅包含三十八所已完成计划与考纲闭环的院校', () => {
     expect(schoolGroups().map((school) => school.school_name)).toEqual([
-      '安徽工业大学', '安徽农业大学', '安徽医科大学', '安徽师范大学', '安徽中医药大学', '阜阳师范大学', '安庆师范大学', '安徽建筑大学', '安徽科技工程大学', '铜陵学院', '蚌埠学院', '蚌埠医科大学', '皖南医科大学', '合肥大学', '巢湖学院', '池州学院', '皖西学院', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院',
+      '安徽工业大学', '安徽农业大学', '安徽医科大学', '安徽师范大学', '安徽中医药大学', '阜阳师范大学', '安庆师范大学', '安徽建筑大学', '安徽科技工程大学', '铜陵学院', '蚌埠学院', '蚌埠医科大学', '皖南医科大学', '合肥大学', '巢湖学院', '亳州学院', '滁州学院', '宿州学院', '黄山学院', '池州学院', '皖西学院', '淮南师范学院', '合肥师范学院', '安徽艺术学院', '安徽医科大学临床医学院', '马鞍山学院', '安徽新华学院', '合肥经济学院', '安徽外国语学院',
       '安徽三联学院', '安徽信息工程学院', '淮北理工学院', '皖江工学院', '安徽文达信息工程学院', '芜湖学院', '阜阳理工学院', '安徽财经大学', '安徽职业技术大学',
     ])
   })
@@ -157,11 +157,11 @@ describe('招生内容', () => {
     expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
   })
 
-  it('Supabase 不可用时的静态回退仍包含完整院校墙与三十一所学习地图', () => {
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与三十八所学习地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(31)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(38)
   })
 
   it('不允许旧版在线数据覆盖已核验的内置快照', () => {
