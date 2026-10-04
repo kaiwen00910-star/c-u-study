@@ -77,10 +77,11 @@
 
 ## 上线结果
 
-- GitHub main SHA：上线提交后回填。
-- GitHub Actions：上线提交后回填。
-- Netlify Production deploy ID：上线提交后回填。
-- Netlify Production commit_ref：上线提交后回填。
+- 实现与首轮上线提交：`b8a6f8ce7c9a378162ad873d51e2d06a483be941`。
+- GitHub Actions：[run 37173678015](https://github.com/kaiwen00910-star/c-u-study/actions/runs/37173678015)，结论 `success`。
+- Netlify Production deploy ID：`6ac1c57130acd90008a0758f`，状态 `ready`，插件状态 `success`。
+- Netlify Production commit_ref：`b8a6f8ce7c9a378162ad873d51e2d06a483be941`。
+- Production 实测：7 个新院校路由均返回 HTTP 200；巢湖学院页面实际渲染 5 个招生点、5 套考试方案且 canonical 正确；线上 sitemap 为 35 个页面、31 个院校主路由、0 个旧专业院校路由。
 
 ## 已知限制与建议
 
