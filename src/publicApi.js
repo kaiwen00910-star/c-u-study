@@ -1,4 +1,4 @@
-import { DEFAULT_SCOPE, normalizeScope } from './contentScope'
+import { ALL_PROGRAMS_MAJOR, DEFAULT_SCOPE, normalizeScope } from './contentScope'
 
 const url = import.meta.env.VITE_SUPABASE_URL
 const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
@@ -30,8 +30,8 @@ export async function loadPublicContent(scope = DEFAULT_SCOPE, attempt = 0) {
   const scopeFilters = {
     year: `eq.${normalized.year}`,
     province_slug: `eq.${normalized.provinceSlug}`,
-    major_slug: `eq.${normalized.majorSlug}`,
   }
+  if (normalized.majorSlug !== ALL_PROGRAMS_MAJOR) scopeFilters.major_slug = `eq.${normalized.majorSlug}`
   const versionBefore = await read('content_versions', { select: 'version,updated_at', id: 'eq.public-content', limit: '1' })
   const [resourceRows, announcementRows, academicSchoolRows, offeringRows, syllabusRows] = await Promise.all([
     read('resources', { select: '*', order: 'priority.asc,title.asc' }),
@@ -64,7 +64,11 @@ export async function loadPublishedScopes() {
     select: 'year,province_slug,major_slug',
     order: 'year.desc',
   })
-  return [...new Map(rows.map((row) => [`${row.year}:${row.province_slug}:${row.major_slug}`, {
+  const scopes = [...new Map(rows.map((row) => [`${row.year}:${row.province_slug}:${row.major_slug}`, {
     year: Number(row.year), provinceSlug: row.province_slug, majorSlug: row.major_slug,
   }])).values()]
+  const allProgramScopes = [...new Map(rows.map((row) => [`${row.year}:${row.province_slug}`, {
+    year: Number(row.year), provinceSlug: row.province_slug, majorSlug: ALL_PROGRAMS_MAJOR,
+  }])).values()]
+  return [...allProgramScopes, ...scopes]
 }

@@ -78,7 +78,7 @@ describe('学习地图科目选择与空状态', () => {
     renderLearningMap([])
     expect(screen.getByRole('heading', { name: '该院校暂无可展示考纲' })).toBeVisible()
     expect(screen.getByText(/官方考纲暂未发布/)).toBeVisible()
-    expect(screen.getByRole('link', { name: '返回院校列表' })).toHaveAttribute('href', '/anhui/2026/computer-science')
+    expect(screen.getByRole('link', { name: '返回院校列表' })).toHaveAttribute('href', '/anhui/2026/all-programs')
   })
 })
 

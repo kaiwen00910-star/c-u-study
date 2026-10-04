@@ -256,7 +256,7 @@ export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAU
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const usedFilters = useRef(new Set())
-  const filters = { q: params.get('q') || '', type: params.get('type') || '', map: params.get('map') || '', subject: params.get('subject') || '' }
+  const filters = { q: params.get('q') || '', type: params.get('type') || '', map: params.get('map') || '', program: params.get('program') || '', subject: params.get('subject') || '' }
   useEffect(() => { trackEvent('school_directory_entered', `${scope.year}:${scope.provinceSlug}:${scope.majorSlug}`) }, [scope.year, scope.provinceSlug, scope.majorSlug])
   const setFilter = (key, value) => {
     const next = new URLSearchParams(params)
@@ -272,12 +272,13 @@ export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAU
   const openSchools = schools.filter((school) => filteredSlugs.has(school.school_slug))
   const pendingSchools = filteredDirectory.filter((school) => !school.hasDetails)
   const subjects = [...new Set(schools.flatMap((school) => [...school.publicSubjects, ...school.professionalSubjects]))]
+  const programs = [...new Set(schools.flatMap((school) => school.programNames || []))]
   const years = [...new Set(publishedScopes.filter((item) => item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug).map((item) => item.year))].sort((a, b) => b - a)
   return <div className="page-wrap" id="school-filter">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
     <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>{wallSchools.length} 所院校名录中，当前 {schools.length} 所院校开放完整学习地图。</p></div><div className="filter-box scope-summary"><strong>已发布年份</strong><label className="sr-only" htmlFor="published-year">选择年份</label><select id="published-year" value={scope.year} onChange={(event) => navigate(scopePath({ ...scope, year: Number(event.target.value) }))}>{years.map((year) => <option key={year} value={year}>{year} 年</option>)}</select><span>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug}</span><small>仅展示已有正式发布数据的年份</small></div></section>
     <section className="exam-structure"><div><span>安徽考试结构</span><strong>2 门公共课</strong><b>+</b><strong>2 门专业课</strong></div><p>公共课由省考试院组织；专业课由招生院校组织，因此同一专业在不同院校的科目可能不同。</p></section>
-    <section className="school-filters" aria-label="院校筛选"><label>院校名称<input type="search" value={filters.q} onChange={(event) => setFilter('q', event.target.value)} placeholder="输入院校名称" /></label><label>办学性质<select value={filters.type} onChange={(event) => setFilter('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>资料状态<select value={filters.map} onChange={(event) => setFilter('map', event.target.value)}><option value="">全部</option><option value="open">已开放学习地图</option><option value="pending">资料整理中</option></select></label><label>考试科目<select value={filters.subject} onChange={(event) => setFilter('subject', event.target.value)}><option value="">全部科目</option>{subjects.map((subject) => <option key={subject}>{subject}</option>)}</select></label><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>
+    <section className="school-filters" aria-label="院校筛选"><label>院校名称<input type="search" value={filters.q} onChange={(event) => setFilter('q', event.target.value)} placeholder="输入院校名称" /></label><label>办学性质<select value={filters.type} onChange={(event) => setFilter('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>资料状态<select value={filters.map} onChange={(event) => setFilter('map', event.target.value)}><option value="">全部</option><option value="open">已开放学习地图</option><option value="pending">资料整理中</option></select></label><label>招生专业<select value={filters.program} onChange={(event) => setFilter('program', event.target.value)}><option value="">全部专业</option>{programs.map((program) => <option key={program}>{program}</option>)}</select></label><label>考试科目<select value={filters.subject} onChange={(event) => setFilter('subject', event.target.value)}><option value="">全部科目</option>{subjects.map((subject) => <option key={subject}>{subject}</option>)}</select></label><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>
     <p className="filter-result-count" role="status">找到 {filteredDirectory.length} 所院校</p>
     {!filteredDirectory.length && <section className="filter-empty"><h2>没有匹配的院校</h2><p>可以减少筛选条件，或清空后重新查找。</p><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>}
     {!!openSchools.length && <><div className="section-heading"><div><span className="section-number">{openSchools.length} 所</span><h2>已开放学习地图</h2></div><Link to={comparePath(scope)}>查看横向对比 →</Link></div><section className="school-grid">{openSchools.map((school) => <SchoolCard key={school.school_slug} school={school} scope={scope} />)}</section></>}
@@ -389,7 +390,8 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
   }, [points, activeScheme])
   const activeSubject = subjectOrder.includes(selectedSubject) ? selectedSubject : subjectOrder[0] || ''
   const shownSubjects = activeSubject ? [activeSubject] : []
-  const completed = points.filter((point) => progress[progressKey(scope, schoolSlug, point.point_id)]).length
+  const pointProgressKey = (point) => progressKey({ ...scope, majorSlug: point.major_slug || 'computer-science' }, schoolSlug, point.point_id)
+  const completed = points.filter((point) => progress[pointProgressKey(point)]).length
   const percent = points.length ? Math.round(completed / points.length * 100) : 0
 
   useEffect(() => { trackEvent('learning_map_opened', schoolSlug) }, [schoolSlug])
@@ -420,12 +422,12 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
 
   if (!school) return <Navigate to={scopePath(scope)} replace />
 
-  function togglePoint(pointId) {
-    const key = progressKey(scope, schoolSlug, pointId)
+  function togglePoint(point) {
+    const key = pointProgressKey(point)
     const nextDone = !progress[key]
     const next = { ...progress, [key]: nextDone }
     setProgress(next); saveProgress(next)
-    if (nextDone) trackEvent('syllabus_point_completed', `${schoolSlug}:${pointId}`)
+    if (nextDone) trackEvent('syllabus_point_completed', `${schoolSlug}:${point.point_id}`)
   }
 
   function chooseScheme(examSchemeId) {
@@ -460,9 +462,9 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
         const sectionPoints = subjectPoints.filter((point) => point.section_name === section)
         const recommendations = aggregateChapterResources(sectionPoints, resources)
         return <div className="chapter" key={section}><h3>{section}</h3>{sectionPoints.map((point) => {
-          const done = !!progress[progressKey(scope, schoolSlug, point.point_id)]
+          const done = !!progress[pointProgressKey(point)]
           const linked = resourcesForTopic(point.canonical_topic, resources)
-          return <div id={`point-${point.point_id}`} className={`knowledge-item compact ${done ? 'done' : ''} ${highlightedPoint === point.point_id ? 'target-highlight' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point.point_id)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div></div>
+          return <div id={`point-${point.point_id}`} className={`knowledge-item compact ${done ? 'done' : ''} ${highlightedPoint === point.point_id ? 'target-highlight' : ''}`} key={point.point_id}><div className="knowledge-heading"><label><input type="checkbox" checked={done} onChange={() => togglePoint(point)} /><span className="checkmark">✓</span><b>{point.point_title}</b></label><small>{linked.length} 个推荐</small></div></div>
         })}<details className="chapter-resources"><summary>查看本章推荐资源（已去重 {recommendations.length} 条）</summary><div className="resource-row">{recommendations.length ? recommendations.map(({ resource, points: covered }) => <ResourceCard key={resource.resource_id} resource={resource} coveragePoints={covered} favorites={favorites} toggleFavorite={toggleFavorite} />) : <p className="empty-resource">资源整理中，建议先对照官方考纲和参考书学习。</p>}</div></details></div>
       })}</section>
     })}</div>
@@ -490,10 +492,12 @@ function scopeFromLocation(pathname) {
   return match ? normalizeScope({ provinceSlug: match[1], year: match[2], majorSlug: match[3] }) : DEFAULT_SCOPE
 }
 
-const snapshotPublishedScopes = [...new Map(snapshotOfferings
+const snapshotSpecificScopes = [...new Map(snapshotOfferings
   .filter((item) => item.status ? item.status === 'published' : item.active !== false)
   .map((item) => [`${item.year}:${item.province_slug}:${item.major_slug}`, normalizeScope(item)]))
-  .values()].sort((a, b) => b.year - a.year)
+  .values()]
+const snapshotAllProgramScopes = [...new Map(snapshotSpecificScopes.map((item) => [`${item.year}:${item.provinceSlug}`, normalizeScope({ ...item, majorSlug: 'all-programs' })])).values()]
+const snapshotPublishedScopes = [...snapshotAllProgramScopes, ...snapshotSpecificScopes].sort((a, b) => b.year - a.year)
 
 export function PublicSite() {
   const [favorites, setFavorites] = useState(getFavorites)
@@ -506,7 +510,7 @@ export function PublicSite() {
   const wallSchools = useMemo(() => createSchoolWallSchools(academicSchools, content.offerings, content.syllabusPoints, scope), [academicSchools, content.offerings, content.syllabusPoints, scope])
   const schools = useMemo(() => schoolGroups(content.offerings, academicSchools, scope, content.syllabusPoints), [content.offerings, academicSchools, scope, content.syllabusPoints])
   const routeSchools = useMemo(() => offeringSchoolGroups(content.offerings, academicSchools, scope), [content.offerings, academicSchools, scope])
-  const defaultPublishedScope = publishedScopes.find((item) => item.provinceSlug === 'anhui' && item.majorSlug === 'computer-science') || publishedScopes[0] || null
+  const defaultPublishedScope = publishedScopes.find((item) => item.provinceSlug === 'anhui' && item.majorSlug === 'all-programs') || publishedScopes[0] || null
   const requestedScopeFallback = publishedScopes.find((item) => item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug) || defaultPublishedScope
   useEffect(() => {
     let active = true

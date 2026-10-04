@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fallbackAcademicSchools, offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus } from './data'
+import { fallbackAcademicSchools, offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus, schoolSyllabusForScheme } from './data'
 import { validateAnnouncement, validateResource } from './resourceValidation'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
 import { fallbackContent, isOnlineContentCurrent } from './useContent'
@@ -8,9 +8,9 @@ import { progressKey } from './storage'
 import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
-  it('仅包含二十四所已完成计划与考纲闭环的院校', () => {
+  it('仅包含三十一所已完成计划与考纲闭环的院校', () => {
     expect(schoolGroups().map((school) => school.school_name)).toEqual([
-      '安徽工业大学', '安徽师范大学', '阜阳师范大学', '安徽建筑大学', '安徽科技工程大学', '铜陵学院', '蚌埠学院', '合肥大学', '池州学院', '皖西学院', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院',
+      '安徽工业大学', '安徽农业大学', '安徽医科大学', '安徽师范大学', '安徽中医药大学', '阜阳师范大学', '安庆师范大学', '安徽建筑大学', '安徽科技工程大学', '铜陵学院', '蚌埠学院', '蚌埠医科大学', '皖南医科大学', '合肥大学', '巢湖学院', '池州学院', '皖西学院', '淮南师范学院', '合肥师范学院', '马鞍山学院', '安徽新华学院', '合肥经济学院',
       '安徽三联学院', '安徽信息工程学院', '淮北理工学院', '皖江工学院', '安徽文达信息工程学院', '芜湖学院', '阜阳理工学院', '安徽财经大学', '安徽职业技术大学',
     ])
   })
@@ -40,7 +40,7 @@ describe('招生内容', () => {
       professionalSubjects: ['计算机基础', 'C语言'],
     })
     expect(school.sites).toEqual(['网络工程技术：校本部（安徽省合肥市新站区文忠路2600号）'])
-    expect(schoolSyllabus('auta')).toHaveLength(20)
+    expect(schoolSyllabusForScheme('auta', school.examSchemes[0])).toHaveLength(20)
     expect(schoolSyllabus('auta').filter((point) => point.school_slug === 'auta')).toHaveLength(11)
   })
 
@@ -157,11 +157,11 @@ describe('招生内容', () => {
     expect(schoolGroups(fakeOffering, [noMapSchool])).toEqual([])
   })
 
-  it('Supabase 不可用时的静态回退仍包含完整院校墙与二十四所学习地图', () => {
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与三十一所学习地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(24)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(31)
   })
 
   it('不允许旧版在线数据覆盖已核验的内置快照', () => {
@@ -184,7 +184,7 @@ describe('招生内容', () => {
     expect(groups[0]).toMatchObject({ totalPlan: 10, sites: ['2026 校区'] })
   })
 
-  it('同一年不同专业不会混入院校聚合或考纲', () => {
+  it('全部专业视图聚合，同一年具体专业视图继续严格隔离', () => {
     const school = fallbackAcademicSchools.find((item) => item.school_slug === 'hfnu')
     const otherScope = { year: 2026, provinceSlug: 'anhui', majorSlug: 'software-engineering' }
     const points = [
@@ -196,7 +196,8 @@ describe('招生内容', () => {
       { year: 2026, province_slug: 'anhui', major_slug: 'software-engineering', school_slug: 'hfnu', training_site: '软件校区', plan_count: 20, active: true },
     ]
     expect(schoolGroups(plans, [school], otherScope, points)[0]).toMatchObject({ totalPlan: 20, sites: ['软件校区'] })
-    expect(schoolSyllabus('hfnu', points, DEFAULT_SCOPE).map((point) => point.point_id)).toEqual(['computer-point'])
+    expect(schoolSyllabus('hfnu', points, DEFAULT_SCOPE).map((point) => point.point_id)).toEqual(['computer-point', 'software-point'])
+    expect(schoolSyllabus('hfnu', points, { ...DEFAULT_SCOPE, majorSlug: 'computer-science' }).map((point) => point.point_id)).toEqual(['computer-point'])
     expect(schoolSyllabus('hfnu', points, otherScope).map((point) => point.point_id)).toEqual(['software-point'])
   })
 

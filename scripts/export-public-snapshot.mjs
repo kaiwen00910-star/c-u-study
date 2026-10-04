@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import Papa from 'papaparse'
 
 const url = process.env.SNAPSHOT_SUPABASE_URL || process.env.VITE_SUPABASE_URL
 const publishableKey = process.env.SNAPSHOT_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY
@@ -55,4 +56,33 @@ const snapshot = {
 
 const output = path.join(process.cwd(), 'content', 'public-content.snapshot.json')
 fs.writeFileSync(output, `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8')
+const schoolsBySlug = new Map(academicSchools.map((school) => [school.school_slug, school]))
+const writeCsv = (name, rows, columns) => fs.writeFileSync(
+  path.join(process.cwd(), 'content', name),
+  `${Papa.unparse(rows, { columns, newline: '\n' })}\n`,
+  'utf8',
+)
+writeCsv('offerings.csv', offerings.map((row) => ({
+  ...row,
+  school_name: schoolsBySlug.get(row.school_slug)?.school_name ?? '',
+  school_type: schoolsBySlug.get(row.school_slug)?.school_type ?? '',
+  public_subjects: (row.public_subjects ?? []).join('|'),
+  professional_subjects: (row.professional_subjects ?? []).join('|'),
+  program_names: (row.program_names ?? []).join('|'),
+})), [
+  'offering_id', 'year', 'province_slug', 'major_slug', 'school_slug', 'school_name', 'school_type',
+  'training_site', 'eligible_major_categories', 'public_subjects', 'professional_subjects', 'plan_count',
+  'charter_url', 'syllabus_url', 'source_status', 'verified_at', 'program_names', 'exam_scheme_id',
+])
+writeCsv('syllabus.csv', syllabusPoints.map((row) => ({ ...row })), [
+  'year', 'province_slug', 'major_slug', 'school_slug', 'subject_slug', 'section_order',
+  'section_name', 'point_order', 'point_id', 'point_title', 'canonical_topic',
+])
+writeCsv('resources.csv', resources.map((row) => ({
+  ...row,
+  topic_tags: (row.topic_tags ?? []).join('|'),
+})), [
+  'resource_id', 'topic_tags', 'title', 'platform', 'creator', 'url', 'resource_type', 'difficulty',
+  'duration_text', 'recommendation_reason', 'priority', 'verified_at', 'status',
+])
 console.log(`公开快照已同步：版本 ${snapshot.metadata.version}，${academicSchools.length} 所院校、${offerings.length} 个招生点、${syllabusPoints.length} 个知识点、${resources.length} 条资源。`)

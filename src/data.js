@@ -22,7 +22,7 @@ export const offerings = snapshot.offerings.map((item) => ({
 export const syllabus = snapshot.syllabusPoints.map((item) => ({
   ...item,
   province_slug: item.province_slug ?? DEFAULT_SCOPE.provinceSlug,
-  major_slug: item.major_slug ?? DEFAULT_SCOPE.majorSlug,
+  major_slug: item.major_slug ?? 'computer-science',
   year: Number(item.year),
   section_order: Number(item.section_order),
   point_order: Number(item.point_order),

@@ -9,6 +9,7 @@ const scopedMigration = fs.readFileSync(path.join(migrationDirectory, '202608250
 const healthMigration = fs.readFileSync(path.join(migrationDirectory, '20260826062947_fix_admin_health_and_pagination.sql'), 'utf8').toLowerCase()
 const freshnessMigration = fs.readFileSync(path.join(migrationDirectory, '20260827064340_unify_review_staleness_rule.sql'), 'utf8').toLowerCase()
 const schoolFirstMigration = fs.readFileSync(path.join(migrationDirectory, '20261003034212_add_offering_exam_schemes.sql'), 'utf8').toLowerCase()
+const batchTenMigration = fs.readFileSync(path.join(migrationDirectory, '20261004030846_publish_verified_schools_batch_ten_2026.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -79,5 +80,14 @@ describe('Supabase migration 安全与完整性', () => {
     expect(schoolFirstMigration).toContain('source.program_names, source.exam_scheme_id')
     expect(schoolFirstMigration).toContain('security invoker')
     expect(schoolFirstMigration).toContain('admission_offerings_published_school_scheme_idx')
+  })
+
+  it('第十批允许同校同培养点的多专业并逐行保护草稿', () => {
+    expect(batchTenMigration).toContain('admission_offerings_scope_school_site_program_unique')
+    expect(batchTenMigration).toContain('program_names')
+    expect(batchTenMigration).toContain('batch_ten_protected_offering_drafts')
+    expect(batchTenMigration).toContain('batch_ten_protected_point_drafts')
+    expect(batchTenMigration).toContain('protected draft content changed')
+    expect(batchTenMigration).toContain("school_slug = 'hfcity'")
   })
 })

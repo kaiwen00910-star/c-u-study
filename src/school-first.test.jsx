@@ -17,16 +17,16 @@ function LocationProbe() {
 }
 
 describe('院校主导型学习地图', () => {
-  it('二十四所已开放院校全部生成 canonical 院校主路由', () => {
+  it('三十一所已开放院校全部生成 canonical 院校主路由', () => {
     const paths = schoolGroups().map((school) => schoolPath(DEFAULT_SCOPE, school.school_slug))
-    expect(paths).toHaveLength(24)
-    expect(new Set(paths).size).toBe(24)
+    expect(paths).toHaveLength(31)
+    expect(new Set(paths).size).toBe(31)
     expect(paths.every((value) => /^\/anhui\/2026\/schools\/[a-z0-9-]+$/.test(value))).toBe(true)
   })
 
   it('首页院校墙只给已开放院校生成新主路由', () => {
     const wall = createSchoolWallSchools(fallbackAcademicSchools, offerings, syllabus, DEFAULT_SCOPE)
-    expect(wall.filter((school) => school.hasDetails)).toHaveLength(24)
+    expect(wall.filter((school) => school.hasDetails)).toHaveLength(31)
     expect(wall.filter((school) => school.hasDetails).every((school) => school.href === `/anhui/2026/schools/${school.schoolSlug}`)).toBe(true)
     expect(wall.find((school) => school.name === '合肥城市学院')).toMatchObject({ hasDetails: false, href: null })
   })
@@ -63,17 +63,38 @@ describe('院校主导型学习地图', () => {
     expect(schoolSyllabusForScheme('fynu', fynu.examSchemes[0]).filter((point) => point.school_slug === 'fynu')).toHaveLength(30)
   })
 
+  it('第十批七所院校全部开放，且共享方案与不同方案均正确分组', () => {
+    const batch = new Map(schoolGroups().filter((school) => ['ahau', 'ahmu', 'ahtcm', 'aqnu', 'bbmu', 'wnmc', 'chu'].includes(school.school_slug)).map((school) => [school.school_slug, school]))
+    expect([...batch.keys()].sort()).toEqual(['ahau', 'ahmu', 'ahtcm', 'aqnu', 'bbmu', 'chu', 'wnmc'])
+    expect(batch.get('ahau')).toMatchObject({ offerings: expect.arrayContaining([expect.objectContaining({ offering_id: 'ahau-water-2026' }), expect.objectContaining({ offering_id: 'ahau-environment-2026' })]) })
+    expect(batch.get('ahau').examSchemes).toHaveLength(4)
+    expect(batch.get('ahmu').examSchemes).toHaveLength(4)
+    expect(batch.get('ahtcm').examSchemes).toHaveLength(5)
+    expect(batch.get('aqnu').examSchemes).toHaveLength(2)
+    expect(batch.get('bbmu').examSchemes).toHaveLength(6)
+    expect(batch.get('wnmc').examSchemes).toHaveLength(2)
+    expect(batch.get('chu').examSchemes).toHaveLength(5)
+
+    const shared = batch.get('ahau').examSchemes.find((scheme) => scheme.examSchemeId === 'ahau-water-environment')
+    expect(shared.offerings).toHaveLength(2)
+    expect(new Set(schoolSyllabusForScheme('ahau', shared).map((point) => point.point_id)).size).toBe(schoolSyllabusForScheme('ahau', shared).length)
+    const preschool = batch.get('chu').examSchemes.find((scheme) => scheme.examSchemeId === 'chu-preschool')
+    const chinese = batch.get('chu').examSchemes.find((scheme) => scheme.examSchemeId === 'chu-chinese')
+    expect(new Set(schoolSyllabusForScheme('chu', preschool).map((point) => point.subject_name))).not.toContain('中国古代文学')
+    expect(new Set(schoolSyllabusForScheme('chu', chinese).map((point) => point.subject_name))).not.toContain('心理学')
+  })
+
   it('SEO 将旧路由 canonical 到院校主路由，院校页描述包含考试方案', () => {
     expect(canonicalPathForPath('/anhui/2026/computer-science/aufe')).toBe('/anhui/2026/schools/aufe')
     expect(canonicalPathForPath('/anhui/2026/schools/aufe')).toBe('/anhui/2026/schools/aufe')
     expect(metadataForPath('/anhui/2026/schools/aufe', '安徽财经大学').description).toContain('考试方案')
   })
 
-  it('sitemap 只收录 canonical 院校主路由且保持二十八页', () => {
+  it('sitemap 只收录 canonical 院校主路由且保持三十五页', () => {
     const xml = fs.readFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), 'utf8')
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
-    expect(locations).toHaveLength(28)
-    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(24)
+    expect(locations).toHaveLength(35)
+    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(31)
     expect(locations.some((url) => /\/anhui\/2026\/computer-science\/(?!compare$)[a-z0-9-]+$/.test(url))).toBe(false)
   })
 })

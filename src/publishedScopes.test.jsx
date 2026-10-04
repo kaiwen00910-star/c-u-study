@@ -60,7 +60,7 @@ describe('动态已发布年份加载', () => {
       then: () => ({ catch: (reject) => reject(new Error('network failed')) }),
     })
     renderPublic('/anhui')
-    await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/anhui/2026/computer-science'))
+    await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/anhui/2026/all-programs'))
   })
 
   it('访问未发布年份时安全降级到最新已发布年份', async () => {

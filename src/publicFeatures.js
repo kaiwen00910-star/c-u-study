@@ -20,6 +20,7 @@ export function filterSchoolDirectory(wallSchools, openSchools, filters) {
     return (!q || `${school.name}${school.shortName}`.toLowerCase().includes(q))
       && (!filters.type || school.schoolType === filters.type)
       && (!filters.map || (filters.map === 'open' ? school.hasDetails : !school.hasDetails))
+      && (!filters.program || details?.programNames.includes(filters.program))
       && (!filters.subject || subjects.includes(filters.subject))
   })
 }

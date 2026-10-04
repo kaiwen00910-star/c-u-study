@@ -1,10 +1,13 @@
 export const DEFAULT_SCOPE = Object.freeze({
   year: 2026,
   provinceSlug: 'anhui',
-  majorSlug: 'computer-science',
+  majorSlug: 'all-programs',
 })
 
+export const ALL_PROGRAMS_MAJOR = 'all-programs'
+
 export const MAJOR_NAMES = Object.freeze({
+  'all-programs': '全部招生专业',
   'computer-science': '计算机科学与技术',
 })
 
@@ -22,7 +25,8 @@ export function matchesScope(row, scope = DEFAULT_SCOPE) {
   const normalized = normalizeScope(scope)
   return Number(row.year) === normalized.year
     && (row.province_slug ?? DEFAULT_SCOPE.provinceSlug) === normalized.provinceSlug
-    && (row.major_slug ?? DEFAULT_SCOPE.majorSlug) === normalized.majorSlug
+    && (normalized.majorSlug === ALL_PROGRAMS_MAJOR
+      || (row.major_slug ?? 'computer-science') === normalized.majorSlug)
 }
 
 export function scopeKey(scope = DEFAULT_SCOPE) {
