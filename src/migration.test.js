@@ -10,6 +10,8 @@ const healthMigration = fs.readFileSync(path.join(migrationDirectory, '202608260
 const freshnessMigration = fs.readFileSync(path.join(migrationDirectory, '20260827064340_unify_review_staleness_rule.sql'), 'utf8').toLowerCase()
 const schoolFirstMigration = fs.readFileSync(path.join(migrationDirectory, '20261003034212_add_offering_exam_schemes.sql'), 'utf8').toLowerCase()
 const batchTenMigration = fs.readFileSync(path.join(migrationDirectory, '20261004030846_publish_verified_schools_batch_ten_2026.sql'), 'utf8').toLowerCase()
+const batchTwelveMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072507_publish_verified_schools_batch_twelve_2026.sql'), 'utf8').toLowerCase()
+const mapFlagMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072816_separate_school_map_and_syllabus_completion.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -89,5 +91,25 @@ describe('Supabase migration 安全与完整性', () => {
     expect(batchTenMigration).toContain('batch_ten_protected_point_drafts')
     expect(batchTenMigration).toContain('protected draft content changed')
     expect(batchTenMigration).toContain("school_slug = 'hfcity'")
+  })
+
+  it('第十二批只发布三校招生方案并逐字段保护所有草稿与非激活内容', () => {
+    expect(batchTwelveMigration).toContain('batch_twelve_protected_offering_drafts')
+    expect(batchTwelveMigration).toContain('batch_twelve_protected_point_drafts')
+    expect(batchTwelveMigration).toContain('batch_twelve_protected_resource_drafts')
+    expect(batchTwelveMigration).toContain('protected draft/inactive content changed')
+    expect(batchTwelveMigration).toContain("when 'anhui-school-29' then 'cuhf'")
+    expect(batchTwelveMigration).toContain("when 'anhui-school-32' then 'bctb'")
+    expect(batchTwelveMigration).toContain("when 'anhui-school-42' then 'whit'")
+    expect(batchTwelveMigration).toContain("school_slug = 'anhui-school-40'")
+    expect(batchTwelveMigration).not.toMatch(/insert\s+into\s+public\.syllabus_points/)
+    expect(batchTwelveMigration).not.toMatch(/insert\s+into\s+public\.resources/)
+  })
+
+  it('院校专业地图开放状态与知识点资源完成状态分离', () => {
+    expect(mapFlagMigration).toContain('create or replace function public.refresh_academic_school_map_flags')
+    expect(mapFlagMigration).toContain("offering.status = 'published'")
+    expect(mapFlagMigration).not.toContain('from public.syllabus_points as point')
+    expect(mapFlagMigration).toContain('41')
   })
 })

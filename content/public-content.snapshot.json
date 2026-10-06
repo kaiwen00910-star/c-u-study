@@ -1,9 +1,9 @@
 {
   "metadata": {
     "schemaVersion": 2,
-    "version": 107,
-    "generatedAt": "2026-10-04T14:15:53.099Z",
-    "sourceUpdatedAt": "2026-10-04T14:10:27.101889+00:00",
+    "version": 111,
+    "generatedAt": "2026-10-06T07:28:57.813Z",
+    "sourceUpdatedAt": "2026-10-06T07:28:16.48557+00:00",
     "source": "supabase-public-rest-rls"
   },
   "academicSchools": [
@@ -18,7 +18,7 @@
       "active": true,
       "sort_order": 1,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-01",
       "has_study_map": true
     },
@@ -33,7 +33,7 @@
       "active": true,
       "sort_order": 2,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-02",
       "has_study_map": true
     },
@@ -48,7 +48,7 @@
       "active": true,
       "sort_order": 3,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-03",
       "has_study_map": true
     },
@@ -63,7 +63,7 @@
       "active": true,
       "sort_order": 4,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-04",
       "has_study_map": true
     },
@@ -78,7 +78,7 @@
       "active": true,
       "sort_order": 5,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-05",
       "has_study_map": true
     },
@@ -93,7 +93,7 @@
       "active": true,
       "sort_order": 6,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-06",
       "has_study_map": true
     },
@@ -108,7 +108,7 @@
       "active": true,
       "sort_order": 7,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-07",
       "has_study_map": true
     },
@@ -123,7 +123,7 @@
       "active": true,
       "sort_order": 8,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-08",
       "has_study_map": true
     },
@@ -138,7 +138,7 @@
       "active": true,
       "sort_order": 9,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-09",
       "has_study_map": true
     },
@@ -153,7 +153,7 @@
       "active": true,
       "sort_order": 10,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-10",
       "has_study_map": true
     },
@@ -168,7 +168,7 @@
       "active": true,
       "sort_order": 11,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-11",
       "has_study_map": true
     },
@@ -183,7 +183,7 @@
       "active": true,
       "sort_order": 12,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-12",
       "has_study_map": true
     },
@@ -198,7 +198,7 @@
       "active": true,
       "sort_order": 13,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-13",
       "has_study_map": true
     },
@@ -213,7 +213,7 @@
       "active": true,
       "sort_order": 14,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-14",
       "has_study_map": true
     },
@@ -228,7 +228,7 @@
       "active": true,
       "sort_order": 15,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-15",
       "has_study_map": true
     },
@@ -243,7 +243,7 @@
       "active": true,
       "sort_order": 16,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-16",
       "has_study_map": true
     },
@@ -258,7 +258,7 @@
       "active": true,
       "sort_order": 17,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-17",
       "has_study_map": true
     },
@@ -273,7 +273,7 @@
       "active": true,
       "sort_order": 18,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-18",
       "has_study_map": true
     },
@@ -288,7 +288,7 @@
       "active": true,
       "sort_order": 19,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-19",
       "has_study_map": true
     },
@@ -303,7 +303,7 @@
       "active": true,
       "sort_order": 20,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-20",
       "has_study_map": true
     },
@@ -318,7 +318,7 @@
       "active": true,
       "sort_order": 21,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-21",
       "has_study_map": true
     },
@@ -333,7 +333,7 @@
       "active": true,
       "sort_order": 22,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-22",
       "has_study_map": true
     },
@@ -348,7 +348,7 @@
       "active": true,
       "sort_order": 23,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-23",
       "has_study_map": true
     },
@@ -363,7 +363,7 @@
       "active": true,
       "sort_order": 24,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-24",
       "has_study_map": true
     },
@@ -378,7 +378,7 @@
       "active": true,
       "sort_order": 25,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-25",
       "has_study_map": true
     },
@@ -393,7 +393,7 @@
       "active": true,
       "sort_order": 26,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-26",
       "has_study_map": true
     },
@@ -408,7 +408,7 @@
       "active": true,
       "sort_order": 27,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-27",
       "has_study_map": true
     },
@@ -423,12 +423,12 @@
       "active": true,
       "sort_order": 28,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-28",
       "has_study_map": true
     },
     {
-      "school_slug": "anhui-school-29",
+      "school_slug": "cuhf",
       "wall_school_id": "anhui-school-29",
       "school_name": "合肥城市学院",
       "school_type": "民办",
@@ -438,9 +438,9 @@
       "active": true,
       "sort_order": 29,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-29",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "aisu",
@@ -453,7 +453,7 @@
       "active": true,
       "sort_order": 30,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-30",
       "has_study_map": true
     },
@@ -468,12 +468,12 @@
       "active": true,
       "sort_order": 31,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-31",
       "has_study_map": true
     },
     {
-      "school_slug": "anhui-school-32",
+      "school_slug": "bctb",
       "wall_school_id": "anhui-school-32",
       "school_name": "蚌埠工商学院",
       "school_type": "民办",
@@ -483,9 +483,9 @@
       "active": true,
       "sort_order": 32,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-32",
-      "has_study_map": false
+      "has_study_map": true
     },
     {
       "school_slug": "aiit",
@@ -498,7 +498,7 @@
       "active": true,
       "sort_order": 33,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-33",
       "has_study_map": true
     },
@@ -513,7 +513,7 @@
       "active": true,
       "sort_order": 34,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-34",
       "has_study_map": true
     },
@@ -528,7 +528,7 @@
       "active": true,
       "sort_order": 35,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-35",
       "has_study_map": true
     },
@@ -543,7 +543,7 @@
       "active": true,
       "sort_order": 36,
       "created_at": "2026-08-24T11:03:26.630305+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-36",
       "has_study_map": true
     },
@@ -558,7 +558,7 @@
       "active": true,
       "sort_order": 37,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-37",
       "has_study_map": true
     },
@@ -573,7 +573,7 @@
       "active": true,
       "sort_order": 38,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-38",
       "has_study_map": true
     },
@@ -588,7 +588,7 @@
       "active": true,
       "sort_order": 39,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-39",
       "has_study_map": true
     },
@@ -603,7 +603,7 @@
       "active": true,
       "sort_order": 40,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-40",
       "has_study_map": false
     },
@@ -618,12 +618,12 @@
       "active": true,
       "sort_order": 41,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-41",
       "has_study_map": true
     },
     {
-      "school_slug": "anhui-school-42",
+      "school_slug": "whit",
       "wall_school_id": "anhui-school-42",
       "school_name": "芜湖职业技术大学",
       "school_type": "公办",
@@ -633,9 +633,9 @@
       "active": true,
       "sort_order": 42,
       "created_at": "2026-08-24T13:28:29.786554+00:00",
-      "updated_at": "2026-10-04T14:10:27.101889+00:00",
+      "updated_at": "2026-10-06T07:28:16.48557+00:00",
       "school_id": "anhui-school-42",
-      "has_study_map": false
+      "has_study_map": true
     }
   ],
   "offerings": [
@@ -3769,6 +3769,1308 @@
         "经济与金融"
       ],
       "exam_scheme_id": "aisu-economics-li"
+    },
+    {
+      "offering_id": "b12-cuhf-civil-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、交通运输大类、旅游大类、教育与体育大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "工程力学",
+        "建筑施工技术"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 133,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "土木工程"
+      ],
+      "exam_scheme_id": "cuhf-civil"
+    },
+    {
+      "offering_id": "b12-cuhf-safety-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "安全管理学",
+        "安全系统工程"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 134,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "安全工程"
+      ],
+      "exam_scheme_id": "cuhf-safety"
+    },
+    {
+      "offering_id": "b12-cuhf-inorganic-material-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "无机化学",
+        "建筑材料"
+      ],
+      "plan_count": 160,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 135,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "无机非金属材料工程"
+      ],
+      "exam_scheme_id": "cuhf-inorganic-material"
+    },
+    {
+      "offering_id": "b12-cuhf-visual-design-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类中建筑设计类（4401）和城乡规划与管理类（4402），文化艺术大类中艺术设计类（5501）、民族文化艺术类（5503）和文化服务类（5504），新闻传播大类中广播影视类（5602）、动漫制作技术、数字媒体技术、印刷数字图文技术、美术教育、民族美术、艺术教育",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "设计史",
+        "专业实践综合"
+      ],
+      "plan_count": 120,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 136,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "视觉传达设计"
+      ],
+      "exam_scheme_id": "cuhf-design-practice"
+    },
+    {
+      "offering_id": "b12-cuhf-environment-design-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类中建筑设计类（4401）和城乡规划与管理类（4402），文化艺术大类中艺术设计类（5501）、民族文化艺术类（5503）和文化服务类（5504），新闻传播大类中广播影视类（5602）、动漫制作技术、数字媒体技术、印刷数字图文技术、美术教育、民族美术、艺术教育",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "设计史",
+        "专业实践综合"
+      ],
+      "plan_count": 80,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 137,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "环境设计"
+      ],
+      "exam_scheme_id": "cuhf-design-practice"
+    },
+    {
+      "offering_id": "b12-cuhf-industrial-design-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "工业设计概论",
+        "设计心理学"
+      ],
+      "plan_count": 60,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 138,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工业设计"
+      ],
+      "exam_scheme_id": "cuhf-industrial-design-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-industrial-design-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "工业设计概论",
+        "设计心理学"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 139,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工业设计"
+      ],
+      "exam_scheme_id": "cuhf-industrial-design-science"
+    },
+    {
+      "offering_id": "b12-cuhf-mechanical-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "电子与信息大类、农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "机械设计基础",
+        "机械制图"
+      ],
+      "plan_count": 200,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 140,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "机械设计制造及其自动化"
+      ],
+      "exam_scheme_id": "cuhf-mechanical"
+    },
+    {
+      "offering_id": "b12-cuhf-iot-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "电子与信息大类、农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、公安与司法大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "计算机专业基础",
+        "C语言程序设计"
+      ],
+      "plan_count": 90,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 141,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "物联网工程"
+      ],
+      "exam_scheme_id": "cuhf-computer-c"
+    },
+    {
+      "offering_id": "b12-cuhf-electronics-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "电子与信息大类、农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、公安与司法大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "电路分析",
+        "数字电子技术基础"
+      ],
+      "plan_count": 90,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 142,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "电子信息工程"
+      ],
+      "exam_scheme_id": "cuhf-electronics"
+    },
+    {
+      "offering_id": "b12-cuhf-data-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "计算机专业基础",
+        "C语言程序设计"
+      ],
+      "plan_count": 90,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 143,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "数据科学与大数据技术"
+      ],
+      "exam_scheme_id": "cuhf-computer-c"
+    },
+    {
+      "offering_id": "b12-cuhf-engineering-management-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "工程项目管理"
+      ],
+      "plan_count": 70,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 144,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工程管理"
+      ],
+      "exam_scheme_id": "cuhf-construction-management-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-engineering-cost-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "工程项目管理"
+      ],
+      "plan_count": 70,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 145,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工程造价"
+      ],
+      "exam_scheme_id": "cuhf-construction-management-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-engineering-management-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "工程项目管理"
+      ],
+      "plan_count": 20,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 146,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工程管理"
+      ],
+      "exam_scheme_id": "cuhf-construction-management-science"
+    },
+    {
+      "offering_id": "b12-cuhf-engineering-cost-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "工程项目管理"
+      ],
+      "plan_count": 20,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 147,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工程造价"
+      ],
+      "exam_scheme_id": "cuhf-construction-management-science"
+    },
+    {
+      "offering_id": "b12-cuhf-marketing-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "市场营销"
+      ],
+      "plan_count": 180,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 148,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "市场营销"
+      ],
+      "exam_scheme_id": "cuhf-marketing-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-marketing-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "市场营销"
+      ],
+      "plan_count": 60,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 149,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "市场营销"
+      ],
+      "exam_scheme_id": "cuhf-marketing-science"
+    },
+    {
+      "offering_id": "b12-cuhf-financial-management-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "财务管理学"
+      ],
+      "plan_count": 90,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 150,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "财务管理"
+      ],
+      "exam_scheme_id": "cuhf-financial-management-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-financial-management-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "财务管理学"
+      ],
+      "plan_count": 30,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 151,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "财务管理"
+      ],
+      "exam_scheme_id": "cuhf-financial-management-science"
+    },
+    {
+      "offering_id": "b12-cuhf-hr-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "人力资源管理"
+      ],
+      "plan_count": 70,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 152,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "人力资源管理"
+      ],
+      "exam_scheme_id": "cuhf-hr-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-hr-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "人力资源管理"
+      ],
+      "plan_count": 20,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 153,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "人力资源管理"
+      ],
+      "exam_scheme_id": "cuhf-hr-science"
+    },
+    {
+      "offering_id": "b12-cuhf-asset-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "房地产评估"
+      ],
+      "plan_count": 70,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 154,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "资产评估"
+      ],
+      "exam_scheme_id": "cuhf-asset-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-asset-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "房地产评估"
+      ],
+      "plan_count": 20,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 155,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "资产评估"
+      ],
+      "exam_scheme_id": "cuhf-asset-science"
+    },
+    {
+      "offering_id": "b12-cuhf-financial-engineering-arts-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "经济学基础"
+      ],
+      "plan_count": 70,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 156,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "金融工程"
+      ],
+      "exam_scheme_id": "cuhf-financial-engineering-arts"
+    },
+    {
+      "offering_id": "b12-cuhf-financial-engineering-science-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "cuhf",
+      "training_site": "合肥城市学院（安徽省合肥市黄麓科教园1号；安徽省合肥市金岗大道88号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、农林牧渔大类、电子与信息大类、资源环境与安全大类、能源动力与材料大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、医药卫生大类、财经商贸大类、旅游大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类、文化艺术大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学基础",
+        "经济学基础"
+      ],
+      "plan_count": 20,
+      "charter_url": "https://www.cuhf.edu.cn/zsb/2026/0326/c1460a34145/page.htm",
+      "syllabus_url": "https://www.cuhf.edu.cn/zsb/2025/1031/c1447a32663/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 157,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "金融工程"
+      ],
+      "exam_scheme_id": "cuhf-financial-engineering-science"
+    },
+    {
+      "offering_id": "b12-bctb-accounting-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、能源动力与材料大类、土木建筑大类、装备制造大类、电子与信息大类、财经商贸大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "基础会计学"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 158,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "会计学"
+      ],
+      "exam_scheme_id": "bctb-accounting"
+    },
+    {
+      "offering_id": "b12-bctb-finance-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、电子与信息大类、医药卫生大类、财经商贸大类、旅游大类、文化艺术大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "经济学基础",
+        "金融学"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 159,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "金融学"
+      ],
+      "exam_scheme_id": "bctb-finance"
+    },
+    {
+      "offering_id": "b12-bctb-financial-management-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、能源动力与材料大类、土木建筑大类、装备制造大类、电子与信息大类、财经商贸大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "基础会计学"
+      ],
+      "plan_count": 55,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 160,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "财务管理"
+      ],
+      "exam_scheme_id": "bctb-accounting"
+    },
+    {
+      "offering_id": "b12-bctb-business-management-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、电子与信息大类、医药卫生大类、财经商贸大类、旅游大类、文化艺术大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "战略管理"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 161,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "工商管理"
+      ],
+      "exam_scheme_id": "bctb-business-management"
+    },
+    {
+      "offering_id": "b12-bctb-english-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "财经商贸大类、文化艺术大类、新闻传播大类、教育与体育大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "专业英语",
+        "笔译"
+      ],
+      "plan_count": 80,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 162,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "英语"
+      ],
+      "exam_scheme_id": "bctb-english"
+    },
+    {
+      "offering_id": "b12-bctb-logistics-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、电子与信息大类、医药卫生大类、财经商贸大类、旅游大类、文化艺术大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "物流管理"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 163,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "物流管理"
+      ],
+      "exam_scheme_id": "bctb-logistics"
+    },
+    {
+      "offering_id": "b12-bctb-trade-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、财经商贸大类、旅游大类、公共管理与服务大类、教育与体育大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "国际贸易实务",
+        "国际贸易"
+      ],
+      "plan_count": 55,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 164,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "国际经济与贸易"
+      ],
+      "exam_scheme_id": "bctb-trade"
+    },
+    {
+      "offering_id": "b12-bctb-hr-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、电子与信息大类、医药卫生大类、财经商贸大类、旅游大类、文化艺术大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "人力资源管理"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 165,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "人力资源管理"
+      ],
+      "exam_scheme_id": "bctb-hr"
+    },
+    {
+      "offering_id": "b12-bctb-advertising-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "财经商贸大类、旅游大类、文化艺术大类、新闻传播大类、教育与体育大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "广告学"
+      ],
+      "plan_count": 50,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 166,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "广告学"
+      ],
+      "exam_scheme_id": "bctb-advertising"
+    },
+    {
+      "offering_id": "b12-bctb-marketing-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、资源环境与安全大类、能源动力与材料大类、土木建筑大类、水利大类、装备制造大类、生物与化工大类、轻工纺织大类、食品药品与粮食大类、交通运输大类、电子与信息大类、医药卫生大类、财经商贸大类、旅游大类、文化艺术大类、新闻传播大类、教育与体育大类、公安与司法大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "管理学",
+        "市场营销学"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 167,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "市场营销"
+      ],
+      "exam_scheme_id": "bctb-marketing"
+    },
+    {
+      "offering_id": "b12-bctb-visual-design-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "文化艺术大类、新闻传播大类、动漫制作技术（专业代码：510215）、数字媒体应用技术（专业代码：610210）、动漫设计与制作（专业代码：590110）、艺术教育（专业代码：670117）",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "装饰画",
+        "平面设计"
+      ],
+      "plan_count": 80,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 168,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "视觉传达设计"
+      ],
+      "exam_scheme_id": "bctb-visual-design"
+    },
+    {
+      "offering_id": "b12-bctb-economic-statistics-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "bctb",
+      "training_site": "蚌埠工商学院（安徽省蚌埠市禹会区东海大道7100号）",
+      "eligible_major_categories": "农林牧渔大类、能源动力与材料大类、土木建筑大类、装备制造大类、电子与信息大类、财经商贸大类、教育与体育大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "经济学基础",
+        "统计学基础与应用"
+      ],
+      "plan_count": 52,
+      "charter_url": "https://zs.bctb.edu.cn/2026/0318/c1031a34139/page.psp",
+      "syllabus_url": "https://zs.bctb.edu.cn/7a/4d/c1028a31309/page.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 169,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "经济统计学"
+      ],
+      "exam_scheme_id": "bctb-economic-statistics"
+    },
+    {
+      "offering_id": "b12-whit-intelligent-construction-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "whit",
+      "training_site": "芜湖职业技术大学（文津校区：安徽省芜湖市文津西路201号；银湖校区：安徽省芜湖市银湖北路62号；白马校区：安徽省芜湖市长江南路与白马山路交汇处；南陵校区：安徽省芜湖市南陵县龙池路1号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "土木建筑大类、水利大类、资源环境与安全大类、能源动力与材料大类、交通运输大类、生物与化工大类、装备制造大类、电子与信息大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "工程力学",
+        "材料力学"
+      ],
+      "plan_count": 50,
+      "charter_url": "https://zs.whit.edu.cn/info/1024/2907.htm",
+      "syllabus_url": "https://zs.whit.edu.cn/info/1024/2924.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 170,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "智能建造工程"
+      ],
+      "exam_scheme_id": "whit-intelligent-construction"
+    },
+    {
+      "offering_id": "b12-whit-mechanical-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "whit",
+      "training_site": "芜湖职业技术大学（文津校区：安徽省芜湖市文津西路201号；银湖校区：安徽省芜湖市银湖北路62号；白马校区：安徽省芜湖市长江南路与白马山路交汇处；南陵校区：安徽省芜湖市南陵县龙池路1号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "装备制造大类、电子与信息大类、交通运输大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "机械设计",
+        "机械制造基础"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.whit.edu.cn/info/1024/2907.htm",
+      "syllabus_url": "https://zs.whit.edu.cn/info/1024/2924.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 171,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "机械设计制造及自动化"
+      ],
+      "exam_scheme_id": "whit-mechanical"
+    },
+    {
+      "offering_id": "b12-whit-automation-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "whit",
+      "training_site": "芜湖职业技术大学（文津校区：安徽省芜湖市文津西路201号；银湖校区：安徽省芜湖市银湖北路62号；白马校区：安徽省芜湖市长江南路与白马山路交汇处；南陵校区：安徽省芜湖市南陵县龙池路1号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "装备制造大类、电子与信息大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "电路",
+        "模拟电子技术"
+      ],
+      "plan_count": 50,
+      "charter_url": "https://zs.whit.edu.cn/info/1024/2907.htm",
+      "syllabus_url": "https://zs.whit.edu.cn/info/1024/2924.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 172,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "自动化技术与应用"
+      ],
+      "exam_scheme_id": "whit-automation"
+    },
+    {
+      "offering_id": "b12-whit-food-quality-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "whit",
+      "training_site": "芜湖职业技术大学（文津校区：安徽省芜湖市文津西路201号；银湖校区：安徽省芜湖市银湖北路62号；白马校区：安徽省芜湖市长江南路与白马山路交汇处；南陵校区：安徽省芜湖市南陵县龙池路1号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "食品药品与粮食大类、农林牧渔大类、生物与化工大类、能源动力与材料大类",
+      "public_subjects": [
+        "高等数学",
+        "英语"
+      ],
+      "professional_subjects": [
+        "无机及分析化学",
+        "微生物学"
+      ],
+      "plan_count": 50,
+      "charter_url": "https://zs.whit.edu.cn/info/1024/2907.htm",
+      "syllabus_url": "https://zs.whit.edu.cn/info/1024/2924.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 173,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "食品质量与安全"
+      ],
+      "exam_scheme_id": "whit-food-quality"
+    },
+    {
+      "offering_id": "b12-whit-ecommerce-2026",
+      "year": 2026,
+      "province_slug": "anhui",
+      "major_slug": "all-programs",
+      "school_slug": "whit",
+      "training_site": "芜湖职业技术大学（文津校区：安徽省芜湖市文津西路201号；银湖校区：安徽省芜湖市银湖北路62号；白马校区：安徽省芜湖市长江南路与白马山路交汇处；南陵校区：安徽省芜湖市南陵县龙池路1号；章程未按专业区分培养校区）",
+      "eligible_major_categories": "财经商贸大类、新闻传播大类、公共管理与服务大类",
+      "public_subjects": [
+        "大学语文",
+        "英语"
+      ],
+      "professional_subjects": [
+        "电子商务概论",
+        "管理学基础"
+      ],
+      "plan_count": 100,
+      "charter_url": "https://zs.whit.edu.cn/info/1024/2907.htm",
+      "syllabus_url": "https://zs.whit.edu.cn/info/1024/2924.htm",
+      "source_status": "2026招生章程与专业课考试大纲已核验",
+      "verified_at": "2026-10-06",
+      "active": true,
+      "sort_order": 174,
+      "created_at": "2026-10-06T07:25:07.62562+00:00",
+      "updated_at": "2026-10-06T07:25:07.62562+00:00",
+      "status": "published",
+      "program_names": [
+        "电子商务"
+      ],
+      "exam_scheme_id": "whit-ecommerce"
     },
     {
       "offering_id": "hfnu-aiec-2026",

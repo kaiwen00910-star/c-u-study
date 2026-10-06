@@ -182,7 +182,7 @@ export function SchoolLogoWall({ schools }) {
   const tracks = createSchoolWallTracks(schools)
   const reducedMotion = usePrefersReducedMotion()
   return <div className="school-wall" aria-label="安徽普通专升本招生院校">
-    <span className="sr-only">{schools.length} 所安徽普通专升本招生院校，其中 {schools.filter((school) => school.hasDetails).length} 所已开放学习地图</span>
+    <span className="sr-only">{schools.length} 所安徽普通专升本招生院校，其中 {schools.filter((school) => school.hasDetails).length} 所已开放院校专业地图</span>
     <div className="school-wall-window">
       {!reducedMotion && tracks.map((track, index) => <div className={`logo-track track-${index + 1}`} key={index}>
         <div className="logo-track-inner">
@@ -205,12 +205,12 @@ function Home({ resources, wallSchools, syllabusPoints, schools, schoolCount, sc
         <div className="hero-main">
           <div className="eyebrow">ANHUI EXAM PATH · 2026</div>
           <h1>安徽专升本，<br/><em>找到适合你的本科院校</em></h1>
-          <p className="hero-copy">收录 {wallSchools.length} 所安徽招生院校名录；其中 {schoolCount} 所已完成招生计划与考纲整理，可进入学习地图。</p>
+          <p className="hero-copy">收录 {wallSchools.length} 所安徽招生院校名录；其中 {schoolCount} 所已完成招生专业与考试方案核验，可进入院校专业地图。</p>
           <div className="hero-actions"><Link className="primary-btn" to={scopePath(scope)}>查看院校状态 <span>→</span></Link><Link className="secondary-btn" to={`${scopePath(scope)}#school-filter`}>查报考条件</Link></div>
           <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
           <div className="hero-search"><SearchBox resources={resources} syllabusPoints={syllabusPoints} schools={schools} scope={scope} /></div>
         </div>
-        <div className="hero-stats" aria-label="当前收录概况"><div><strong>{wallSchools.length}</strong><span>院校名录</span></div><div><strong>{schoolCount}</strong><span>已开放学习地图</span></div><div><strong>{syllabusPoints.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
+        <div className="hero-stats" aria-label="当前收录概况"><div><strong>{wallSchools.length}</strong><span>院校名录</span></div><div><strong>{schoolCount}</strong><span>已开放院校地图</span></div><div><strong>{syllabusPoints.length}</strong><span>考纲知识点</span></div><div><strong>{resources.length}</strong><span>精选资源</span></div></div>
       </div>
     </section>
     <section className="content-section countdown-wrap"><Countdown /></section>
@@ -228,7 +228,7 @@ function Home({ resources, wallSchools, syllabusPoints, schools, schoolCount, sc
     </section>
     <section className="content-section faq-section" id="faq">
       <div><span className="eyebrow">QUICK GUIDE</span><h2>开始前，你可能想知道</h2></div>
-      <div className="faq-list"><details><summary>这里的信息是官方发布的吗？</summary><p>本站是非官方学习导航，但招生信息均尽量链接到学校或考试院原始页面，报考时仍请以最新官方通知为准。</p></details><details><summary>为什么只有部分院校能进入学习地图？</summary><p>首页院校墙展示安徽招生院校索引；学习地图需要逐校核对正式章程和考纲，目前已完成 {schoolCount} 所计算机类院校。</p></details><details><summary>学习进度会同步到其他设备吗？</summary><p>不会。当前进度和收藏只保存在本机浏览器，清除数据或更换设备后会丢失。</p></details></div>
+      <div className="faq-list"><details><summary>这里的信息是官方发布的吗？</summary><p>本站是非官方学习导航，但招生信息均尽量链接到学校或考试院原始页面，报考时仍请以最新官方通知为准。</p></details><details><summary>为什么只有部分院校能进入院校专业地图？</summary><p>首页院校墙展示安徽招生院校索引；院校专业地图需要逐校核对正式章程和考纲。知识点与学习资源会在招生专业和考试方案核验后分批整理。</p></details><details><summary>学习进度会同步到其他设备吗？</summary><p>不会。当前进度和收藏只保存在本机浏览器，清除数据或更换设备后会丢失。</p></details></div>
     </section>
     <section className="notice-strip"><strong>非官方网站</strong><span>本站仅提供信息整理与学习资源导航，所有招生信息请以官方最新发布为准。</span><Link to="/sources">查看资料来源 →</Link></section>
   </>
@@ -276,12 +276,12 @@ export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAU
   const years = [...new Set(publishedScopes.filter((item) => item.provinceSlug === scope.provinceSlug && item.majorSlug === scope.majorSlug).map((item) => item.year))].sort((a, b) => b - a)
   return <div className="page-wrap" id="school-filter">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
-    <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>{wallSchools.length} 所院校名录中，当前 {schools.length} 所院校开放完整学习地图。</p></div><div className="filter-box scope-summary"><strong>已发布年份</strong><label className="sr-only" htmlFor="published-year">选择年份</label><select id="published-year" value={scope.year} onChange={(event) => navigate(scopePath({ ...scope, year: Number(event.target.value) }))}>{years.map((year) => <option key={year} value={year}>{year} 年</option>)}</select><span>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug}</span><small>仅展示已有正式发布数据的年份</small></div></section>
+    <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>{wallSchools.length} 所院校名录中，当前 {schools.length} 所院校已开放院校专业地图。</p></div><div className="filter-box scope-summary"><strong>已发布年份</strong><label className="sr-only" htmlFor="published-year">选择年份</label><select id="published-year" value={scope.year} onChange={(event) => navigate(scopePath({ ...scope, year: Number(event.target.value) }))}>{years.map((year) => <option key={year} value={year}>{year} 年</option>)}</select><span>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug}</span><small>仅展示已有正式发布数据的年份</small></div></section>
     <section className="exam-structure"><div><span>安徽考试结构</span><strong>2 门公共课</strong><b>+</b><strong>2 门专业课</strong></div><p>公共课由省考试院组织；专业课由招生院校组织，因此同一专业在不同院校的科目可能不同。</p></section>
     <section className="school-filters" aria-label="院校筛选"><label>院校名称<input type="search" value={filters.q} onChange={(event) => setFilter('q', event.target.value)} placeholder="输入院校名称" /></label><label>办学性质<select value={filters.type} onChange={(event) => setFilter('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>资料状态<select value={filters.map} onChange={(event) => setFilter('map', event.target.value)}><option value="">全部</option><option value="open">已开放学习地图</option><option value="pending">资料整理中</option></select></label><label>招生专业<select value={filters.program} onChange={(event) => setFilter('program', event.target.value)}><option value="">全部专业</option>{programs.map((program) => <option key={program}>{program}</option>)}</select></label><label>考试科目<select value={filters.subject} onChange={(event) => setFilter('subject', event.target.value)}><option value="">全部科目</option>{subjects.map((subject) => <option key={subject}>{subject}</option>)}</select></label><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>
     <p className="filter-result-count" role="status">找到 {filteredDirectory.length} 所院校</p>
     {!filteredDirectory.length && <section className="filter-empty"><h2>没有匹配的院校</h2><p>可以减少筛选条件，或清空后重新查找。</p><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>}
-    {!!openSchools.length && <><div className="section-heading"><div><span className="section-number">{openSchools.length} 所</span><h2>已开放学习地图</h2></div><Link to={comparePath(scope)}>查看横向对比 →</Link></div><section className="school-grid">{openSchools.map((school) => <SchoolCard key={school.school_slug} school={school} scope={scope} />)}</section></>}
+    {!!openSchools.length && <><div className="section-heading"><div><span className="section-number">{openSchools.length} 所</span><h2>已开放院校专业地图</h2></div><Link to={comparePath(scope)}>查看横向对比 →</Link></div><section className="school-grid">{openSchools.map((school) => <SchoolCard key={school.school_slug} school={school} scope={scope} />)}</section></>}
     {!!pendingSchools.length && <><div className="section-heading pending-heading"><div><span className="section-number">{pendingSchools.length} 所</span><h2>资料整理中</h2></div><p>已列入院校名录，暂未开放学习地图</p></div><section className="pending-school-grid">{pendingSchools.map((school) => <article key={school.id}><strong>{school.name}</strong><span>{school.schoolType}</span><small>资料整理中 · 暂未开放学习地图</small></article>)}</section></>}
     <div className="local-tip"><span>ⓘ</span><p><strong>你的进度只保存在当前浏览器</strong><br/>不需要注册即可使用；清除浏览器数据或更换设备后，进度与收藏不会同步。</p></div>
   </div>
@@ -383,6 +383,7 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
   const schemes = useMemo(() => school?.examSchemes?.length ? school.examSchemes : examSchemesForOfferings(schoolOfferings), [school, schoolOfferings])
   const activeScheme = schemes.find((scheme) => scheme.examSchemeId === selectedScheme) || schemes[0]
   const points = useMemo(() => schoolSyllabusForScheme(schoolSlug, activeScheme, syllabusPoints, scope), [schoolSlug, activeScheme, syllabusPoints, scope])
+  const hasSchoolSpecificPoints = points.some((point) => point.school_slug === schoolSlug)
   const subjectOrder = useMemo(() => {
     const declaredSubjects = activeScheme ? [...activeScheme.publicSubjects, ...activeScheme.professionalSubjects] : []
     const declaredSubjectOrder = declaredSubjects.map((name) => points.find((point) => (point.subject_name || subjectNames[point.subject_slug]) === name)?.subject_slug).filter(Boolean)
@@ -442,16 +443,20 @@ export function LearningMap({ favorites, toggleFavorite, resources, schools, syl
     <section className="school-title" style={{ '--school-color': school.theme_color }}><SchoolLogo school={school} large /><div><span className="type-tag">{school.school_type} · {scope.year}</span><h1>{school.school_name}</h1><p>{(school.programNames || []).join('、') || (MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug)} · {(school.sites || []).length || schoolOfferings.length} 个招生培养点</p></div><div className="official-links"><a href={activeScheme?.offerings[0]?.charter_url || school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={activeScheme?.offerings[0]?.syllabus_url || school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a><FeedbackForm contextId={`school-source:${school.school_slug}`} compact /></div></section>
   </>
 
-  if (!points.length) return <div className="page-wrap learning-page">
+  const offeringOverview = <section className="school-offering-overview" aria-labelledby="offering-overview-title"><div className="section-heading"><div><span className="section-number">{schoolOfferings.length} 个招生点</span><h2 id="offering-overview-title">招生专业与培养点</h2></div><p>招生点分别展示；考试科目相同的专业或培养点共用考试方案。</p></div><div className="offering-detail-grid">{schoolOfferings.map((offering) => { const programLabel = (offering.programNames || offering.program_names || []).join('、') || (MAJOR_NAMES[offering.major_slug || scope.majorSlug] ?? (offering.major_slug || scope.majorSlug)); return <article key={offering.offering_id || offering.school_slug}><div><span>{programLabel}</span><strong>{offering.plan_count} 人</strong></div><dl><div><dt>培养地点与地址</dt><dd>{offering.training_site}</dd></div><div><dt>报考专业范围</dt><dd>{formatEligibleMajorCategories(offering.eligible_major_categories)}</dd></div></dl><p>{offering.source_status} · 最后核验 {offering.verified_at}</p><nav aria-label={`${programLabel}官方资料`}><a href={offering.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={offering.syllabus_url} target="_blank" rel="noreferrer">正式考纲 ↗</a></nav></article> })}</div></section>
+  const schemePanel = <><section className="exam-scheme-panel" aria-labelledby="exam-scheme-title"><div><span className="eyebrow">院校专业地图</span><h2 id="exam-scheme-title">选择招生专业 / 考试方案</h2><p>切换方案后，查看该方案对应的公共课、专业课和招生点；已有知识点时会继续展示学习内容。</p></div><div className="exam-scheme-tabs" role="tablist" aria-label="选择考试方案">{schemes.map((scheme, index) => <button type="button" role="tab" aria-selected={activeScheme?.examSchemeId === scheme.examSchemeId} className={activeScheme?.examSchemeId === scheme.examSchemeId ? 'active' : ''} onClick={() => chooseScheme(scheme.examSchemeId)} key={scheme.examSchemeId}><strong>{scheme.programNames.join('、') || `考试方案 ${index + 1}`}</strong><small>{scheme.professionalSubjects.join(' · ')}</small><span>{scheme.offerings.length} 个招生点 · {scheme.totalPlan} 人</span></button>)}</div></section><SubjectTags school={activeScheme} /></>
+
+  if (!hasSchoolSpecificPoints) return <div className="page-wrap learning-page">
     {heading}
-    <section className="syllabus-empty" role="status"><span aria-hidden="true">◇</span><h2>该院校暂无可展示考纲</h2><p>当前年份、省份和专业范围内尚未录入已核验的考纲内容；可能是官方考纲暂未发布，或本站仍在整理复核。</p><Link className="primary-btn" to={scopePath(scope)}>返回院校列表</Link></section>
+    {offeringOverview}
+    {schemePanel}
+    <section className="syllabus-empty" role="status"><span aria-hidden="true">◇</span><h2>知识点与学习资源待后续整理</h2><p>该院校的招生专业、招生计划、培养地点和考试方案已经官方资料核验并开放；本站尚未整理本方案的知识点与学习资源。</p><Link className="primary-btn" to={scopePath(scope)}>返回院校列表</Link></section>
   </div>
 
   return <div className="page-wrap learning-page">
     {heading}
-    <section className="school-offering-overview" aria-labelledby="offering-overview-title"><div className="section-heading"><div><span className="section-number">{schoolOfferings.length} 个招生点</span><h2 id="offering-overview-title">招生专业与培养点</h2></div><p>招生点分别展示；考试科目相同的专业或培养点共用学习地图。</p></div><div className="offering-detail-grid">{schoolOfferings.map((offering) => { const programLabel = (offering.programNames || offering.program_names || []).join('、') || (MAJOR_NAMES[offering.major_slug || scope.majorSlug] ?? (offering.major_slug || scope.majorSlug)); return <article key={offering.offering_id || offering.school_slug}><div><span>{programLabel}</span><strong>{offering.plan_count} 人</strong></div><dl><div><dt>培养地点与地址</dt><dd>{offering.training_site}</dd></div><div><dt>报考专业范围</dt><dd>{formatEligibleMajorCategories(offering.eligible_major_categories)}</dd></div></dl><p>{offering.source_status} · 最后核验 {offering.verified_at}</p><nav aria-label={`${programLabel}官方资料`}><a href={offering.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={offering.syllabus_url} target="_blank" rel="noreferrer">正式考纲 ↗</a></nav></article> })}</div></section>
-    <section className="exam-scheme-panel" aria-labelledby="exam-scheme-title"><div><span className="eyebrow">院校专属学习地图</span><h2 id="exam-scheme-title">选择招生专业 / 考试方案</h2><p>切换方案后，只展示该方案对应的公共课、专业课、知识点与资源。</p></div><div className="exam-scheme-tabs" role="tablist" aria-label="选择考试方案">{schemes.map((scheme, index) => <button type="button" role="tab" aria-selected={activeScheme?.examSchemeId === scheme.examSchemeId} className={activeScheme?.examSchemeId === scheme.examSchemeId ? 'active' : ''} onClick={() => chooseScheme(scheme.examSchemeId)} key={scheme.examSchemeId}><strong>{scheme.programNames.join('、') || `考试方案 ${index + 1}`}</strong><small>{scheme.professionalSubjects.join(' · ')}</small><span>{scheme.offerings.length} 个招生点 · {scheme.totalPlan} 人</span></button>)}</div></section>
-    <SubjectTags school={activeScheme} />
+    {offeringOverview}
+    {schemePanel}
     <section className="progress-panel"><div className="progress-copy"><span>学习进度</span><strong>{completed} / {points.length} 个知识点</strong></div><div className="progress-track"><span style={{ width: `${percent}%` }} /></div><b>{percent}%</b></section>
     <div className="subject-tabs" role="tablist" aria-label="选择考试科目">{subjectOrder.map((slug) => <button type="button" role="tab" aria-selected={activeSubject === slug} className={activeSubject === slug ? 'active' : ''} onClick={() => setSelectedSubject(slug)} key={slug}>{points.find((point) => point.subject_slug === slug)?.subject_name || subjectNames[slug]}</button>)}</div>
     <div className="syllabus-column">{shownSubjects.map((subjectSlug) => {

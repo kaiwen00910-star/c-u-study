@@ -56,7 +56,7 @@ urlCheck(offerings, ['charter_url','syllabus_url'], 'offerings.csv'); urlCheck(r
 dateCheck(offerings, 'offerings.csv'); dateCheck(resources, 'resources.csv')
 
 if (fallbackAcademicSchools.length !== 42) errors.push(`院校回退数据应为 42 所，当前为 ${fallbackAcademicSchools.length} 所`)
-if (snapshot.offerings.length !== 132) errors.push(`公开快照应为 132 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
+if (snapshot.offerings.length !== 174) errors.push(`公开快照应为 174 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
 if (snapshot.syllabusPoints.length !== 1033) errors.push(`公开快照应为 1033 个已发布知识点，当前为 ${snapshot.syllabusPoints.length} 个`)
 if (snapshot.resources.filter((row) => row.status === 'published').length !== 80) errors.push('公开快照应为 80 条已发布学习资源')
 unique(fallbackAcademicSchools, 'school_id', '院校回退数据')
@@ -66,7 +66,7 @@ fallbackAcademicSchools.forEach((school, index) => {
   if (school.school_id !== expectedId) errors.push(`院校回退数据第 ${index + 1} 所 ID 或顺序错误`)
   if (!school.school_name || !school.short_name) errors.push(`院校回退数据 ${expectedId} 缺少名称或简称`)
 })
-if (fallbackAcademicSchools.filter((school) => school.has_study_map).length < 9) errors.push('院校回退数据至少应开放 9 所学习地图')
+if (fallbackAcademicSchools.filter((school) => school.has_study_map).length !== 41) errors.push('院校回退数据应开放 41 所院校专业地图')
 if (!snapshot.metadata?.version || !snapshot.metadata?.generatedAt || !snapshot.metadata?.sourceUpdatedAt) errors.push('公开快照缺少版本、生成时间或源数据更新时间')
 if (fallbackAcademicSchools.find((school) => school.school_id === 'anhui-school-09')?.school_name !== '安徽科技工程大学') errors.push('公开快照中的 anhui-school-09 未与线上有效校名同步')
 
@@ -92,9 +92,6 @@ snapshot.offerings.forEach((row, index) => {
   if (row.status === 'published' && (!Array.isArray(row.program_names) || row.program_names.length === 0 || !/^[a-z0-9-]+$/.test(row.exam_scheme_id || ''))) {
     errors.push(`公开快照已发布招生计划第 ${index + 1} 条缺少结构化专业或考试方案`)
   }
-  if (row.status === 'published' && !snapshot.syllabusPoints.some((point) => point.status === 'published' && point.year === row.year && point.province_slug === row.province_slug && point.major_slug === row.major_slug && point.school_slug === row.school_slug)) {
-    errors.push(`公开快照已发布招生计划第 ${index + 1} 条没有对应的已发布学校考纲`)
-  }
   if (row.year === 2027 && (row.status === 'published' || row.source_status !== '等待新年度官方文件核验')) {
     errors.push(`公开快照 2027 招生计划第 ${index + 1} 条必须保持待核验草稿`)
   }
@@ -107,11 +104,27 @@ snapshot.offerings.filter((row) => row.status === 'published').forEach((row, ind
   if (snapshotSchemes.has(key) && snapshotSchemes.get(key) !== subjects) errors.push(`公开快照招生计划第 ${index + 1} 条的考试方案科目不一致`)
   snapshotSchemes.set(key, subjects)
 })
-const mapSchools = new Set(snapshot.syllabusPoints.filter((row) => row.status === 'published' && row.school_slug !== 'common').map((row) => row.school_slug))
-const publishedMapSchools = new Set(snapshot.offerings.filter((row) => row.status === 'published' && mapSchools.has(row.school_slug)).map((row) => row.school_slug))
-if (publishedMapSchools.size !== 38) errors.push(`公开快照应为 38 所完整学习地图，当前为 ${publishedMapSchools.size} 所`)
-const hefeiCitySlug = fallbackAcademicSchools.find((school) => school.school_name === '合肥城市学院')?.school_slug
-if (snapshot.offerings.some((row) => row.status === 'published' && row.school_slug === hefeiCitySlug)) errors.push('合肥城市学院不得出现已发布招生点')
+const publishedMapSchools = new Set(snapshot.offerings.filter((row) => row.status === 'published').map((row) => row.school_slug))
+if (publishedMapSchools.size !== 41) errors.push(`公开快照应为 41 所院校专业地图，当前为 ${publishedMapSchools.size} 所`)
+const expectedBatchTwelve = {
+  cuhf: { offerings: 25, programs: 17, plans: 2000, schemes: 21 },
+  bctb: { offerings: 12, programs: 12, plans: 972, schemes: 11 },
+  whit: { offerings: 5, programs: 5, plans: 350, schemes: 5 },
+}
+Object.entries(expectedBatchTwelve).forEach(([slug, expected]) => {
+  const rows = snapshot.offerings.filter((row) => row.status === 'published' && row.school_slug === slug)
+  const programs = new Set(rows.flatMap((row) => row.program_names))
+  const schemes = new Set(rows.map((row) => row.exam_scheme_id))
+  const plans = rows.reduce((total, row) => total + Number(row.plan_count), 0)
+  if (rows.length !== expected.offerings || programs.size !== expected.programs || plans !== expected.plans || schemes.size !== expected.schemes) {
+    errors.push(`${slug} 招生记录、专业、计划或考试方案统计不正确`)
+  }
+  if (snapshot.syllabusPoints.some((row) => row.school_slug === slug)) errors.push(`${slug} 本批不得新增知识点`)
+})
+const secondMedical = fallbackAcademicSchools.find((school) => school.school_name === '安徽第二医学院')
+if (!secondMedical || secondMedical.has_study_map || snapshot.offerings.some((row) => row.school_slug === secondMedical.school_slug)) {
+  errors.push('安徽第二医学院必须保持未开放且无招生点')
+}
 
 const offeringCombinations = new Set()
 offerings.forEach((row, index) => {

@@ -74,10 +74,10 @@ describe('学习地图科目选择与空状态', () => {
     expect(screen.queryByText('高等数学')).not.toBeInTheDocument()
   })
 
-  it('院校没有可展示考纲时说明原因并提供返回入口', () => {
+  it('院校没有学校专属知识点时说明后续整理状态并提供返回入口', () => {
     renderLearningMap([])
-    expect(screen.getByRole('heading', { name: '该院校暂无可展示考纲' })).toBeVisible()
-    expect(screen.getByText(/官方考纲暂未发布/)).toBeVisible()
+    expect(screen.getByRole('heading', { name: '知识点与学习资源待后续整理' })).toBeVisible()
+    expect(screen.getByText(/招生专业、招生计划、培养地点和考试方案已经官方资料核验/)).toBeVisible()
     expect(screen.getByRole('link', { name: '返回院校列表' })).toHaveAttribute('href', '/anhui/2026/all-programs')
   })
 })

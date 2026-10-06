@@ -5,9 +5,9 @@ import path from 'node:path'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
-import { LegacySchoolRedirect } from './App'
+import { LearningMap, LegacySchoolRedirect } from './App'
 import { DEFAULT_SCOPE, schoolPath } from './contentScope'
-import { fallbackAcademicSchools, offerings, schoolGroups, schoolSyllabusForScheme, syllabus } from './data'
+import { fallbackAcademicSchools, offerings, resources, schoolGroups, schoolSyllabusForScheme, syllabus } from './data'
 import { createSchoolWallSchools } from './schoolWallData'
 import { canonicalPathForPath, metadataForPath } from './seo'
 
@@ -17,18 +17,19 @@ function LocationProbe() {
 }
 
 describe('院校主导型学习地图', () => {
-  it('三十八所已开放院校全部生成 canonical 院校主路由', () => {
+  it('四十一所已开放院校全部生成 canonical 院校主路由', () => {
     const paths = schoolGroups().map((school) => schoolPath(DEFAULT_SCOPE, school.school_slug))
-    expect(paths).toHaveLength(38)
-    expect(new Set(paths).size).toBe(38)
+    expect(paths).toHaveLength(41)
+    expect(new Set(paths).size).toBe(41)
     expect(paths.every((value) => /^\/anhui\/2026\/schools\/[a-z0-9-]+$/.test(value))).toBe(true)
   })
 
   it('首页院校墙只给已开放院校生成新主路由', () => {
     const wall = createSchoolWallSchools(fallbackAcademicSchools, offerings, syllabus, DEFAULT_SCOPE)
-    expect(wall.filter((school) => school.hasDetails)).toHaveLength(38)
+    expect(wall.filter((school) => school.hasDetails)).toHaveLength(41)
     expect(wall.filter((school) => school.hasDetails).every((school) => school.href === `/anhui/2026/schools/${school.schoolSlug}`)).toBe(true)
-    expect(wall.find((school) => school.name === '合肥城市学院')).toMatchObject({ hasDetails: false, href: null })
+    expect(wall.find((school) => school.name === '合肥城市学院')).toMatchObject({ hasDetails: true, href: '/anhui/2026/schools/cuhf' })
+    expect(wall.find((school) => school.name === '安徽第二医学院')).toMatchObject({ hasDetails: false, href: null })
   })
 
   it('旧专业范围 URL 保留查询和锚点并跳转到新主路由', () => {
@@ -108,17 +109,27 @@ describe('院校主导型学习地图', () => {
     expect(new Set(schoolSyllabusForScheme('ahua', visual).map((point) => point.point_id)).size).toBe(schoolSyllabusForScheme('ahua', visual).length)
   })
 
+  it('没有知识点的新院校仍展示完整专业考试方案与后续整理状态', () => {
+    render(<MemoryRouter initialEntries={['/anhui/2026/schools/whit']}><Routes>
+      <Route path="/anhui/2026/schools/:schoolSlug" element={<LearningMap favorites={[]} toggleFavorite={() => {}} resources={resources} schools={schoolGroups()} syllabusPoints={syllabus} scope={DEFAULT_SCOPE} />} />
+    </Routes></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: '芜湖职业技术大学' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '招生专业与培养点' })).toBeInTheDocument()
+    expect(screen.getByText('工程力学 · 材料力学')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '知识点与学习资源待后续整理' })).toBeInTheDocument()
+  })
+
   it('SEO 将旧路由 canonical 到院校主路由，院校页描述包含考试方案', () => {
     expect(canonicalPathForPath('/anhui/2026/computer-science/aufe')).toBe('/anhui/2026/schools/aufe')
     expect(canonicalPathForPath('/anhui/2026/schools/aufe')).toBe('/anhui/2026/schools/aufe')
     expect(metadataForPath('/anhui/2026/schools/aufe', '安徽财经大学').description).toContain('考试方案')
   })
 
-  it('sitemap 只收录 canonical 院校主路由且保持四十二页', () => {
+  it('sitemap 只收录 canonical 院校主路由且保持四十五页', () => {
     const xml = fs.readFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), 'utf8')
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
-    expect(locations).toHaveLength(42)
-    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(38)
+    expect(locations).toHaveLength(45)
+    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(41)
     expect(locations.some((url) => /\/anhui\/2026\/computer-science\/(?!compare$)[a-z0-9-]+$/.test(url))).toBe(false)
   })
 })

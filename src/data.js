@@ -52,13 +52,11 @@ export const schoolTheme = {
 
 export function mapAvailableSchoolSlugs(items = offerings, syllabusItems = syllabus, scope = DEFAULT_SCOPE) {
   const normalized = normalizeScope(scope)
+  void syllabusItems
   const offeringSchools = new Set(items
     .filter((item) => item.active !== false && matchesScope(item, normalized))
     .map((item) => item.school_slug))
-  const syllabusSchools = new Set(syllabusItems
-    .filter((item) => item.active !== false && item.school_slug !== 'common' && matchesScope(item, normalized))
-    .map((item) => item.school_slug))
-  return new Set([...offeringSchools].filter((slug) => syllabusSchools.has(slug)))
+  return offeringSchools
 }
 
 export function schoolGroups(items = offerings, academicSchools = fallbackAcademicSchools, scope = DEFAULT_SCOPE, syllabusItems = syllabus) {
