@@ -12,6 +12,7 @@ const schoolFirstMigration = fs.readFileSync(path.join(migrationDirectory, '2026
 const batchTenMigration = fs.readFileSync(path.join(migrationDirectory, '20261004030846_publish_verified_schools_batch_ten_2026.sql'), 'utf8').toLowerCase()
 const batchTwelveMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072507_publish_verified_schools_batch_twelve_2026.sql'), 'utf8').toLowerCase()
 const mapFlagMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072816_separate_school_map_and_syllabus_completion.sql'), 'utf8').toLowerCase()
+const batchThirteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261018153500_complete_batch_thirteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -111,5 +112,23 @@ describe('Supabase migration 安全与完整性', () => {
     expect(mapFlagMigration).toContain("offering.status = 'published'")
     expect(mapFlagMigration).not.toContain('from public.syllabus_points as point')
     expect(mapFlagMigration).toContain('41')
+  })
+
+  it('第十三批只替换八校招生点并冻结知识点、资源、草稿和非目标院校', () => {
+    expect(batchThirteenMigration).toContain('batch_thirteen_protected_offering_drafts')
+    expect(batchThirteenMigration).toContain('batch_thirteen_protected_points')
+    expect(batchThirteenMigration).toContain('batch_thirteen_protected_resources')
+    expect(batchThirteenMigration).toContain('batch_thirteen_protected_other_offerings')
+    expect(batchThirteenMigration).toContain("<> 278")
+    expect(batchThirteenMigration).toContain("<> 1033")
+    expect(batchThirteenMigration).toContain("<> 80")
+    expect(batchThirteenMigration).toContain("<> 33")
+    expect(batchThirteenMigration).toContain("<> 4")
+    expect(batchThirteenMigration).toContain('identical exam schemes were duplicated')
+    expect(batchThirteenMigration).toContain('different exam subjects share one scheme')
+    expect(batchThirteenMigration).not.toMatch(/insert\s+into\s+public\.syllabus_points/)
+    expect(batchThirteenMigration).not.toMatch(/insert\s+into\s+public\.resources/)
+    expect(batchThirteenMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
+    expect(batchThirteenMigration).not.toMatch(/delete\s+from\s+public\.resources/)
   })
 })

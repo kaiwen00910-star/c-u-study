@@ -47,8 +47,8 @@ describe('院校主导型学习地图', () => {
     expect(schoolSyllabusForScheme('hfnu', hfnu.examSchemes[0])).toHaveLength(new Set(schoolSyllabusForScheme('hfnu', hfnu.examSchemes[0]).map((point) => point.point_id)).size)
 
     const aufe = schoolGroups().find((school) => school.school_slug === 'aufe')
-    expect(aufe.examSchemes).toHaveLength(2)
-    const computer = aufe.examSchemes.find((scheme) => scheme.professionalSubjects.includes('计算机专业基础'))
+    expect(aufe.examSchemes).toHaveLength(9)
+    const computer = aufe.examSchemes.find((scheme) => scheme.examSchemeId === 'aufe-70444057bf65')
     const intelligent = aufe.examSchemes.find((scheme) => scheme.professionalSubjects.includes('智能科学与技术专业基础'))
     const computerSubjects = new Set(schoolSyllabusForScheme('aufe', computer).map((point) => point.subject_name))
     const intelligentSubjects = new Set(schoolSyllabusForScheme('aufe', intelligent).map((point) => point.subject_name))
@@ -60,8 +60,9 @@ describe('院校主导型学习地图', () => {
 
   it('阜阳师范大学保持一个招生点和三十个学校专属知识点', () => {
     const fynu = schoolGroups().find((school) => school.school_slug === 'fynu')
-    expect(fynu.offerings).toHaveLength(1)
-    expect(schoolSyllabusForScheme('fynu', fynu.examSchemes[0]).filter((point) => point.school_slug === 'fynu')).toHaveLength(30)
+    expect(fynu.offerings).toHaveLength(4)
+    const software = fynu.examSchemes.find((scheme) => scheme.examSchemeId === 'fynu-58103a73197e')
+    expect(schoolSyllabusForScheme('fynu', software).filter((point) => point.school_slug === 'fynu')).toHaveLength(30)
   })
 
   it('第十批七所院校全部开放，且共享方案与不同方案均正确分组', () => {
@@ -116,7 +117,21 @@ describe('院校主导型学习地图', () => {
     expect(screen.getByRole('heading', { name: '芜湖职业技术大学' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: '招生专业与培养点' })).toBeInTheDocument()
     expect(screen.getByText('工程力学 · 材料力学')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: '知识点与学习资源待后续整理' })).toBeInTheDocument()
+    expect(
+      screen.getAllByRole('heading', { name: '知识点与学习资源待后续整理' }).length,
+    ).toBeGreaterThanOrEqual(1)
+  })
+
+  it('第十三批新增专业没有知识点时显示待整理状态而不是错误页', () => {
+    render(<MemoryRouter initialEntries={['/anhui/2026/schools/bbc']}><Routes>
+      <Route path="/anhui/2026/schools/:schoolSlug" element={<LearningMap favorites={[]} toggleFavorite={() => {}} resources={resources} schools={schoolGroups()} syllabusPoints={syllabus} scope={DEFAULT_SCOPE} />} />
+    </Routes></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: '蚌埠学院' })).toBeInTheDocument()
+    expect(screen.getAllByText('食品科学与工程').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('大学化学 · 食品科学与工程导论')).toBeInTheDocument()
+    expect(
+      screen.getAllByRole('heading', { name: '知识点与学习资源待后续整理' }).length,
+    ).toBeGreaterThanOrEqual(1)
   })
 
   it('SEO 将旧路由 canonical 到院校主路由，院校页描述包含考试方案', () => {

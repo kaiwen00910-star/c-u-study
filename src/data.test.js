@@ -72,11 +72,12 @@ describe('招生内容', () => {
     const school = schoolGroups().find((item) => item.school_slug === 'ahnu')
     expect(school).toMatchObject({
       school_name: '安徽师范大学',
-      totalPlan: 80,
-      publicSubjects: ['高等数学', '英语'],
-      professionalSubjects: ['计算机专业基础', 'C语言程序设计'],
+      totalPlan: 1900,
     })
-    expect(school.sites).toEqual(['软件工程：安徽师范大学天门山校区（安徽省芜湖市九华北路171号）'])
+    expect(school.offerings).toHaveLength(15)
+    expect(school.programNames).toHaveLength(15)
+    expect(school.examSchemes).toHaveLength(12)
+    expect(school.sites).toContain('安徽师范大学天门山校区（安徽省芜湖市九华北路171号）')
     expect(school.charter_url).toBe('https://zsxx.ahnu.edu.cn/info/1042/4133.htm')
     expect(school.syllabus_url).toBe('https://zsxx.ahnu.edu.cn/info/1042/4133.htm')
     expect(schoolSyllabus('ahnu').filter((point) => point.school_slug === 'ahnu')).toHaveLength(19)
@@ -86,11 +87,11 @@ describe('招生内容', () => {
     const school = schoolGroups().find((item) => item.school_slug === 'fynu')
     expect(school).toMatchObject({
       school_name: '阜阳师范大学',
-      totalPlan: 100,
-      publicSubjects: ['高等数学', '英语'],
-      professionalSubjects: ['计算机专业基础', 'C语言程序设计'],
+      totalPlan: 230,
     })
-    expect(school.sites).toEqual(['软件工程：安徽工商职业学院双凤校区（安徽省合肥市双凤经济开发区金宁路北16号）'])
+    expect(school.offerings).toHaveLength(4)
+    expect(school.programNames).toEqual(['园林', '电气工程及其自动化', '物流管理', '软件工程'])
+    expect(school.sites).toContain('阜阳师范大学与安徽工商职业学院联合培养（安徽工商职业学院：安徽省合肥市双凤经济开发区金宁路16号）')
     expect(school.charter_url).toBe('https://www.fynu.edu.cn/bkzsxxw/info/1010/5876.htm')
     expect(school.syllabus_url).toBe('https://www.fynu.edu.cn/bkzsxxw/info/1010/5675.htm')
     expect(schoolSyllabus('fynu').filter((point) => point.school_slug === 'fynu')).toHaveLength(30)
@@ -191,6 +192,32 @@ describe('招生内容', () => {
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
     expect(schoolGroups().some((school) => school.school_name === '安徽第二医学院')).toBe(false)
+  })
+
+  it('第十三批八校全部专业、培养点和文理考试方案完整上线', () => {
+    const expected = {
+      bbc: [5, 5, 200, 5], hfuu: [2, 2, 100, 2], fynu: [4, 4, 230, 4], ahnu: [15, 15, 1900, 12],
+      aufe: [14, 7, 850, 9], hblg: [31, 22, 2400, 25], wjut: [30, 20, 1000, 23], hfue: [15, 15, 2400, 11],
+    }
+    const batch = new Map(schoolGroups().filter((school) => Object.hasOwn(expected, school.school_slug)).map((school) => [school.school_slug, school]))
+    expect([...batch.keys()].sort()).toEqual(Object.keys(expected).sort())
+    Object.entries(expected).forEach(([slug, [offeringCount, programCount, planTotal, schemeCount]]) => {
+      const school = batch.get(slug)
+      expect(school.offerings).toHaveLength(offeringCount)
+      expect(school.programNames).toHaveLength(programCount)
+      expect(school.totalPlan).toBe(planTotal)
+      expect(school.examSchemes).toHaveLength(schemeCount)
+      expect(school.offerings.every((offering) => offering.programNames.length === 1)).toBe(true)
+    })
+
+    const hblgEnglish = batch.get('hblg').examSchemes.filter((scheme) => scheme.programNames.includes('英语'))
+    expect(hblgEnglish.map((scheme) => scheme.publicSubjects)).toEqual([['大学语文', '英语'], ['高等数学', '英语']])
+    const aufeComputer = batch.get('aufe').examSchemes.find((scheme) => scheme.examSchemeId === 'aufe-70444057bf65')
+    expect(aufeComputer.offerings).toHaveLength(2)
+    expect(new Set(aufeComputer.offerings.map((offering) => offering.training_site)).size).toBe(2)
+    expect(fallbackContent.offerings).toHaveLength(278)
+    expect(fallbackContent.syllabusPoints).toHaveLength(1033)
+    expect(fallbackContent.resources).toHaveLength(80)
   })
 
   it('不允许旧版在线数据覆盖已核验的内置快照', () => {
