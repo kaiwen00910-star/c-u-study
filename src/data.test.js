@@ -15,11 +15,14 @@ describe('招生内容', () => {
     ])
   })
 
-  it('合肥师范学院合并两个培养点并使用正确专业课', () => {
+  it('合肥师范学院完整展示全部专业、培养点和考试方案', () => {
     const school = schoolGroups().find((item) => item.school_slug === 'hfnu')
-    expect(school.sites).toHaveLength(2)
-    expect(school.totalPlan).toBe(100)
-    expect(school.professionalSubjects).toEqual(['C语言程序设计', '数据结构'])
+    expect(school.sites).toHaveLength(4)
+    expect(school.totalPlan).toBe(2000)
+    expect(school.offerings).toHaveLength(28)
+    expect(school.programNames).toHaveLength(26)
+    expect(school.examSchemes).toHaveLength(15)
+    expect(school.examSchemes.find((scheme) => scheme.examSchemeId === 'hfnu-f423ab1beb5d').offerings).toHaveLength(4)
   })
 
   it('不同院校只读取自己的专业课考纲并复用公共课', () => {
@@ -35,12 +38,15 @@ describe('招生内容', () => {
     const school = schoolGroups().find((item) => item.school_slug === 'auta')
     expect(school).toMatchObject({
       school_name: '安徽职业技术大学',
-      totalPlan: 100,
-      publicSubjects: ['高等数学', '英语'],
-      professionalSubjects: ['计算机基础', 'C语言'],
+      totalPlan: 500,
     })
-    expect(school.sites).toEqual(['网络工程技术：校本部（安徽省合肥市新站区文忠路2600号）'])
-    expect(schoolSyllabusForScheme('auta', school.examSchemes[0])).toHaveLength(20)
+    expect(school.offerings).toHaveLength(5)
+    expect(school.programNames).toHaveLength(5)
+    expect(school.examSchemes).toHaveLength(5)
+    expect(school.sites).toEqual(['安徽职业技术大学（安徽省合肥市新站区文忠路2600号）'])
+    const networkScheme = school.examSchemes.find((scheme) => scheme.examSchemeId === 'auta-2c833da2b4b2')
+    expect(networkScheme.professionalSubjects).toEqual(['计算机基础', 'C语言'])
+    expect(schoolSyllabusForScheme('auta', networkScheme)).toHaveLength(20)
     expect(schoolSyllabus('auta').filter((point) => point.school_slug === 'auta')).toHaveLength(11)
   })
 
@@ -215,7 +221,39 @@ describe('招生内容', () => {
     const aufeComputer = batch.get('aufe').examSchemes.find((scheme) => scheme.examSchemeId === 'aufe-70444057bf65')
     expect(aufeComputer.offerings).toHaveLength(2)
     expect(new Set(aufeComputer.offerings.map((offering) => offering.training_site)).size).toBe(2)
-    expect(fallbackContent.offerings).toHaveLength(278)
+    expect(fallbackContent.offerings).toHaveLength(367)
+    expect(fallbackContent.syllabusPoints).toHaveLength(1033)
+    expect(fallbackContent.resources).toHaveLength(80)
+  })
+
+  it('第十四批八校全部专业、培养点和考试方案完整上线且学习内容冻结', () => {
+    const expected = {
+      hfnu: [28, 26, 2000, 15], hnnu: [18, 18, 1500, 15], slu: [16, 16, 2000, 14], ahstu: [6, 4, 300, 6],
+      tlu: [6, 5, 200, 4], fyut: [6, 5, 400, 6], auta: [5, 5, 500, 5], ahut: [15, 11, 740, 8],
+    }
+    const batch = new Map(schoolGroups().filter((school) => Object.hasOwn(expected, school.school_slug)).map((school) => [school.school_slug, school]))
+    expect([...batch.keys()].sort()).toEqual(Object.keys(expected).sort())
+    Object.entries(expected).forEach(([slug, [offeringCount, programCount, planTotal, schemeCount]]) => {
+      const school = batch.get(slug)
+      expect(school.offerings).toHaveLength(offeringCount)
+      expect(school.programNames).toHaveLength(programCount)
+      expect(school.totalPlan).toBe(planTotal)
+      expect(school.examSchemes).toHaveLength(schemeCount)
+      expect(school.offerings.every((offering) => offering.programNames.length === 1)).toBe(true)
+      expect(schoolSyllabus(slug).filter((point) => point.school_slug === slug)).toHaveLength(
+        fallbackContent.syllabusPoints.filter((point) => point.school_slug === slug).length,
+      )
+    })
+
+    const ahstuAccounting = batch.get('ahstu').examSchemes.filter((scheme) => scheme.programNames.includes('会计学'))
+    expect(ahstuAccounting.map((scheme) => scheme.publicSubjects)).toEqual([['大学语文', '英语'], ['高等数学', '英语']])
+    const tluAccounting = batch.get('tlu').examSchemes.find((scheme) => scheme.examSchemeId === 'b14-tlu-accounting')
+    expect(tluAccounting.offerings).toHaveLength(2)
+    expect(new Set(tluAccounting.offerings.map((offering) => offering.training_site)).size).toBe(2)
+    const ahutMechanical = batch.get('ahut').examSchemes.find((scheme) => scheme.examSchemeId === 'b14-ahut-mechanical')
+    expect(ahutMechanical.offerings).toHaveLength(3)
+    expect(new Set(ahutMechanical.offerings.map((offering) => offering.programNames[0]))).toEqual(new Set(['机械设计制造及其自动化', '车辆工程']))
+    expect(fallbackContent.offerings).toHaveLength(367)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
   })

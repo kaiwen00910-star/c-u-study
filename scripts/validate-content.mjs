@@ -56,7 +56,7 @@ urlCheck(offerings, ['charter_url','syllabus_url'], 'offerings.csv'); urlCheck(r
 dateCheck(offerings, 'offerings.csv'); dateCheck(resources, 'resources.csv')
 
 if (fallbackAcademicSchools.length !== 42) errors.push(`院校回退数据应为 42 所，当前为 ${fallbackAcademicSchools.length} 所`)
-if (snapshot.offerings.length !== 278) errors.push(`公开快照应为 278 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
+if (snapshot.offerings.length !== 367) errors.push(`公开快照应为 367 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
 if (snapshot.syllabusPoints.length !== 1033) errors.push(`公开快照应为 1033 个已发布知识点，当前为 ${snapshot.syllabusPoints.length} 个`)
 if (snapshot.resources.filter((row) => row.status === 'published').length !== 80) errors.push('公开快照应为 80 条已发布学习资源')
 unique(fallbackAcademicSchools, 'school_id', '院校回退数据')
@@ -153,6 +153,39 @@ batchThirteenRows.forEach((row, index) => {
 })
 if (batchThirteenRows.length !== 116 || batchThirteenRows.reduce((total, row) => total + Number(row.plan_count), 0) !== 9080) {
   errors.push('第十三批八校招生记录或计划总数不正确')
+}
+const expectedBatchFourteen = {
+  hfnu: { offerings: 28, programs: 26, plans: 2000, schemes: 15 },
+  hnnu: { offerings: 18, programs: 18, plans: 1500, schemes: 15 },
+  slu: { offerings: 16, programs: 16, plans: 2000, schemes: 14 },
+  ahstu: { offerings: 6, programs: 4, plans: 300, schemes: 6 },
+  tlu: { offerings: 6, programs: 5, plans: 200, schemes: 4 },
+  fyut: { offerings: 6, programs: 5, plans: 400, schemes: 6 },
+  auta: { offerings: 5, programs: 5, plans: 500, schemes: 5 },
+  ahut: { offerings: 15, programs: 11, plans: 740, schemes: 8 },
+}
+const batchFourteenRows = snapshot.offerings.filter((row) => row.status === 'published' && Object.hasOwn(expectedBatchFourteen, row.school_slug))
+Object.entries(expectedBatchFourteen).forEach(([slug, expected]) => {
+  const rows = batchFourteenRows.filter((row) => row.school_slug === slug)
+  const programs = new Set(rows.flatMap((row) => row.program_names))
+  const schemes = new Set(rows.map((row) => row.exam_scheme_id))
+  const plans = rows.reduce((total, row) => total + Number(row.plan_count), 0)
+  if (rows.length !== expected.offerings || programs.size !== expected.programs || plans !== expected.plans || schemes.size !== expected.schemes) {
+    errors.push(`${slug} 第十四批招生记录、专业、计划或考试方案统计不正确`)
+  }
+  if (rows.some((row) => row.program_names.length !== 1)) errors.push(`${slug} 第十四批每条招生记录必须只对应一个专业`)
+})
+const batchFourteenSubjects = new Map()
+batchFourteenRows.forEach((row, index) => {
+  const subjects = JSON.stringify([row.public_subjects, row.professional_subjects])
+  const key = `${row.school_slug}:${subjects}`
+  if (batchFourteenSubjects.has(key) && batchFourteenSubjects.get(key) !== row.exam_scheme_id) {
+    errors.push(`第十四批招生计划第 ${index + 1} 条重复创建了相同考试方案`)
+  }
+  batchFourteenSubjects.set(key, row.exam_scheme_id)
+})
+if (batchFourteenRows.length !== 100 || batchFourteenRows.reduce((total, row) => total + Number(row.plan_count), 0) !== 7640) {
+  errors.push('第十四批八校招生记录或计划总数不正确')
 }
 const secondMedical = fallbackAcademicSchools.find((school) => school.school_name === '安徽第二医学院')
 if (!secondMedical || secondMedical.has_study_map || snapshot.offerings.some((row) => row.school_slug === secondMedical.school_slug)) {

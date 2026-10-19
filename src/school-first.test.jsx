@@ -42,9 +42,11 @@ describe('院校主导型学习地图', () => {
 
   it('相同科目方案复用知识点，不同方案严格隔离', () => {
     const hfnu = schoolGroups().find((school) => school.school_slug === 'hfnu')
-    expect(hfnu.offerings).toHaveLength(2)
-    expect(hfnu.examSchemes).toHaveLength(1)
-    expect(schoolSyllabusForScheme('hfnu', hfnu.examSchemes[0])).toHaveLength(new Set(schoolSyllabusForScheme('hfnu', hfnu.examSchemes[0]).map((point) => point.point_id)).size)
+    expect(hfnu.offerings).toHaveLength(28)
+    expect(hfnu.examSchemes).toHaveLength(15)
+    const hfnuComputer = hfnu.examSchemes.find((scheme) => scheme.examSchemeId === 'hfnu-f423ab1beb5d')
+    expect(hfnuComputer.offerings).toHaveLength(4)
+    expect(schoolSyllabusForScheme('hfnu', hfnuComputer)).toHaveLength(new Set(schoolSyllabusForScheme('hfnu', hfnuComputer).map((point) => point.point_id)).size)
 
     const aufe = schoolGroups().find((school) => school.school_slug === 'aufe')
     expect(aufe.examSchemes).toHaveLength(9)

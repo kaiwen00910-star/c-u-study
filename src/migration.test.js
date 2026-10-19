@@ -12,7 +12,8 @@ const schoolFirstMigration = fs.readFileSync(path.join(migrationDirectory, '2026
 const batchTenMigration = fs.readFileSync(path.join(migrationDirectory, '20261004030846_publish_verified_schools_batch_ten_2026.sql'), 'utf8').toLowerCase()
 const batchTwelveMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072507_publish_verified_schools_batch_twelve_2026.sql'), 'utf8').toLowerCase()
 const mapFlagMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072816_separate_school_map_and_syllabus_completion.sql'), 'utf8').toLowerCase()
-const batchThirteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261018153500_complete_batch_thirteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
+const batchThirteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261018153040_complete_batch_thirteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
+const batchFourteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261019050302_complete_batch_fourteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -130,5 +131,25 @@ describe('Supabase migration 安全与完整性', () => {
     expect(batchThirteenMigration).not.toMatch(/insert\s+into\s+public\.resources/)
     expect(batchThirteenMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
     expect(batchThirteenMigration).not.toMatch(/delete\s+from\s+public\.resources/)
+  })
+
+  it('第十四批完整替换八校专业地图并逐字段冻结学习内容和草稿', () => {
+    expect(batchFourteenMigration).toContain('batch_fourteen_protected_offering_drafts')
+    expect(batchFourteenMigration).toContain('batch_fourteen_protected_points')
+    expect(batchFourteenMigration).toContain('batch_fourteen_protected_resources')
+    expect(batchFourteenMigration).toContain('batch_fourteen_protected_other_offerings')
+    expect(batchFourteenMigration).toContain('<> 367')
+    expect(batchFourteenMigration).toContain('<> 1033')
+    expect(batchFourteenMigration).toContain('<> 80')
+    expect(batchFourteenMigration).toContain('<> 33')
+    expect(batchFourteenMigration).toContain('<> 4')
+    expect(batchFourteenMigration).toContain('<> 100')
+    expect(batchFourteenMigration).toContain('<> 7640')
+    expect(batchFourteenMigration).toContain('identical exam schemes were duplicated')
+    expect(batchFourteenMigration).toContain('different exam subjects share one scheme')
+    expect(batchFourteenMigration).not.toMatch(/insert\s+into\s+public\.syllabus_points/)
+    expect(batchFourteenMigration).not.toMatch(/insert\s+into\s+public\.resources/)
+    expect(batchFourteenMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
+    expect(batchFourteenMigration).not.toMatch(/delete\s+from\s+public\.resources/)
   })
 })

@@ -1,4 +1,5 @@
 -- Complete the verified 2026 professional study maps for batch thirteen.
+-- The local filename is aligned with the migration version recorded by production Supabase.
 -- This migration replaces only the eight target schools' published 2026 offerings.
 -- All syllabus points, resources, draft/inactive rows, and non-target offerings are frozen.
 
