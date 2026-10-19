@@ -160,15 +160,13 @@
 - 链接审计：命令成功；157 个唯一 URL、162 条记录，accessible 153、automated-request-blocked 2、network-error 3、tls-error 4。错误均为站点网络/TLS或自动化访问限制，不是改用非官方资料。
 - Supabase advisors：安全项仅有项目级 “Leaked Password Protection Disabled” 警告；性能项仅有 `admission_offerings_scope_active_idx` 尚未命中的信息提示。本批未改 Auth、RLS 或索引。
 
-## GitHub、Actions 与 Netlify 延后说明
+## GitHub、Actions 与 Netlify
 
-按用户要求，本批只先更新 Supabase，不推送 GitHub、不触发 Netlify。当前 GitHub `main` 仍为 `9d3c6e5f1ae0535548ae2530b91fa5a1a49ca160`，最近一次 Actions 为 [39138485668](https://github.com/kaiwen00910-star/c-u-study/actions/runs/39138485668)，状态 success。
+本批实施提交为 `3dcbf5bfcc390e0c05a3797ad0fa2839c6bb8695`，已与第十三批一起推送 GitHub `main`。对应 GitHub Actions 为 [39217798719](https://github.com/kaiwen00910-star/c-u-study/actions/runs/39217798719)，状态 success。
 
-当前 Netlify Production deploy ID 为 `6ad4def64d0c9b462f49a153`，`commit_ref` 为 `9d3c6e5f1ae0535548ae2530b91fa5a1a49ca160`，状态 ready，发布时间为 2026-10-18 23:00（北京时间）。线上 sitemap 为 45 个 URL。该静态包只到第十二批；第十三批和第十四批的完整专业数据尚未进入 Netlify 静态回退包。没有手动部署、充值、新建或更换站点。
+Netlify Production deploy ID 为 `6ad5ca1214442e35bbd6968b`，`commit_ref` 为 `3dcbf5bfcc390e0c05a3797ad0fa2839c6bb8695`，状态 ready，发布时间为 2026-10-19 15:43（北京时间）。线上 sitemap 为 45 个 canonical URL，其中 41 个院校页面、4 个公共页面；第十三批和第十四批共 16 所院校路由均返回 HTTP 200。该部署由 GitHub `main` 自动触发，`manual_deploy=false`；没有手动部署、充值、新建或更换站点。
 
 ## 未完成事项
 
-- 第十三批与第十四批本地提交等待用户确认后一起推送 GitHub `main`，再等待并核验 GitHub Actions 与 Netlify Git 部署。
-- Supabase 动态数据已上线；Netlify 静态包仍待两批合并部署。若浏览器能连接 Supabase，院校页可读取第十四批动态数据；静态回退只有未来 Git/Netlify 部署后才同步。
 - 安徽第二医学院继续保持未开放、无招生记录，等待官网恢复且正式资料完整后另批处理。
 - 本批八校新专业的知识点和学习资源继续显示“待后续整理”，后续如需扩充应另开批次，不得回填占位内容。

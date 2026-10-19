@@ -225,10 +225,11 @@
 
 ## GitHub、Actions 与 Netlify
 
-- GitHub 实现提交：待推送后补记。
-- GitHub Actions：待推送后补记。
-- Netlify Production deploy ID / commit_ref：待 Git 部署完成后补记。
-- 本批不执行手动部署、不充值、不创建或更换站点；只允许 GitHub main 触发 Netlify Production。
+- GitHub 实现提交：`7b1af78ccd3e5642684a2a0175ba4a479e3a7ad4`；与第十四批合并推送后的 `main` 为 `3dcbf5bfcc390e0c05a3797ad0fa2839c6bb8695`。
+- GitHub Actions：[39217798719](https://github.com/kaiwen00910-star/c-u-study/actions/runs/39217798719)，状态 success。
+- Netlify Production deploy ID：`6ad5ca1214442e35bbd6968b`；`commit_ref`：`3dcbf5bfcc390e0c05a3797ad0fa2839c6bb8695`；状态 ready，发布时间为 2026-10-19 15:43（北京时间）。该部署同时包含第十三批和第十四批静态快照。
+- 线上 sitemap 为 45 个 canonical URL，其中 41 个院校页面、4 个公共页面；第十三批 8 所院校路由均返回 HTTP 200。
+- 本批未执行手动部署、充值、创建或更换站点；由 GitHub `main` 自动触发 Netlify Production。
 
 ## 未完成事项
 
