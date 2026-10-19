@@ -69,10 +69,11 @@
 
 ## GitHub 与 Netlify
 
-- GitHub 提交：待本批提交后回填。
-- GitHub Actions：待推送后回填。
+- 第十五批实现提交：`20a9689b7c0fcae8b799e8535fbe9089d1007966`。
+- GitHub Actions：https://github.com/kaiwen00910-star/c-u-study/actions/runs/39241073548，状态 `success`。
 - 推送前 Netlify Production deploy：`6ad5cb6f44a3e22903a0c2a2`，commit ref `d40e43f9b89ed0998a67b0503cc952312b507616`。
-- 本批不进行手动部署；提交推送后仅等待 Git 关联的自动构建，并在完成后回填 Production deploy 与 commit ref。
+- 第十五批实现 Netlify Production deploy：`6ad5f770308ad2a002e8728f`，commit ref `20a9689b7c0fcae8b799e8535fbe9089d1007966`，状态 `ready`，为 Git 关联自动部署，未进行手动部署。
+- 线上抽查安徽建筑大学页面：6 个招生点、5 个考试方案、完整培养地址和“知识点与学习资源待后续整理”状态均正常；其余六校与同一已验证静态快照一并发布。
 
 ## 未完成事项
 
