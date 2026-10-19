@@ -14,6 +14,7 @@ const batchTwelveMigration = fs.readFileSync(path.join(migrationDirectory, '2026
 const mapFlagMigration = fs.readFileSync(path.join(migrationDirectory, '20261006072816_separate_school_map_and_syllabus_completion.sql'), 'utf8').toLowerCase()
 const batchThirteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261018153040_complete_batch_thirteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
 const batchFourteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261019050302_complete_batch_fourteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
+const batchFifteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261019104817_complete_batch_fifteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -151,5 +152,25 @@ describe('Supabase migration 安全与完整性', () => {
     expect(batchFourteenMigration).not.toMatch(/insert\s+into\s+public\.resources/)
     expect(batchFourteenMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
     expect(batchFourteenMigration).not.toMatch(/delete\s+from\s+public\.resources/)
+  })
+
+  it('第十五批完整替换七校专业地图并逐字段冻结学习内容和草稿', () => {
+    expect(batchFifteenMigration).toContain('batch_fifteen_protected_offering_drafts')
+    expect(batchFifteenMigration).toContain('batch_fifteen_protected_points')
+    expect(batchFifteenMigration).toContain('batch_fifteen_protected_resources')
+    expect(batchFifteenMigration).toContain('batch_fifteen_protected_other_offerings')
+    expect(batchFifteenMigration).toContain('<> 461')
+    expect(batchFifteenMigration).toContain('<> 1033')
+    expect(batchFifteenMigration).toContain('<> 80')
+    expect(batchFifteenMigration).toContain('<> 33')
+    expect(batchFifteenMigration).toContain('<> 4')
+    expect(batchFifteenMigration).toContain('<> 101')
+    expect(batchFifteenMigration).toContain('<> 9350')
+    expect(batchFifteenMigration).toContain('identical exam schemes were duplicated')
+    expect(batchFifteenMigration).toContain('different exam subjects share one scheme')
+    expect(batchFifteenMigration).not.toMatch(/insert\s+into\s+public\.syllabus_points/)
+    expect(batchFifteenMigration).not.toMatch(/insert\s+into\s+public\.resources/)
+    expect(batchFifteenMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
+    expect(batchFifteenMigration).not.toMatch(/delete\s+from\s+public\.resources/)
   })
 })

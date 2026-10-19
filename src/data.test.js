@@ -64,13 +64,16 @@ describe('招生内容', () => {
 
   it('皖西学院使用正式章程和考纲生成学校专属学习地图', () => {
     const school = schoolGroups().find((item) => item.school_slug === 'wxc')
-    expect(school).toMatchObject({
-      school_name: '皖西学院',
-      totalPlan: 50,
-      publicSubjects: ['高等数学', '英语'],
-      professionalSubjects: ['计算机网络', 'C语言程序设计'],
-    })
-    expect(school.sites).toEqual(['网络工程：皖西学院本部（安徽省六安市云露桥西月亮岛）'])
+    expect(school).toMatchObject({ school_name: '皖西学院', totalPlan: 1200 })
+    expect(school.offerings).toHaveLength(15)
+    expect(school.programNames).toHaveLength(15)
+    expect(school.examSchemes).toHaveLength(14)
+    expect(school.publicSubjects).toEqual(['大学语文', '英语', '高等数学'])
+    expect(school.professionalSubjects).toEqual(expect.arrayContaining(['计算机网络', 'C语言程序设计', '中药学', '汽车构造']))
+    expect(school.sites).toEqual([
+      '皖西学院校本部（安徽省六安市云露桥西月亮岛）',
+      '安徽国防科技职业学院（安徽省六安市金安区梅山中路56号）',
+    ])
     expect(schoolSyllabus('wxc').filter((point) => point.school_slug === 'wxc')).toHaveLength(19)
   })
 
@@ -221,7 +224,7 @@ describe('招生内容', () => {
     const aufeComputer = batch.get('aufe').examSchemes.find((scheme) => scheme.examSchemeId === 'aufe-70444057bf65')
     expect(aufeComputer.offerings).toHaveLength(2)
     expect(new Set(aufeComputer.offerings.map((offering) => offering.training_site)).size).toBe(2)
-    expect(fallbackContent.offerings).toHaveLength(367)
+    expect(fallbackContent.offerings).toHaveLength(461)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
   })
@@ -253,7 +256,35 @@ describe('招生内容', () => {
     const ahutMechanical = batch.get('ahut').examSchemes.find((scheme) => scheme.examSchemeId === 'b14-ahut-mechanical')
     expect(ahutMechanical.offerings).toHaveLength(3)
     expect(new Set(ahutMechanical.offerings.map((offering) => offering.programNames[0]))).toEqual(new Set(['机械设计制造及其自动化', '车辆工程']))
-    expect(fallbackContent.offerings).toHaveLength(367)
+    expect(fallbackContent.offerings).toHaveLength(461)
+    expect(fallbackContent.syllabusPoints).toHaveLength(1033)
+    expect(fallbackContent.resources).toHaveLength(80)
+  })
+
+  it('第十五批七校全部专业、培养点和考试方案完整上线且学习内容冻结', () => {
+    const expected = {
+      ahjzu: [6, 5, 350, 5], czu: [14, 12, 1000, 14], wxc: [15, 15, 1200, 14],
+      masu: [26, 18, 2400, 25], axhu: [11, 10, 1800, 11], aiit: [7, 7, 600, 7], wenda: [22, 16, 2000, 16],
+    }
+    const batch = new Map(schoolGroups().filter((school) => Object.hasOwn(expected, school.school_slug)).map((school) => [school.school_slug, school]))
+    expect([...batch.keys()].sort()).toEqual(Object.keys(expected).sort())
+    Object.entries(expected).forEach(([slug, [offeringCount, programCount, planTotal, schemeCount]]) => {
+      const school = batch.get(slug)
+      expect(school.offerings).toHaveLength(offeringCount)
+      expect(school.programNames).toHaveLength(programCount)
+      expect(school.totalPlan).toBe(planTotal)
+      expect(school.examSchemes).toHaveLength(schemeCount)
+      expect(school.offerings.every((offering) => offering.programNames.length === 1)).toBe(true)
+    })
+
+    const ahjzuAccounting = batch.get('ahjzu').examSchemes.find((scheme) => scheme.examSchemeId === 'b15-ahjzu-accounting-arts')
+    expect(ahjzuAccounting.offerings).toHaveLength(2)
+    expect(new Set(ahjzuAccounting.offerings.map((offering) => offering.training_site)).size).toBe(2)
+    const masuFinance = batch.get('masu').examSchemes.filter((scheme) => scheme.programNames.includes('金融学'))
+    expect(masuFinance.map((scheme) => scheme.publicSubjects)).toEqual([['大学语文', '英语'], ['高等数学', '英语']])
+    const wendaComputing = batch.get('wenda').examSchemes.find((scheme) => scheme.examSchemeId === 'b15-wenda-computing-science')
+    expect(new Set(wendaComputing.programNames)).toEqual(new Set(['计算机科学与技术', '软件工程']))
+    expect(fallbackContent.offerings).toHaveLength(461)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
   })
