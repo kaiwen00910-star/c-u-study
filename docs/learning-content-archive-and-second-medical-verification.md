@@ -66,9 +66,10 @@
 
 ## GitHub 与 Netlify
 
-- GitHub 提交：待推送后补充。
-- GitHub Actions：待推送后补充。
-- Netlify Production：待 Git 关联自动部署后补充；本轮不使用手动部署。
+- GitHub 实现提交：`31df2d7fe7918bdb7f025d5d1878102ef5d91c14`。
+- GitHub Actions：[CI 39371899965](https://github.com/kaiwen00910-star/c-u-study/actions/runs/39371899965)，状态 `success`。
+- Netlify Production：Git 关联自动部署成功，deploy ID `6ad6f3a125118d3909526302`，`commit_ref` 为 `31df2d7fe7918bdb7f025d5d1878102ef5d91c14`，状态 `ready`；本轮未使用手动部署。
+- 线上核验：安徽第二医学院 canonical 路由返回 200；线上 sitemap 返回 200，包含该校路由且共 46 个 URL。
 
 ## 后续说明
 
