@@ -192,6 +192,36 @@ td small { display: block; color: var(--muted); font-size: 10px; }
 .offering-detail-grid dt { color: var(--muted); font-size: 11px; }
 .offering-detail-grid dd { margin: 0; font-size: 13px; line-height: 1.7; }
 .offering-detail-grid nav a { color: var(--green-2); font-size: 12px; font-weight: 700; }
+.eligible-page { padding-bottom: 52px; }
+.eligible-hero { margin-bottom: 18px; }
+.eligibility-disclaimer, .eligible-search-panel, .eligible-filters, .eligible-result-list article, .eligible-empty { border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.eligibility-disclaimer { margin: 16px 0; padding: 15px 18px; background: #fff9e9; border-color: #eadcae; }
+.eligibility-disclaimer p { margin: 6px 0 0; color: #655420; font-size: 13px; line-height: 1.7; }
+.eligible-search-panel { padding: 22px; }
+.eligible-search-panel h2 { margin: 0 0 14px; font: 700 22px 'Noto Serif SC', serif; }
+.eligible-search-panel > p, .eligibility-card-note { color: var(--muted); font-size: 12px; line-height: 1.7; }
+.eligible-search-row { display: flex; gap: 10px; }
+.eligible-search-row input { min-width: 0; flex: 1; padding: 12px 14px; border: 1px solid #bbcec3; border-radius: 8px; font: inherit; }
+.eligible-search-row button, .eligible-suggestions button { border: 0; border-radius: 7px; color: var(--green); background: #eaf3ed; font: inherit; cursor: pointer; }
+.eligible-search-row button { padding: 0 16px; }
+.eligible-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.eligible-suggestions button { padding: 7px 10px; font-size: 12px; }
+.eligible-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 20px 0; padding: 16px; }
+.eligible-filters > strong { margin-right: auto; color: var(--green); }
+.eligible-filters label { display: grid; gap: 5px; color: var(--muted); font-size: 11px; }
+.eligible-filters select { min-width: 115px; padding: 7px; border: 1px solid var(--line); border-radius: 6px; color: var(--text); background: #fff; }
+.eligible-result-list { display: grid; gap: 15px; }
+.eligible-result-list article { padding: 20px; }
+.eligible-result-list header { display: flex; justify-content: space-between; gap: 16px; }
+.eligible-result-list h2 { margin: 8px 0 4px; font: 700 21px 'Noto Serif SC', serif; }
+.eligible-result-list header p { margin: 0; color: var(--muted); }
+.eligible-result-list header > strong { color: var(--green); font-size: 18px; white-space: nowrap; }
+.match-level { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.match-level.exact { color: #0b6e49; background: #e3f5ea; }.match-level.possible { color: #976200; background: #fff1ce; }.match-level.unrestricted { color: #375d97; background: #e8f0fc; }
+.eligible-result-list dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px 20px; margin: 18px 0; }
+.eligible-result-list dl div { display: grid; gap: 3px; }.eligible-result-list dt { color: var(--muted); font-size: 11px; }.eligible-result-list dd { margin: 0; font-size: 13px; line-height: 1.65; }
+.eligible-result-list nav { display: flex; flex-wrap: wrap; gap: 15px; }.eligible-result-list nav a { color: var(--green-2); font-size: 13px; font-weight: 700; }
+.eligible-empty { padding: 28px; text-align: center; }.eligible-empty h2 { margin-top: 0; }.eligible-empty p { max-width: 640px; margin: 0 auto 18px; color: var(--muted); line-height: 1.7; }
 .offering-exam-scheme { margin: 16px 0; padding: 13px 14px; border-radius: 8px; background: #f5f8f6; }
 .offering-exam-scheme > b { color: var(--ink); font-size: 12px; }
 .offering-subject-groups { margin: 10px 0 0; gap: 8px; }
@@ -516,6 +546,8 @@ footer strong { font-size: 12px; }
   .school-title h1 { font-size: 25px; }
   .official-links { width: 100%; margin-left: 0; }
   .offering-detail-grid { grid-template-columns: 1fr; }
+  .eligible-result-list dl { grid-template-columns: 1fr; }
+  .eligible-filters { align-items: stretch; }.eligible-filters > strong { margin-right: 0; width: 100%; }.eligible-filters label, .eligible-filters select { width: 100%; }
   .progress-panel { grid-template-columns: 1fr 42px; gap: 12px; }
   .progress-copy { grid-column: 1 / -1; }
   .resource-row { grid-template-columns: 1fr; }

@@ -1,4 +1,5 @@
 import { DEFAULT_SCOPE } from './contentScope'
+import { normalizeEligibleMajorCategories } from './eligibleMajorSearch'
 
 export function normalizeResource(row) {
   const tags = Array.isArray(row.topic_tags) ? row.topic_tags : String(row.topic_tags || '').split('|').filter(Boolean)
@@ -19,6 +20,7 @@ export function normalizeOffering(row) {
     programNames: Array.isArray(row.program_names) ? row.program_names : [],
     publicSubjects: Array.isArray(row.public_subjects) ? row.public_subjects : [],
     professionalSubjects: Array.isArray(row.professional_subjects) ? row.professional_subjects : [],
+    eligibleMajorCategories: normalizeEligibleMajorCategories(row.eligible_major_categories),
   }
 }
 

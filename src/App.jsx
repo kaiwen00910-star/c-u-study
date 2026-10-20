@@ -10,6 +10,7 @@ import { loadPublishedScopes } from './publicApi'
 import { applyPageMetadata } from './seo'
 import { trackEvent, trackPageview } from './analytics'
 import { FeedbackForm } from './FeedbackForm'
+import { ELIGIBILITY_NOTICE, eligibleMajorSuggestions, findEligibleOfferings, sortEligibleResults } from './eligibleMajorSearch'
 import './App.css'
 
 const AdminDashboard = lazy(() => import('./Admin').then((module) => ({ default: module.AdminDashboard })))
@@ -59,6 +60,7 @@ export function MobileNavigation() {
     </button>
     {open && <nav ref={menuRef} id="mobile-navigation-menu" className="mobile-menu" aria-label="移动端导航">
       <NavLink to="/anhui" onClick={close}>院校与专业</NavLink>
+      <NavLink to="/anhui/2026/eligible-programs" onClick={close}>我能报哪些专业</NavLink>
       <NavLink to={comparePath(DEFAULT_SCOPE)} onClick={close}>院校对比</NavLink>
       <NavLink to="/sources" onClick={close}>资料来源</NavLink>
     </nav>}
@@ -72,6 +74,7 @@ function Layout({ children, announcement, content }) {
         <Logo />
         <nav className="desktop-navigation" aria-label="主导航">
           <NavLink to="/anhui">院校与专业</NavLink>
+          <NavLink to="/anhui/2026/eligible-programs">我能报哪些专业</NavLink>
           <NavLink to={comparePath(DEFAULT_SCOPE)}>院校对比</NavLink>
           <NavLink to="/sources">资料来源</NavLink>
         </nav>
@@ -204,7 +207,7 @@ function Home({ wallSchools, schoolCount, scope }) {
           <div className="eyebrow">ANHUI EXAM PATH · 2026</div>
           <h1>安徽专升本，<br/><em>找到适合你的本科院校</em></h1>
           <p className="hero-copy">收录 {wallSchools.length} 所安徽招生院校名录；其中 {schoolCount} 所已完成招生专业与考试方案核验，可进入院校专业地图。</p>
-          <div className="hero-actions"><Link className="primary-btn" to={scopePath(scope)}>查看院校状态 <span>→</span></Link><Link className="secondary-btn" to={`${scopePath(scope)}#school-filter`}>查报考条件</Link></div>
+          <div className="hero-actions"><Link className="primary-btn" to={scopePath(scope)}>查看院校状态 <span>→</span></Link><Link className="secondary-btn" to="/anhui/2026/eligible-programs">查报考范围</Link></div>
           <div className="hero-trust"><span>✓ 官方来源可核验</span><span>✓ 免费公开使用</span><span>✓ 专注安徽</span></div>
         </div>
         <div className="hero-stats" aria-label="当前收录概况"><div><strong>{wallSchools.length}</strong><span>院校名录</span></div><div><strong>{schoolCount}</strong><span>已开放院校地图</span></div></div>
@@ -217,6 +220,7 @@ function Home({ wallSchools, schoolCount, scope }) {
     <section className="content-section home-services">
       <div className="section-heading"><div><span className="section-number">01</span><h2>从择校到备考，一站理清</h2></div><p>信息层级更清楚，每一步都有可核验的来源。</p></div>
       <div className="service-grid">
+        <Link to="/anhui/2026/eligible-programs"><span>⌕</span><small>01</small><h3>我能报哪些专业</h3><p>按专科专业查询可能对应的院校、本科专业与考试方案。</p><b>开始查询 →</b></Link>
         <Link to="/anhui"><span>⌕</span><small>01</small><h3>院校筛选</h3><p>查看院校类型、培养地点、招生范围与考试科目。</p><b>开始筛选 →</b></Link>
         <Link to={comparePath(scope)}><span>▦</span><small>02</small><h3>招生计划</h3><p>横向比较试点院校招生计划与专业课差异。</p><b>查看对比 →</b></Link>
         <Link to="/sources"><span>◎</span><small>03</small><h3>报考指南</h3><p>了解资料年份、正式章程与官方考纲来源。</p><b>核验资料 →</b></Link>
@@ -238,6 +242,33 @@ function SubjectTags({ school, compact = false }) {
 function formatEligibleMajorCategories(value) {
   if (Array.isArray(value)) return value.join('、')
   return String(value || '').replace(/^\{(.*)\}$/, '$1').replaceAll(',', '、')
+}
+
+export function EligiblePrograms({ offerings, academicSchools }) {
+  const [params, setParams] = useSearchParams()
+  const major = params.get('major') || ''
+  const filters = { level: params.get('level') || '', type: params.get('type') || '', program: params.get('program') || '', sort: params.get('sort') || 'match' }
+  const setParam = (key, value) => {
+    const next = new URLSearchParams(params)
+    if (value) next.set(key, value); else next.delete(key)
+    setParams(next, { replace: true })
+  }
+  const suggestions = useMemo(() => eligibleMajorSuggestions(offerings), [offerings])
+  const matched = useMemo(() => major.trim() ? findEligibleOfferings({ offerings, academicSchools, major }) : [], [offerings, academicSchools, major])
+  const programs = useMemo(() => [...new Set(matched.flatMap((item) => item.programNames || item.program_names || []))].sort((a, b) => a.localeCompare(b, 'zh-Hans-CN')), [matched])
+  const results = useMemo(() => sortEligibleResults(matched.filter((item) => (!filters.level || item.match.level === filters.level) && (!filters.type || item.school?.school_type === filters.type) && (!filters.program || (item.programNames || item.program_names || []).includes(filters.program))), filters.sort), [matched, filters.level, filters.type, filters.program, filters.sort])
+  const updateMajor = (value) => setParam('major', value)
+  const clear = () => setParams({}, { replace: true })
+  return <div className="page-wrap eligible-page">
+    <div className="crumb"><Link to="/">首页</Link><span>/</span>我能报哪些专业</div>
+    <section className="page-hero eligible-hero"><div><span className="eyebrow">2026 安徽普通高校专升本</span><h1>我能报哪些专业</h1><p>输入你的专科专业，查看招生章程中可能对应的本科专业、院校和考试方案。</p></div></section>
+    <section className="eligibility-disclaimer" role="note"><strong>资格说明</strong><p>{ELIGIBILITY_NOTICE}</p></section>
+    <section className="eligible-search-panel" aria-labelledby="eligible-search-title"><h2 id="eligible-search-title">填写专科专业名称</h2><label className="sr-only" htmlFor="eligible-major">专科专业名称</label><div className="eligible-search-row"><input id="eligible-major" value={major} onChange={(event) => updateMajor(event.target.value)} placeholder="例如：计算机应用技术" autoComplete="off" /><button type="button" onClick={clear}>清空</button></div><p>可输入教育部专业目录中的正式名称，或从已有报考范围中选择。</p>{suggestions.length > 0 && <div className="eligible-suggestions" aria-label="专业名称建议">{suggestions.filter((item) => !major.trim() || item.includes(major.trim())).slice(0, 18).map((item) => <button type="button" key={item} onClick={() => updateMajor(item)}>{item}</button>)}</div>}</section>
+    {major.trim() && <>
+      <section className="eligible-filters" aria-label="查询结果筛选"><strong>找到 {matched.length} 条可能结果</strong><label>匹配等级<select value={filters.level} onChange={(event) => setParam('level', event.target.value)}><option value="">全部</option><option value="exact">明确匹配</option><option value="possible">可能匹配</option><option value="unrestricted">不限专业</option></select></label><label>院校性质<select value={filters.type} onChange={(event) => setParam('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>本科专业<select value={filters.program} onChange={(event) => setParam('program', event.target.value)}><option value="">全部</option>{programs.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><label>排序<select value={filters.sort} onChange={(event) => setParam('sort', event.target.value)}><option value="match">明确匹配优先</option><option value="public">公办优先</option><option value="plan">计划数从高到低</option><option value="school">院校默认顺序</option></select></label></section>
+      {results.length ? <section className="eligible-result-list" aria-label="查询结果">{results.map((item) => { const programsLabel = (item.programNames || item.program_names || []).join('、'); return <article key={item.offering_id}><header><div><span className={`match-level ${item.match.level}`}>{item.match.label}</span><h2>{item.school?.school_name || item.school_slug}</h2><p>{item.school?.school_type} · {programsLabel}</p></div><strong>{item.plan_count} 人</strong></header><dl><div><dt>本科招生专业</dt><dd>{programsLabel}</dd></div><div><dt>培养地点</dt><dd>{item.training_site}</dd></div><div><dt>完整培养地址</dt><dd>{item.training_site}</dd></div><div><dt>报考专业范围原文</dt><dd>{formatEligibleMajorCategories(item.eligible_major_categories)}</dd></div><div><dt>公共课</dt><dd>{(item.publicSubjects || item.public_subjects || []).join('、')}</dd></div><div><dt>专业课</dt><dd>{(item.professionalSubjects || item.professional_subjects || []).join('、')}</dd></div></dl><p className="eligibility-card-note">{ELIGIBILITY_NOTICE}</p><nav aria-label={`${item.school?.school_name || item.school_slug}官方资料`}><a href={item.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">正式考试大纲 ↗</a><Link to={schoolPath({ provinceSlug: 'anhui', year: 2026, majorSlug: 'all-programs' }, item.school_slug)}>进入院校专业地图 →</Link></nav></article> })}</section> : <section className="eligible-empty"><h2>未找到明确匹配结果</h2><p>建议检查专业名称是否为教育部专业目录中的正式名称；也可以查看全部院校专业地图，或打开院校正式招生章程继续核实。</p><Link className="primary-btn" to="/anhui/2026/all-programs">查看全部院校专业地图</Link></section>}
+    </>}
+  </div>
 }
 
 function SchoolLogo({ school, large = false }) {
@@ -403,6 +434,8 @@ export function LegacySchoolRedirect() {
 }
 
 function scopeFromLocation(pathname) {
+  const eligibleMatch = pathname.match(/^\/([a-z0-9-]+)\/(\d{4})\/eligible-programs/)
+  if (eligibleMatch) return normalizeScope({ provinceSlug: eligibleMatch[1], year: eligibleMatch[2], majorSlug: 'all-programs' })
   const schoolMatch = pathname.match(/^\/([a-z0-9-]+)\/(\d{4})\/schools\/[a-z0-9-]+/)
   if (schoolMatch) return normalizeScope({ provinceSlug: schoolMatch[1], year: schoolMatch[2], majorSlug: DEFAULT_SCOPE.majorSlug })
   const match = pathname.match(/^\/([a-z0-9-]+)\/(\d{4})\/([a-z0-9-]+)/)
@@ -456,6 +489,7 @@ export function PublicSite() {
     <Route path="/" element={<Home wallSchools={wallSchools} schoolCount={schools.length} scope={scope} />} />
     <Route path="/anhui" element={<Navigate to={scopePath(defaultPublishedScope)} replace />} />
     <Route path="/favorites" element={<Navigate to={scopePath(defaultPublishedScope || DEFAULT_SCOPE)} replace />} />
+    <Route path="/:provinceSlug/:year/eligible-programs" element={<EligiblePrograms offerings={content.offerings} academicSchools={academicSchools} />} />
     <Route path="/:provinceSlug/:year/:majorSlug" element={<AnhuiHub schools={schools} wallSchools={wallSchools} scope={scope} publishedScopes={publishedScopes} />} />
     <Route path="/:provinceSlug/:year/:majorSlug/compare" element={<Compare schools={schools} scope={scope} />} />
     <Route path="/:provinceSlug/:year/schools/:schoolSlug" element={<LearningMap schools={routeSchools} scope={scope} />} />

@@ -5,7 +5,7 @@ const snapshot = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content', 
 const origin = 'https://splendid-duckanoo-926f44.netlify.app'
 const published = (row) => row.status ? row.status === 'published' : row.active !== false
 const scopes = [...new Map(snapshot.offerings.filter(published).map((row) => [`${row.year}:${row.province_slug}`, row])).values()]
-const urls = new Set(['/', '/sources'])
+const urls = new Set(['/', '/sources', '/anhui/2026/eligible-programs'])
 
 for (const scope of scopes) {
   const base = `/${scope.province_slug}/${scope.year}/all-programs`

@@ -1,5 +1,6 @@
 import snapshot from '../content/public-content.snapshot.json'
 import { DEFAULT_SCOPE, matchesScope, normalizeScope } from './contentScope'
+import { normalizeEligibleMajorCategories } from './eligibleMajorSearch'
 
 const asList = (value) => Array.isArray(value) ? value : String(value || '').split('|').filter(Boolean)
 
@@ -17,6 +18,7 @@ export const offerings = snapshot.offerings.map((item) => ({
   programNames: asList(item.program_names),
   publicSubjects: asList(item.public_subjects),
   professionalSubjects: asList(item.professional_subjects),
+  eligibleMajorCategories: normalizeEligibleMajorCategories(item.eligible_major_categories),
 }))
 
 export const syllabus = snapshot.syllabusPoints.map((item) => ({
