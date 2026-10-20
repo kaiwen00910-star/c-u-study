@@ -21,13 +21,11 @@ describe('搜索深链接和刷新恢复', () => {
     expect(screen.getByRole('link', { name: /函数与指针/ })).toHaveAttribute('href', '/anhui/2026/schools/demo?subject=c-language&point=demo-pointer')
   })
 
-  it('直接打开深链接会选择科目并短暂高亮目标；错误参数安全降级', () => {
-    const first = render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/demo?subject=c-language&point=demo-pointer']}><Routes><Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap favorites={[]} toggleFavorite={vi.fn()} resources={[]} schools={[school]} syllabusPoints={[englishPoint, cPoint]} scope={DEFAULT_SCOPE} />} /></Routes></MemoryRouter>)
-    expect(screen.getByRole('tab', { name: 'C语言程序设计' })).toHaveAttribute('aria-selected', 'true')
-    expect(document.getElementById('point-demo-pointer')).toHaveClass('target-highlight')
-    first.unmount()
-    render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/demo?subject=bad&point=missing']}><Routes><Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap favorites={[]} toggleFavorite={vi.fn()} resources={[]} schools={[school]} syllabusPoints={[englishPoint, cPoint]} scope={DEFAULT_SCOPE} />} /></Routes></MemoryRouter>)
-    expect(screen.getByRole('tab', { name: '英语' })).toHaveAttribute('aria-selected', 'true')
+  it('旧知识点深链接安全降级为院校专业地图且不公开学习内容', () => {
+    const { container } = render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/demo?subject=c-language&point=demo-pointer']}><Routes><Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap schools={[school]} scope={DEFAULT_SCOPE} />} /></Routes></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: '选择招生专业 / 考试方案' })).toBeVisible()
+    expect(container).not.toHaveTextContent('函数与指针')
+    expect(container.querySelector('#point-demo-pointer')).toBeNull()
   })
 })
 

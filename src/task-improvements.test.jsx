@@ -39,7 +39,7 @@ function renderLearningMap(syllabusPoints) {
 }
 
 describe('移动端更多菜单', () => {
-  it('提供全部入口、收藏数量，并可通过 Esc 或菜单项关闭', () => {
+  it('提供专业地图入口且不再显示收藏资源，并可通过 Esc 或菜单项关闭', () => {
     render(<MemoryRouter><MobileNavigation favoritesCount={3} /></MemoryRouter>)
     const trigger = screen.getByRole('button', { name: /更多/ })
     expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -49,7 +49,7 @@ describe('移动端更多菜单', () => {
     expect(screen.getByRole('link', { name: '院校与专业' })).toBeVisible()
     expect(screen.getByRole('link', { name: '院校对比' })).toBeVisible()
     expect(screen.getByRole('link', { name: '资料来源' })).toBeVisible()
-    expect(screen.getByLabelText('已收藏 3 条资源')).toBeVisible()
+    expect(screen.queryByText(/我的收藏/)).not.toBeInTheDocument()
 
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByRole('navigation', { name: '移动端导航' })).not.toBeInTheDocument()
@@ -61,24 +61,24 @@ describe('移动端更多菜单', () => {
   })
 })
 
-describe('学习地图科目选择与空状态', () => {
+describe('专业地图与学习内容下线状态', () => {
   beforeEach(() => localStorage.clear())
 
-  it('默认选择院校实际存在的第一个科目，而不是固定高等数学', () => {
+  it('展示院校考试科目但不展示知识点与学习进度', () => {
     renderLearningMap([
       point({ subject_slug: 'english', subject_name: '英语' }),
       point({ point_id: 'c-basic', subject_slug: 'c-language', subject_name: 'C语言程序设计', point_title: '数据类型', canonical_topic: 'c-language-basic' }),
     ])
-    expect(screen.getByRole('tab', { name: '英语' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('heading', { name: '英语', level: 2 })).toBeVisible()
+    expect(screen.getAllByText('C语言程序设计').length).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByText('阅读理解')).not.toBeInTheDocument()
+    expect(screen.queryByText(/学习进度/)).not.toBeInTheDocument()
     expect(screen.queryByText('高等数学')).not.toBeInTheDocument()
   })
 
-  it('院校没有学校专属知识点时说明后续整理状态并提供返回入口', () => {
+  it('院校没有知识点时仍正常显示专业考试方案', () => {
     renderLearningMap([])
-    expect(screen.getByRole('heading', { name: '知识点与学习资源待后续整理' })).toBeVisible()
-    expect(screen.getByText(/招生专业、招生计划、培养地点和考试方案已经官方资料核验/)).toBeVisible()
-    expect(screen.getByRole('link', { name: '返回院校列表' })).toHaveAttribute('href', '/anhui/2026/all-programs')
+    expect(screen.getAllByRole('heading', { name: '选择招生专业 / 考试方案' }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByText(/知识点与学习资源/)).not.toBeInTheDocument()
   })
 })
 

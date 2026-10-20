@@ -8,10 +8,10 @@ import { progressKey } from './storage'
 import { announcementStatus, currentAnnouncement } from './announcements'
 
 describe('招生内容', () => {
-  it('包含四十一所已完成招生专业与考试方案核验的院校', () => {
+  it('包含四十二所已完成招生专业与考试方案核验的院校', () => {
     expect(schoolGroups().map((school) => school.school_name)).toEqual([
       '安徽工业大学', '安徽农业大学', '安徽医科大学', '安徽师范大学', '安徽中医药大学', '阜阳师范大学', '安庆师范大学', '安徽建筑大学', '安徽科技工程大学', '铜陵学院', '蚌埠学院', '蚌埠医科大学', '皖南医科大学', '合肥大学', '巢湖学院', '亳州学院', '滁州学院', '宿州学院', '黄山学院', '池州学院', '皖西学院', '淮南师范学院', '合肥师范学院', '安徽艺术学院', '安徽医科大学临床医学院', '马鞍山学院', '安徽新华学院', '合肥经济学院',
-      '合肥城市学院', '安徽外国语学院', '安徽三联学院', '蚌埠工商学院', '安徽信息工程学院', '淮北理工学院', '皖江工学院', '安徽文达信息工程学院', '芜湖学院', '阜阳理工学院', '安徽财经大学', '安徽职业技术大学', '芜湖职业技术大学',
+      '合肥城市学院', '安徽外国语学院', '安徽三联学院', '蚌埠工商学院', '安徽信息工程学院', '淮北理工学院', '皖江工学院', '安徽文达信息工程学院', '芜湖学院', '阜阳理工学院', '安徽财经大学', '安徽第二医学院', '安徽职业技术大学', '芜湖职业技术大学',
     ])
   })
 
@@ -170,11 +170,11 @@ describe('招生内容', () => {
     expect(schoolGroups(fakeOffering, [noMapSchool])).toHaveLength(1)
   })
 
-  it('Supabase 不可用时的静态回退仍包含完整院校墙与四十一所院校专业地图', () => {
+  it('Supabase 不可用时的静态回退仍包含完整院校墙与四十二所院校专业地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
-    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(41)
+    expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(42)
   })
 
   it('第十二批三校专业、计划与考试方案完整隔离且不新增知识点资源', () => {
@@ -200,7 +200,11 @@ describe('招生内容', () => {
     expect(['cuhf', 'bctb', 'whit'].every((slug) => schoolSyllabus(slug).filter((point) => point.school_slug === slug).length === 0)).toBe(true)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
-    expect(schoolGroups().some((school) => school.school_name === '安徽第二医学院')).toBe(false)
+    const secondMedical = schoolGroups().find((school) => school.school_slug === 'ahyz')
+    expect(secondMedical).toMatchObject({ totalPlan: 270 })
+    expect(secondMedical.offerings).toHaveLength(4)
+    expect(secondMedical.programNames).toHaveLength(4)
+    expect(secondMedical.examSchemes).toHaveLength(4)
   })
 
   it('第十三批八校全部专业、培养点和文理考试方案完整上线', () => {
@@ -224,7 +228,7 @@ describe('招生内容', () => {
     const aufeComputer = batch.get('aufe').examSchemes.find((scheme) => scheme.examSchemeId === 'aufe-70444057bf65')
     expect(aufeComputer.offerings).toHaveLength(2)
     expect(new Set(aufeComputer.offerings.map((offering) => offering.training_site)).size).toBe(2)
-    expect(fallbackContent.offerings).toHaveLength(461)
+    expect(fallbackContent.offerings).toHaveLength(465)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
   })
@@ -256,7 +260,7 @@ describe('招生内容', () => {
     const ahutMechanical = batch.get('ahut').examSchemes.find((scheme) => scheme.examSchemeId === 'b14-ahut-mechanical')
     expect(ahutMechanical.offerings).toHaveLength(3)
     expect(new Set(ahutMechanical.offerings.map((offering) => offering.programNames[0]))).toEqual(new Set(['机械设计制造及其自动化', '车辆工程']))
-    expect(fallbackContent.offerings).toHaveLength(461)
+    expect(fallbackContent.offerings).toHaveLength(465)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
   })
@@ -284,7 +288,7 @@ describe('招生内容', () => {
     expect(masuFinance.map((scheme) => scheme.publicSubjects)).toEqual([['大学语文', '英语'], ['高等数学', '英语']])
     const wendaComputing = batch.get('wenda').examSchemes.find((scheme) => scheme.examSchemeId === 'b15-wenda-computing-science')
     expect(new Set(wendaComputing.programNames)).toEqual(new Set(['计算机科学与技术', '软件工程']))
-    expect(fallbackContent.offerings).toHaveLength(461)
+    expect(fallbackContent.offerings).toHaveLength(465)
     expect(fallbackContent.syllabusPoints).toHaveLength(1033)
     expect(fallbackContent.resources).toHaveLength(80)
   })

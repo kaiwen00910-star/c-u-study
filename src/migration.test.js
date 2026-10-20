@@ -15,6 +15,7 @@ const mapFlagMigration = fs.readFileSync(path.join(migrationDirectory, '20261006
 const batchThirteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261018153040_complete_batch_thirteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
 const batchFourteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261019050302_complete_batch_fourteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
 const batchFifteenMigration = fs.readFileSync(path.join(migrationDirectory, '20261019104817_complete_batch_fifteen_professional_maps_2026.sql'), 'utf8').toLowerCase()
+const secondMedicalMigration = fs.readFileSync(path.join(migrationDirectory, '20261019124806_publish_verified_anhui_second_medical_college_2026.sql'), 'utf8').toLowerCase()
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
@@ -172,5 +173,20 @@ describe('Supabase migration 安全与完整性', () => {
     expect(batchFifteenMigration).not.toMatch(/insert\s+into\s+public\.resources/)
     expect(batchFifteenMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
     expect(batchFifteenMigration).not.toMatch(/delete\s+from\s+public\.resources/)
+  })
+
+  it('安徽第二医学院只新增四个专业地图并逐字段冻结既有学习内容与草稿', () => {
+    expect(secondMedicalMigration).toContain("school_slug = 'ahyz'")
+    expect(secondMedicalMigration).toContain('<> 465')
+    expect(secondMedicalMigration).toContain('<> 1033')
+    expect(secondMedicalMigration).toContain('<> 80')
+    expect(secondMedicalMigration).toContain('<> 33')
+    expect(secondMedicalMigration).toContain('<> 4')
+    expect(secondMedicalMigration).toContain('syllabus points changed')
+    expect(secondMedicalMigration).toContain('resources changed')
+    expect(secondMedicalMigration).not.toMatch(/insert\s+into\s+public\.syllabus_points/)
+    expect(secondMedicalMigration).not.toMatch(/insert\s+into\s+public\.resources/)
+    expect(secondMedicalMigration).not.toMatch(/delete\s+from\s+public\.syllabus_points/)
+    expect(secondMedicalMigration).not.toMatch(/delete\s+from\s+public\.resources/)
   })
 })

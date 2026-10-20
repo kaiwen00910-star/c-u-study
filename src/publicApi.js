@@ -33,12 +33,10 @@ export async function loadPublicContent(scope = DEFAULT_SCOPE, attempt = 0) {
   }
   if (normalized.majorSlug !== ALL_PROGRAMS_MAJOR) scopeFilters.major_slug = `eq.${normalized.majorSlug}`
   const versionBefore = await read('content_versions', { select: 'version,updated_at', id: 'eq.public-content', limit: '1' })
-  const [resourceRows, announcementRows, academicSchoolRows, offeringRows, syllabusRows] = await Promise.all([
-    read('resources', { select: '*', order: 'priority.asc,title.asc' }),
+  const [announcementRows, academicSchoolRows, offeringRows] = await Promise.all([
     read('announcements', { select: '*', order: 'updated_at.desc', limit: '1' }),
     read('academic_schools', { select: '*', order: 'sort_order.asc,school_id.asc' }),
     read('admission_offerings', { select: '*', ...scopeFilters, order: 'sort_order.asc' }),
-    read('syllabus_points', { select: '*', ...scopeFilters, order: 'subject_slug.asc,section_order.asc,point_order.asc' }),
   ])
   const versionAfter = await read('content_versions', { select: 'version,updated_at', id: 'eq.public-content', limit: '1' })
   if (versionBefore[0]?.version !== versionAfter[0]?.version) {
@@ -46,14 +44,14 @@ export async function loadPublicContent(scope = DEFAULT_SCOPE, attempt = 0) {
     throw new Error('在线内容正在更新，请稍后重试')
   }
   return {
-    resources: resourceRows,
+    resources: [],
     announcements: announcementRows,
     academicSchools: academicSchoolRows,
     offerings: offeringRows,
-    syllabusPoints: syllabusRows,
+    syllabusPoints: [],
     metadata: {
       version: versionAfter[0]?.version ?? null,
-      sourceUpdatedAt: versionAfter[0]?.updated_at ?? maxUpdatedAt([resourceRows, announcementRows, academicSchoolRows, offeringRows, syllabusRows]),
+      sourceUpdatedAt: versionAfter[0]?.updated_at ?? maxUpdatedAt([announcementRows, academicSchoolRows, offeringRows]),
     },
   }
 }

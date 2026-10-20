@@ -17,19 +17,19 @@ function LocationProbe() {
 }
 
 describe('院校主导型学习地图', () => {
-  it('四十一所已开放院校全部生成 canonical 院校主路由', () => {
+  it('四十二所已开放院校全部生成 canonical 院校主路由', () => {
     const paths = schoolGroups().map((school) => schoolPath(DEFAULT_SCOPE, school.school_slug))
-    expect(paths).toHaveLength(41)
-    expect(new Set(paths).size).toBe(41)
+    expect(paths).toHaveLength(42)
+    expect(new Set(paths).size).toBe(42)
     expect(paths.every((value) => /^\/anhui\/2026\/schools\/[a-z0-9-]+$/.test(value))).toBe(true)
   })
 
   it('首页院校墙只给已开放院校生成新主路由', () => {
     const wall = createSchoolWallSchools(fallbackAcademicSchools, offerings, syllabus, DEFAULT_SCOPE)
-    expect(wall.filter((school) => school.hasDetails)).toHaveLength(41)
+    expect(wall.filter((school) => school.hasDetails)).toHaveLength(42)
     expect(wall.filter((school) => school.hasDetails).every((school) => school.href === `/anhui/2026/schools/${school.schoolSlug}`)).toBe(true)
     expect(wall.find((school) => school.name === '合肥城市学院')).toMatchObject({ hasDetails: true, href: '/anhui/2026/schools/cuhf' })
-    expect(wall.find((school) => school.name === '安徽第二医学院')).toMatchObject({ hasDetails: false, href: null })
+    expect(wall.find((school) => school.name === '安徽第二医学院')).toMatchObject({ hasDetails: true, href: '/anhui/2026/schools/ahyz' })
   })
 
   it('旧专业范围 URL 保留查询和锚点并跳转到新主路由', () => {
@@ -112,28 +112,24 @@ describe('院校主导型学习地图', () => {
     expect(new Set(schoolSyllabusForScheme('ahua', visual).map((point) => point.point_id)).size).toBe(schoolSyllabusForScheme('ahua', visual).length)
   })
 
-  it('没有知识点的新院校仍展示完整专业考试方案与后续整理状态', () => {
+  it('院校页只展示完整专业考试方案，不显示知识点资源状态', () => {
     render(<MemoryRouter initialEntries={['/anhui/2026/schools/whit']}><Routes>
       <Route path="/anhui/2026/schools/:schoolSlug" element={<LearningMap favorites={[]} toggleFavorite={() => {}} resources={resources} schools={schoolGroups()} syllabusPoints={syllabus} scope={DEFAULT_SCOPE} />} />
     </Routes></MemoryRouter>)
     expect(screen.getByRole('heading', { name: '芜湖职业技术大学' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: '招生专业与培养点' })).toBeInTheDocument()
     expect(screen.getByText('工程力学 · 材料力学')).toBeInTheDocument()
-    expect(
-      screen.getAllByRole('heading', { name: '知识点与学习资源待后续整理' }).length,
-    ).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByText(/知识点与学习资源/)).not.toBeInTheDocument()
   })
 
-  it('第十三批新增专业没有知识点时显示待整理状态而不是错误页', () => {
+  it('第十三批专业地图在学习内容下线后仍正常展示', () => {
     render(<MemoryRouter initialEntries={['/anhui/2026/schools/bbc']}><Routes>
       <Route path="/anhui/2026/schools/:schoolSlug" element={<LearningMap favorites={[]} toggleFavorite={() => {}} resources={resources} schools={schoolGroups()} syllabusPoints={syllabus} scope={DEFAULT_SCOPE} />} />
     </Routes></MemoryRouter>)
     expect(screen.getByRole('heading', { name: '蚌埠学院' })).toBeInTheDocument()
     expect(screen.getAllByText('食品科学与工程').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('大学化学 · 食品科学与工程导论')).toBeInTheDocument()
-    expect(
-      screen.getAllByRole('heading', { name: '知识点与学习资源待后续整理' }).length,
-    ).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByText(/知识点与学习资源/)).not.toBeInTheDocument()
   })
 
   it('SEO 将旧路由 canonical 到院校主路由，院校页描述包含考试方案', () => {
@@ -142,11 +138,11 @@ describe('院校主导型学习地图', () => {
     expect(metadataForPath('/anhui/2026/schools/aufe', '安徽财经大学').description).toContain('考试方案')
   })
 
-  it('sitemap 只收录 canonical 院校主路由且保持四十五页', () => {
+  it('sitemap 只收录 canonical 院校主路由且保持四十六页', () => {
     const xml = fs.readFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), 'utf8')
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
-    expect(locations).toHaveLength(45)
-    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(41)
+    expect(locations).toHaveLength(46)
+    expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(42)
     expect(locations.some((url) => /\/anhui\/2026\/computer-science\/(?!compare$)[a-z0-9-]+$/.test(url))).toBe(false)
   })
 })

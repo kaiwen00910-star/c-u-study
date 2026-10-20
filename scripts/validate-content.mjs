@@ -56,7 +56,7 @@ urlCheck(offerings, ['charter_url','syllabus_url'], 'offerings.csv'); urlCheck(r
 dateCheck(offerings, 'offerings.csv'); dateCheck(resources, 'resources.csv')
 
 if (fallbackAcademicSchools.length !== 42) errors.push(`院校回退数据应为 42 所，当前为 ${fallbackAcademicSchools.length} 所`)
-if (snapshot.offerings.length !== 461) errors.push(`公开快照应为 461 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
+if (snapshot.offerings.length !== 465) errors.push(`公开快照应为 465 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
 if (snapshot.syllabusPoints.length !== 1033) errors.push(`公开快照应为 1033 个已发布知识点，当前为 ${snapshot.syllabusPoints.length} 个`)
 if (snapshot.resources.filter((row) => row.status === 'published').length !== 80) errors.push('公开快照应为 80 条已发布学习资源')
 unique(fallbackAcademicSchools, 'school_id', '院校回退数据')
@@ -66,7 +66,7 @@ fallbackAcademicSchools.forEach((school, index) => {
   if (school.school_id !== expectedId) errors.push(`院校回退数据第 ${index + 1} 所 ID 或顺序错误`)
   if (!school.school_name || !school.short_name) errors.push(`院校回退数据 ${expectedId} 缺少名称或简称`)
 })
-if (fallbackAcademicSchools.filter((school) => school.has_study_map).length !== 41) errors.push('院校回退数据应开放 41 所院校专业地图')
+if (fallbackAcademicSchools.filter((school) => school.has_study_map).length !== 42) errors.push('院校回退数据应开放 42 所院校专业地图')
 if (!snapshot.metadata?.version || !snapshot.metadata?.generatedAt || !snapshot.metadata?.sourceUpdatedAt) errors.push('公开快照缺少版本、生成时间或源数据更新时间')
 if (fallbackAcademicSchools.find((school) => school.school_id === 'anhui-school-09')?.school_name !== '安徽科技工程大学') errors.push('公开快照中的 anhui-school-09 未与线上有效校名同步')
 
@@ -105,7 +105,7 @@ snapshot.offerings.filter((row) => row.status === 'published').forEach((row, ind
   snapshotSchemes.set(key, subjects)
 })
 const publishedMapSchools = new Set(snapshot.offerings.filter((row) => row.status === 'published').map((row) => row.school_slug))
-if (publishedMapSchools.size !== 41) errors.push(`公开快照应为 41 所院校专业地图，当前为 ${publishedMapSchools.size} 所`)
+if (publishedMapSchools.size !== 42) errors.push(`公开快照应为 42 所院校专业地图，当前为 ${publishedMapSchools.size} 所`)
 const expectedBatchTwelve = {
   cuhf: { offerings: 25, programs: 17, plans: 2000, schemes: 21 },
   bctb: { offerings: 12, programs: 12, plans: 972, schemes: 11 },
@@ -220,8 +220,13 @@ if (batchFifteenRows.length !== 101 || batchFifteenRows.reduce((total, row) => t
   errors.push('第十五批七校招生记录或计划总数不正确')
 }
 const secondMedical = fallbackAcademicSchools.find((school) => school.school_name === '安徽第二医学院')
-if (!secondMedical || secondMedical.has_study_map || snapshot.offerings.some((row) => row.school_slug === secondMedical.school_slug)) {
-  errors.push('安徽第二医学院必须保持未开放且无招生点')
+const secondMedicalRows = snapshot.offerings.filter((row) => row.school_slug === 'ahyz' && row.status === 'published')
+if (!secondMedical || secondMedical.school_slug !== 'ahyz' || !secondMedical.has_study_map
+  || secondMedicalRows.length !== 4
+  || new Set(secondMedicalRows.flatMap((row) => row.program_names)).size !== 4
+  || new Set(secondMedicalRows.map((row) => row.exam_scheme_id)).size !== 4
+  || secondMedicalRows.reduce((total, row) => total + Number(row.plan_count), 0) !== 270) {
+  errors.push('安徽第二医学院的 4 个专业、270 人计划或考试方案不完整')
 }
 
 const offeringCombinations = new Set()

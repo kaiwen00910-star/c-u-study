@@ -56,6 +56,8 @@ const snapshot = {
     generatedAt,
     sourceUpdatedAt,
     source: 'supabase-public-rest-rls',
+    archivedSyllabusPointCount: syllabusPoints.length,
+    archivedResourceCount: resources.length,
   },
   academicSchools,
   offerings,
@@ -95,4 +97,4 @@ writeCsv('resources.csv', resources.map((row) => ({
   'resource_id', 'topic_tags', 'title', 'platform', 'creator', 'url', 'resource_type', 'difficulty',
   'duration_text', 'recommendation_reason', 'priority', 'verified_at', 'status',
 ])
-console.log(`公开快照已同步：版本 ${snapshot.metadata.version}，${academicSchools.length} 所院校、${offerings.length} 个招生点、${syllabusPoints.length} 个知识点、${resources.length} 条资源。`)
+console.log(`公开快照已同步：版本 ${snapshot.metadata.version}，${academicSchools.length} 所院校、${offerings.length} 个招生点、${syllabusPoints.length} 个归档知识点、${resources.length} 条归档资源；前台不加载学习内容。`)
