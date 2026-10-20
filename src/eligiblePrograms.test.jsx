@@ -30,6 +30,23 @@ describe('我能报哪些专业', () => {
     expect(screen.queryByText(/找到 \d+ 条可能结果/)).not.toBeInTheDocument()
   })
 
+  it('组合输入结束前不改写 URL，结束后只提交一次完整文本', () => {
+    renderPage('/anhui/2026/eligible-programs')
+    const input = screen.getByLabelText('专科专业名称')
+    fireEvent.compositionStart(input)
+    fireEvent.change(input, { target: { value: '计' } })
+    fireEvent.change(input, { target: { value: '计算机应用技术' } })
+    expect(input).toHaveValue('计算机应用技术')
+    fireEvent.compositionEnd(input, { currentTarget: { value: '计算机应用技术' }, target: { value: '计算机应用技术' } })
+    expect(input).toHaveValue('计算机应用技术')
+  })
+
+  it('选择建议会替换输入，不会追加内容', () => {
+    renderPage('/anhui/2026/eligible-programs?major=计算机')
+    fireEvent.click(screen.getByRole('button', { name: '计算机应用技术' }))
+    expect(screen.getByLabelText('专科专业名称')).toHaveValue('计算机应用技术')
+  })
+
   it('静态公开快照在不使用在线数据时仍可查询', () => {
     const fallback = fallbackContentForScope({ year: 2026, provinceSlug: 'anhui', majorSlug: 'all-programs' })
     render(<MemoryRouter initialEntries={['/anhui/2026/eligible-programs?major=计算机应用技术']}><EligiblePrograms offerings={fallback.offerings} academicSchools={fallback.academicSchools} /></MemoryRouter>)

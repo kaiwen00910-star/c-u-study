@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import { AnhuiHub, Compare, Favorites, LearningMap, SearchBox } from './App'
@@ -47,12 +47,20 @@ describe('收藏、筛选和可选对比', () => {
     expect(screen.getByText('没有匹配的院校')).toBeVisible()
   })
 
-  it('至少选择两所才显示对比表且选择保存在 URL', () => {
-    const second = { ...school, school_slug: 'demo2', school_name: '第二学院', short_name: '第二', totalPlan: 80, professionalSubjects: ['数据结构'] }
-    render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/compare']}><Compare schools={[school, second]} scope={DEFAULT_SCOPE} /></MemoryRouter>)
-    expect(screen.getByText(/再选择 2 所院校/)).toBeVisible()
-    fireEvent.click(screen.getByLabelText('示例学院'))
-    fireEvent.click(screen.getByLabelText('第二学院'))
+  it('按具体招生方案选择对比，并隔离不同考试方案', () => {
+    const second = { ...school, school_slug: 'demo2', school_name: '第二学院', short_name: '第二' }
+    const offerings = [
+      { offering_id: 'demo-program-a', school_slug: 'demo', active: true, status: 'published', programNames: ['计算机科学与技术'], plan_count: 100, training_site: '校本部 A', eligible_major_categories: '计算机应用技术', publicSubjects: ['英语'], professionalSubjects: ['C语言'], charter_url: 'https://example.com/a', syllabus_url: 'https://example.com/a' },
+      { offering_id: 'demo-program-b', school_slug: 'demo2', active: true, status: 'published', programNames: ['计算机科学与技术'], plan_count: 80, training_site: '校本部 B', eligible_major_categories: '软件技术', publicSubjects: ['英语'], professionalSubjects: ['数据结构'], charter_url: 'https://example.com/b', syllabus_url: 'https://example.com/b' },
+    ]
+    render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/compare?program=计算机科学与技术']}><Compare offerings={offerings} academicSchools={[school, second]} scope={DEFAULT_SCOPE} /></MemoryRouter>)
+    expect(screen.getByText(/再选择 2 条招生方案/)).toBeVisible()
+    fireEvent.click(screen.getAllByRole('button', { name: '加入对比' })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: '加入对比' })[0])
     expect(screen.getByRole('table')).toBeVisible()
+    const table = screen.getByRole('table')
+    expect(within(table).getByText('C语言')).toBeVisible()
+    expect(within(table).getByText('数据结构')).toBeVisible()
+    expect(document.querySelector('.mobile-compare-cards')).toBeTruthy()
   })
 })
