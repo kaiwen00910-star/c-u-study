@@ -23,7 +23,8 @@ describe('搜索深链接和刷新恢复', () => {
 
   it('旧知识点深链接安全降级为院校专业地图且不公开学习内容', () => {
     const { container } = render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/demo?subject=c-language&point=demo-pointer']}><Routes><Route path="/:provinceSlug/:year/:majorSlug/:schoolSlug" element={<LearningMap schools={[school]} scope={DEFAULT_SCOPE} />} /></Routes></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: '选择招生专业 / 考试方案' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: '招生专业与培养点' })).toBeVisible()
+    expect(screen.getByLabelText('全部招生专业考试方案')).toBeVisible()
     expect(container).not.toHaveTextContent('函数与指针')
     expect(container.querySelector('#point-demo-pointer')).toBeNull()
   })

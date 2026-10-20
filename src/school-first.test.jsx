@@ -118,7 +118,10 @@ describe('院校主导型学习地图', () => {
     </Routes></MemoryRouter>)
     expect(screen.getByRole('heading', { name: '芜湖职业技术大学' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: '招生专业与培养点' })).toBeInTheDocument()
-    expect(screen.getByText('工程力学 · 材料力学')).toBeInTheDocument()
+    expect(screen.getAllByText('工程力学').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('材料力学').length).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByText(/最后核验/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/最后人工核验/)).not.toBeInTheDocument()
     expect(screen.queryByText(/知识点与学习资源/)).not.toBeInTheDocument()
   })
 
@@ -128,7 +131,8 @@ describe('院校主导型学习地图', () => {
     </Routes></MemoryRouter>)
     expect(screen.getByRole('heading', { name: '蚌埠学院' })).toBeInTheDocument()
     expect(screen.getAllByText('食品科学与工程').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('大学化学 · 食品科学与工程导论')).toBeInTheDocument()
+    expect(screen.getAllByText('大学化学').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('食品科学与工程导论').length).toBeGreaterThanOrEqual(1)
     expect(screen.queryByText(/知识点与学习资源/)).not.toBeInTheDocument()
   })
 

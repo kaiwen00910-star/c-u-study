@@ -77,7 +77,9 @@ describe('专业地图与学习内容下线状态', () => {
 
   it('院校没有知识点时仍正常显示专业考试方案', () => {
     renderLearningMap([])
-    expect(screen.getAllByRole('heading', { name: '选择招生专业 / 考试方案' }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByRole('heading', { name: '招生专业与培养点' }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByLabelText('全部招生专业考试方案').length).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByRole('heading', { name: '选择招生专业 / 考试方案' })).not.toBeInTheDocument()
     expect(screen.queryByText(/知识点与学习资源/)).not.toBeInTheDocument()
   })
 })

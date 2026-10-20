@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { examSchemesForOfferings, offeringSchoolGroups, offerings as snapshotOfferings, schoolGroups, subjectNames } from './data'
+import { offeringSchoolGroups, offerings as snapshotOfferings, schoolGroups, subjectNames } from './data'
 import { createLocalBackup, getCountdownTarget, importLocalBackup, saveCountdownTarget, saveLastSelection } from './storage'
 import { useContent } from './useContent'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
@@ -160,7 +160,7 @@ function SchoolWallCard({ school, interactive = true }) {
     </span>
     <span className="wall-school-info"><strong>{school.name}</strong><span>{school.hasDetails ? '进入专业地图 →' : '资料整理中'}</span></span>
   </>
-  if (interactive && school.hasDetails) return <Link className="wall-school-card" to={school.href} title={`${school.name}：进入专业地图`}>{contents}</Link>
+  if (school.hasDetails) return <Link className="wall-school-card" to={school.href} tabIndex={interactive ? undefined : -1} title={`${school.name}：进入专业地图`}>{contents}</Link>
   return <div className={`wall-school-card ${school.hasDetails ? '' : 'is-pending'}`} title={`${school.name}：资料整理中`}>{contents}</div>
 }
 
@@ -231,8 +231,8 @@ function Home({ wallSchools, schoolCount, scope }) {
   </>
 }
 
-function SubjectTags({ school }) {
-  return <div className="subject-groups"><div><small>公共课</small>{school.publicSubjects.map((s) => <span key={s}>{s}</span>)}</div><div><small>专业课</small>{school.professionalSubjects.map((s) => <span className="professional" key={s}>{s}</span>)}</div></div>
+function SubjectTags({ school, compact = false }) {
+  return <div className={`subject-groups${compact ? ' offering-subject-groups' : ''}`}><div><small>公共课</small>{school.publicSubjects.map((s) => <span key={s}>{s}</span>)}</div><div><small>专业课</small>{school.professionalSubjects.map((s) => <span className="professional" key={s}>{s}</span>)}</div></div>
 }
 
 function formatEligibleMajorCategories(value) {
@@ -369,44 +369,23 @@ export function Favorites({ favorites, resources, toggleFavorite, clearInvalid, 
 
 export function LearningMap({ schools, scope }) {
   const { schoolSlug } = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
   const school = schools.find((item) => item.school_slug === schoolSlug)
-  const [selectedScheme, setSelectedScheme] = useState('')
   const schoolOfferings = useMemo(() => school?.offerings?.length ? school.offerings : school ? [school] : [], [school])
-  const schemes = useMemo(() => school?.examSchemes?.length ? school.examSchemes : examSchemesForOfferings(schoolOfferings), [school, schoolOfferings])
-  const activeScheme = schemes.find((scheme) => scheme.examSchemeId === selectedScheme) || schemes[0]
 
   useEffect(() => { trackEvent('professional_map_opened', schoolSlug) }, [schoolSlug])
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    const requestedScheme = schemes.find((scheme) => scheme.examSchemeId === params.get('scheme'))
-      || schemes[0]
-    setSelectedScheme(requestedScheme?.examSchemeId || '')
-  }, [location.search, schemes])
-
   if (!school) return <Navigate to={scopePath(scope)} replace />
-
-  function chooseScheme(examSchemeId) {
-    const params = new URLSearchParams()
-    params.set('scheme', examSchemeId)
-    navigate(`${location.pathname}?${params}`, { replace: true })
-  }
 
   const heading = <>
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>{school.school_name}</div>
-    <section className="school-title" style={{ '--school-color': school.theme_color }}><SchoolLogo school={school} large /><div><span className="type-tag">{school.school_type} · {scope.year}</span><h1>{school.school_name}</h1><p>{(school.programNames || []).join('、') || (MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug)} · {(school.sites || []).length || schoolOfferings.length} 个招生培养点</p></div><div className="official-links"><a href={activeScheme?.offerings[0]?.charter_url || school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={activeScheme?.offerings[0]?.syllabus_url || school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a><FeedbackForm contextId={`school-source:${school.school_slug}`} compact /></div></section>
+    <section className="school-title" style={{ '--school-color': school.theme_color }}><SchoolLogo school={school} large /><div><span className="type-tag">{school.school_type} · {scope.year}</span><h1>{school.school_name}</h1><p>{(school.programNames || []).join('、') || (MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug)} · {(school.sites || []).length || schoolOfferings.length} 个招生培养点</p></div><div className="official-links"><a href={schoolOfferings[0]?.charter_url || school.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={schoolOfferings[0]?.syllabus_url || school.syllabus_url} target="_blank" rel="noreferrer">官方考纲 ↗</a><FeedbackForm contextId={`school-source:${school.school_slug}`} compact /></div></section>
   </>
 
-  const offeringOverview = <section className="school-offering-overview" aria-labelledby="offering-overview-title"><div className="section-heading"><div><span className="section-number">{schoolOfferings.length} 个招生点</span><h2 id="offering-overview-title">招生专业与培养点</h2></div><p>招生点分别展示；考试科目相同的专业或培养点共用考试方案。</p></div><div className="offering-detail-grid">{schoolOfferings.map((offering) => { const programLabel = (offering.programNames || offering.program_names || []).join('、') || (MAJOR_NAMES[offering.major_slug || scope.majorSlug] ?? (offering.major_slug || scope.majorSlug)); return <article key={offering.offering_id || offering.school_slug}><div><span>{programLabel}</span><strong>{offering.plan_count} 人</strong></div><dl><div><dt>培养地点与地址</dt><dd>{offering.training_site}</dd></div><div><dt>报考专业范围</dt><dd>{formatEligibleMajorCategories(offering.eligible_major_categories)}</dd></div></dl><p>{offering.source_status} · 最后核验 {offering.verified_at}</p><nav aria-label={`${programLabel}官方资料`}><a href={offering.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={offering.syllabus_url} target="_blank" rel="noreferrer">正式考纲 ↗</a></nav></article> })}</div></section>
-  const schemePanel = <><section className="exam-scheme-panel" aria-labelledby="exam-scheme-title"><div><span className="eyebrow">院校专业地图</span><h2 id="exam-scheme-title">选择招生专业 / 考试方案</h2><p>切换方案后，查看对应的公共课、专业课、招生计划和培养地点。</p></div><div className="exam-scheme-tabs" role="tablist" aria-label="选择考试方案">{schemes.map((scheme, index) => <button type="button" role="tab" aria-selected={activeScheme?.examSchemeId === scheme.examSchemeId} className={activeScheme?.examSchemeId === scheme.examSchemeId ? 'active' : ''} onClick={() => chooseScheme(scheme.examSchemeId)} key={scheme.examSchemeId}><strong>{scheme.programNames.join('、') || `考试方案 ${index + 1}`}</strong><small>{scheme.professionalSubjects.join(' · ')}</small><span>{scheme.offerings.length} 个招生点 · {scheme.totalPlan} 人</span></button>)}</div></section><SubjectTags school={activeScheme} /></>
+  const offeringOverview = <section className="school-offering-overview" aria-labelledby="offering-overview-title"><div className="section-heading"><div><span className="section-number">{schoolOfferings.length} 个招生点</span><h2 id="offering-overview-title">招生专业与培养点</h2></div><p>每张卡片均展示该专业对应的培养点、报考范围和考试方案。</p></div><div className="offering-detail-grid">{schoolOfferings.map((offering) => { const programLabel = (offering.programNames || offering.program_names || []).join('、') || (MAJOR_NAMES[offering.major_slug || scope.majorSlug] ?? (offering.major_slug || scope.majorSlug)); return <article key={offering.offering_id || offering.school_slug}><div><span>{programLabel}</span><strong>{offering.plan_count} 人</strong></div><dl><div><dt>培养地点与地址</dt><dd>{offering.training_site}</dd></div><div><dt>报考专业范围</dt><dd>{formatEligibleMajorCategories(offering.eligible_major_categories)}</dd></div></dl><section className="offering-exam-scheme" aria-label={`${programLabel}考试方案`}><b>考试方案</b><SubjectTags school={offering} compact /></section><nav aria-label={`${programLabel}官方资料`}><a href={offering.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={offering.syllabus_url} target="_blank" rel="noreferrer">正式考纲 ↗</a></nav></article> })}</div></section>
 
   return <div className="page-wrap learning-page">
     {heading}
     {offeringOverview}
-    {schemePanel}
-    <div className="source-date">资料状态：{activeScheme.offerings.map((item) => item.source_status).filter((value, index, values) => values.indexOf(value) === index).join('、')} · 最后人工核验 {activeScheme.offerings.map((item) => item.verified_at).sort().at(-1)}。如与官方最新通知不一致，请以官方为准。</div>
   </div>
 }
 
