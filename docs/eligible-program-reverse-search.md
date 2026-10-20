@@ -53,7 +53,7 @@
 
 ## 发布记录
 
-- Git 提交 SHA：待提交。
+- Git 提交 SHA：`c12d862e38c815d6e64a9b56b6ce793ff2ef5ac8`（首次提交；补充发布状态后会以最终 SHA 为准）。
 - GitHub Actions：待推送后核验。
 - Netlify Production deploy ID / `commit_ref`：待 Git 自动部署后核验。
 
