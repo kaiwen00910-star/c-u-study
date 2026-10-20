@@ -54,8 +54,8 @@
 ## 发布记录
 
 - Git 提交 SHA：`c12d862e38c815d6e64a9b56b6ce793ff2ef5ac8`（首次提交；补充发布状态后会以最终 SHA 为准）。
-- GitHub Actions：待推送后核验。
-- Netlify Production deploy ID / `commit_ref`：待 Git 自动部署后核验。
+- GitHub Actions：[run 39425975980](https://github.com/kaiwen00910-star/c-u-study/actions/runs/39425975980)，`success`，对应 `310a4758dc427276040eedd6aa3be980a37379cc`。
+- Netlify Production：deploy ID `6ad7648dc1ae24c361c19946`，状态 `ready`，`commit_ref` 为 `310a4758dc427276040eedd6aa3be980a37379cc`，发布于 `2026-10-20T12:54:53.825Z`。
 
 ## 已知限制
 
