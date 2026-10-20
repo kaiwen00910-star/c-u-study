@@ -28,6 +28,25 @@ describe('搜索深链接和刷新恢复', () => {
     expect(container).not.toHaveTextContent('函数与指针')
     expect(container.querySelector('#point-demo-pointer')).toBeNull()
   })
+
+  it('院校专业地图只在顶部保留两项官方资料，卡片仍完整展示招生方案', () => {
+    const offering = { ...school, offering_id: 'map-offering', programNames: ['地图测试专业'], plan_count: 20, training_site: '测试校区', eligible_major_categories: '测试专科专业', publicSubjects: ['公共课测试'], professionalSubjects: ['专业课测试'] }
+    const mapSchool = { ...school, offerings: [offering], programNames: ['地图测试专业'], sites: ['测试校区'] }
+    const { container } = render(<MemoryRouter initialEntries={['/anhui/2026/schools/demo']}><Routes><Route path="/anhui/2026/schools/:schoolSlug" element={<LearningMap schools={[mapSchool]} scope={DEFAULT_SCOPE} />} /></Routes></MemoryRouter>)
+    const title = container.querySelector('.school-title')
+    expect(title.querySelector('.school-logo.large')).not.toBeNull()
+    expect(title.querySelector('p')).toBeNull()
+    expect(within(title).getAllByRole('link')).toHaveLength(2)
+    expect(within(title).getByRole('link', { name: '招生章程' })).toBeVisible()
+    expect(within(title).getByRole('link', { name: '考试大纲' })).toBeVisible()
+    expect(screen.queryByText('内容纠错 / 链接失效')).not.toBeInTheDocument()
+    const card = container.querySelector('.offering-detail-grid article')
+    expect(within(card).queryByRole('link', { name: /招生章程|考纲/ })).toBeNull()
+    expect(within(card).getByText('测试校区')).toBeVisible()
+    expect(within(card).getByText('测试专科专业')).toBeVisible()
+    expect(within(card).getByText('公共课测试')).toBeVisible()
+    expect(within(card).getByText('专业课测试')).toBeVisible()
+  })
 })
 
 describe('收藏、筛选和可选对比', () => {
