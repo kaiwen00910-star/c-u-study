@@ -12,6 +12,7 @@ const offerings = load('offerings.csv')
 const syllabus = load('syllabus.csv')
 const resources = load('resources.csv')
 const errors = []
+const offeringScores = snapshot.offeringScores ?? []
 
 function required(rows, fields, file) {
   rows.forEach((row, index) => fields.forEach((field) => {
@@ -59,6 +60,7 @@ if (fallbackAcademicSchools.length !== 42) errors.push(`院校回退数据应为
 if (snapshot.offerings.length !== 465) errors.push(`公开快照应为 465 个已发布招生点，当前为 ${snapshot.offerings.length} 个`)
 if (snapshot.syllabusPoints.length !== 1033) errors.push(`公开快照应为 1033 个已发布知识点，当前为 ${snapshot.syllabusPoints.length} 个`)
 if (snapshot.resources.filter((row) => row.status === 'published').length !== 80) errors.push('公开快照应为 80 条已发布学习资源')
+if (offeringScores.length !== 287) errors.push(`公开快照应为 287 条已发布普通考生录取最低分，当前为 ${offeringScores.length} 条`)
 unique(fallbackAcademicSchools, 'school_id', '院校回退数据')
 unique(fallbackAcademicSchools, 'school_slug', '院校回退数据')
 fallbackAcademicSchools.forEach((school, index) => {
@@ -85,6 +87,19 @@ snapshot.resources.filter((row) => row.status === 'active' || row.status === 'pu
 })
 
 const snapshotOfferingCombinations = new Set()
+const snapshotOfferingsById = new Map(snapshot.offerings.map((row) => [row.offering_id, row]))
+offeringScores.forEach((row, index) => {
+  const offering = snapshotOfferingsById.get(row.offering_id)
+  if (!offering) errors.push(`公开快照分数第 ${index + 1} 条引用未知招生点 ${row.offering_id}`)
+  if (row.status !== 'published' || row.candidate_category !== 'ordinary' || row.score_type !== 'actual_admission_minimum') {
+    errors.push(`公开快照分数第 ${index + 1} 条不是已发布普通考生实际录取最低分`)
+  }
+  if (!offering?.program_names?.includes(row.program_name)) errors.push(`公开快照分数第 ${index + 1} 条未匹配招生专业 ${row.program_name}`)
+  if (!Number.isFinite(Number(row.score)) || Number(row.score) < 0) errors.push(`公开快照分数第 ${index + 1} 条分数无效`)
+  if (!String(row.source_url || '').startsWith('https://') || !/^\d{4}-\d{2}-\d{2}$/.test(row.source_published_at || '')) {
+    errors.push(`公开快照分数第 ${index + 1} 条缺少有效官方来源或发布日期`)
+  }
+})
 snapshot.offerings.forEach((row, index) => {
   const combination = [row.year, row.province_slug, row.major_slug, row.school_slug, row.training_site.trim().toLowerCase(), JSON.stringify(row.program_names), row.exam_scheme_id].join('|')
   if (snapshotOfferingCombinations.has(combination)) errors.push(`公开快照招生计划第 ${index + 1} 条范围/院校/培养地点组合重复`)

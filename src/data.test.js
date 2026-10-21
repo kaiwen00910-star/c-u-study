@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fallbackAcademicSchools, offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus, schoolSyllabusForScheme } from './data'
+import { fallbackAcademicSchools, fallbackOfferingScores, offerings, resources, resourcesForTopic, schoolGroups, schoolSyllabus, schoolSyllabusForScheme } from './data'
 import { validateAnnouncement, validateResource } from './resourceValidation'
 import { createSchoolWallSchools, createSchoolWallTracks } from './schoolWallData'
 import { fallbackContent, isOnlineContentCurrent } from './useContent'
@@ -173,6 +173,13 @@ describe('招生内容', () => {
   it('Supabase 不可用时的静态回退仍包含完整院校墙与四十二所院校专业地图', () => {
     expect(fallbackContent.source).toBe('snapshot')
     expect(fallbackContent.metadata.version).toBeTruthy()
+    expect(fallbackOfferingScores).toHaveLength(287)
+    expect(fallbackContent.offeringScores).toHaveLength(287)
+    expect(fallbackOfferingScores.every((score) => score.status === 'published'
+      && score.candidate_category === 'ordinary'
+      && score.score_type === 'actual_admission_minimum')).toBe(true)
+    expect(offerings.find((offering) => offering.offering_id === 'b15-wenda-cs-2026')?.scores)
+      .toEqual(expect.arrayContaining([expect.objectContaining({ program_name: '计算机科学与技术', score: 145 })]))
     expect(createSchoolWallSchools(fallbackContent.academicSchools, fallbackContent.offerings, fallbackContent.syllabusPoints, DEFAULT_SCOPE)).toHaveLength(42)
     expect(schoolGroups(fallbackContent.offerings, fallbackContent.academicSchools, DEFAULT_SCOPE, fallbackContent.syllabusPoints)).toHaveLength(42)
   })

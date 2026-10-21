@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { currentAnnouncement } from './announcements'
 import { DEFAULT_SCOPE, matchesScope, normalizeScope, scopeKey } from './contentScope'
 import {
-  fallbackAcademicSchools, fallbackAnnouncements, fallbackResources, offerings, snapshotMetadata, syllabus,
+  fallbackAcademicSchools, fallbackAnnouncements, fallbackOfferingScores, fallbackResources, offerings, snapshotMetadata, syllabus,
 } from './data'
 import {
   normalizeAcademicSchool, normalizeOffering, normalizeResource, normalizeSyllabusPoint,
@@ -16,7 +16,7 @@ export function fallbackContentForScope(scope = DEFAULT_SCOPE) {
     announcement: currentAnnouncement(fallbackAnnouncements),
     academicSchools: fallbackAcademicSchools,
     offerings: offerings.filter((item) => matchesScope(item, normalized)),
-    offeringScores: [],
+    offeringScores: fallbackOfferingScores,
     syllabusPoints: syllabus.filter((item) => matchesScope(item, normalized)),
     metadata: snapshotMetadata,
     source: 'snapshot',
