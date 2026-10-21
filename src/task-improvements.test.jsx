@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { LearningMap, MobileNavigation } from './App'
+import { Home, LearningMap, MobileNavigation } from './App'
 import { DEFAULT_SCOPE } from './contentScope'
 import { ReviewDate } from './ReviewDate'
 
@@ -49,6 +49,8 @@ describe('移动端更多菜单', () => {
     expect(screen.getByRole('link', { name: '院校与专业' })).toBeVisible()
     expect(screen.getByRole('link', { name: '院校对比' })).toBeVisible()
     expect(screen.getByRole('link', { name: '资料来源' })).toBeVisible()
+    expect(screen.getByRole('link', { name: /安徽省招生考试院/ })).toHaveAttribute('href', 'https://www.ahzsks.cn/zyyx/')
+    expect(screen.getByRole('link', { name: /安徽省招生考试院/ })).toHaveAttribute('target', '_blank')
     expect(screen.queryByText(/我的收藏/)).not.toBeInTheDocument()
 
     fireEvent.keyDown(document, { key: 'Escape' })
@@ -58,6 +60,24 @@ describe('移动端更多菜单', () => {
     fireEvent.click(trigger)
     fireEvent.click(screen.getByRole('link', { name: '资料来源' }))
     expect(screen.queryByRole('navigation', { name: '移动端导航' })).not.toBeInTheDocument()
+  })
+})
+
+describe('首页公共课合格线与时间线', () => {
+  it('仅展示普通类文理科公共课合格线与官方说明，不猜测时间线日期', () => {
+    const { unmount } = render(<MemoryRouter><Home wallSchools={[]} schoolCount={0} scope={DEFAULT_SCOPE} /></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: '2026 年普通高校专升本公共课合格线' })).toBeVisible()
+    expect(screen.getByText('文科')).toBeVisible()
+    expect(screen.getByText('130')).toBeVisible()
+    expect(screen.getByText('理科')).toBeVisible()
+    expect(screen.getByText('80')).toBeVisible()
+    expect(screen.getByText('本页仅展示普通类公共课合格线。')).toBeVisible()
+    expect(screen.getByText(/公共课合格线不等同于院校专业实际录取分数/)).toBeVisible()
+    expect(screen.getByRole('link', { name: /安徽省教育招生考试院《安徽省2026年普通高校专升本公共课合格线公布》/ })).toHaveAttribute('href', 'https://www.ahzsks.cn/zyyx/8879.htm')
+    expect(screen.getByRole('heading', { name: '专升本关键时间线' })).toBeVisible()
+    expect(screen.getAllByText('时间待官方公布')).toHaveLength(8)
+    expect(screen.queryByText(/退役士兵|建档立卡/)).not.toBeInTheDocument()
+    unmount()
   })
 })
 
