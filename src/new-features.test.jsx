@@ -30,7 +30,7 @@ describe('搜索深链接和刷新恢复', () => {
   })
 
   it('院校专业地图只在顶部保留两项官方资料，卡片仍完整展示招生方案', () => {
-    const offering = { ...school, offering_id: 'map-offering', programNames: ['地图测试专业'], plan_count: 20, training_site: '测试校区', eligible_major_categories: '测试专科专业', publicSubjects: ['公共课测试'], professionalSubjects: ['专业课测试'] }
+    const offering = { ...school, offering_id: 'map-offering', programNames: ['地图测试专业'], plan_count: 20, training_site: '测试校区', eligible_major_categories: '测试专科专业', publicSubjects: ['公共课测试'], professionalSubjects: ['专业课测试'], scores: [{ score_id: 1, program_name: '地图测试专业', candidate_category: 'ordinary', score_type: 'actual_admission_minimum', score: 312.5, source_published_at: '2026-05-20', source_url: 'https://example.com/score' }] }
     const mapSchool = { ...school, offerings: [offering], programNames: ['地图测试专业'], sites: ['测试校区'] }
     const { container } = render(<MemoryRouter initialEntries={['/anhui/2026/schools/demo']}><Routes><Route path="/anhui/2026/schools/:schoolSlug" element={<LearningMap schools={[mapSchool]} scope={DEFAULT_SCOPE} />} /></Routes></MemoryRouter>)
     const title = container.querySelector('.school-title')
@@ -46,6 +46,9 @@ describe('搜索深链接和刷新恢复', () => {
     expect(within(card).getByText('测试专科专业')).toBeVisible()
     expect(within(card).getByText('公共课测试')).toBeVisible()
     expect(within(card).getByText('专业课测试')).toBeVisible()
+    expect(within(card).getByText('普通考生实际录取最低分')).toBeVisible()
+    expect(within(card).getByText('312.5 分')).toBeVisible()
+    expect(within(card).getByRole('link', { name: '核验来源 ↗' })).toHaveAttribute('href', 'https://example.com/score')
   })
 })
 

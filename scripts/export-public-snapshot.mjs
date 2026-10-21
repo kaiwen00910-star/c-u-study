@@ -27,12 +27,13 @@ async function readAll(table, params = {}) {
   }
 }
 
-const [academicSchools, offerings, rawSyllabusPoints, resources, announcements] = await Promise.all([
+const [academicSchools, offerings, rawSyllabusPoints, resources, announcements, offeringScores] = await Promise.all([
   readAll('academic_schools', { order: 'sort_order.asc,school_id.asc' }),
   readAll('admission_offerings', { order: 'year.asc,province_slug.asc,major_slug.asc,sort_order.asc' }),
   readAll('syllabus_points', { order: 'year.asc,province_slug.asc,major_slug.asc,school_slug.asc,subject_slug.asc,section_order.asc,point_order.asc' }),
   readAll('resources', { order: 'priority.asc,title.asc' }),
   readAll('announcements', { order: 'updated_at.desc' }),
+  readAll('offering_scores', { order: 'offering_id.asc,program_name.asc' }),
 ])
 
 let versionRows = []
@@ -64,6 +65,7 @@ const snapshot = {
   syllabusPoints,
   resources,
   announcements,
+  offeringScores,
 }
 
 const output = path.join(process.cwd(), 'content', 'public-content.snapshot.json')

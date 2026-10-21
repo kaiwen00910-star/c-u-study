@@ -33,10 +33,11 @@ export async function loadPublicContent(scope = DEFAULT_SCOPE, attempt = 0) {
   }
   if (normalized.majorSlug !== ALL_PROGRAMS_MAJOR) scopeFilters.major_slug = `eq.${normalized.majorSlug}`
   const versionBefore = await read('content_versions', { select: 'version,updated_at', id: 'eq.public-content', limit: '1' })
-  const [announcementRows, academicSchoolRows, offeringRows] = await Promise.all([
+  const [announcementRows, academicSchoolRows, offeringRows, offeringScoreRows] = await Promise.all([
     read('announcements', { select: '*', order: 'updated_at.desc', limit: '1' }),
     read('academic_schools', { select: '*', order: 'sort_order.asc,school_id.asc' }),
     read('admission_offerings', { select: '*', ...scopeFilters, order: 'sort_order.asc' }),
+    read('offering_scores', { select: '*', status: 'eq.published', order: 'program_name.asc' }),
   ])
   const versionAfter = await read('content_versions', { select: 'version,updated_at', id: 'eq.public-content', limit: '1' })
   if (versionBefore[0]?.version !== versionAfter[0]?.version) {
@@ -48,6 +49,7 @@ export async function loadPublicContent(scope = DEFAULT_SCOPE, attempt = 0) {
     announcements: announcementRows,
     academicSchools: academicSchoolRows,
     offerings: offeringRows,
+    offeringScores: offeringScoreRows,
     syllabusPoints: [],
     metadata: {
       version: versionAfter[0]?.version ?? null,

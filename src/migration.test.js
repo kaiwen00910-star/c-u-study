@@ -19,7 +19,7 @@ const secondMedicalMigration = fs.readFileSync(path.join(migrationDirectory, '20
 
 describe('Supabase migration 安全与完整性', () => {
   it('所有公开表均启用 RLS，新增表也不例外', () => {
-    const publicTables = ['admin_users', 'resources', 'announcements', 'school_logos', 'academic_schools', 'admission_offerings', 'syllabus_points', 'content_versions']
+    const publicTables = ['admin_users', 'resources', 'announcements', 'school_logos', 'academic_schools', 'admission_offerings', 'syllabus_points', 'content_versions', 'offering_scores']
     publicTables.forEach((table) => expect(allSql).toContain(`alter table public.${table} enable row level security`))
   })
 
@@ -115,6 +115,13 @@ describe('Supabase migration 安全与完整性', () => {
     expect(mapFlagMigration).toContain("offering.status = 'published'")
     expect(mapFlagMigration).not.toContain('from public.syllabus_points as point')
     expect(mapFlagMigration).toContain('41')
+  })
+
+  it('专业实际录取最低分只允许普通考生公开读取，且会推进公开内容版本', () => {
+    expect(allSql).toContain("candidate_category text not null default 'ordinary'")
+    expect(allSql).toContain("score_type text not null default 'actual_admission_minimum'")
+    expect(allSql).toContain('anonymous can read published offering scores')
+    expect(allSql).toContain('offering_scores_bump_content_version')
   })
 
   it('第十三批只替换八校招生点并冻结知识点、资源、草稿和非目标院校', () => {

@@ -6,6 +6,7 @@ const asList = (value) => Array.isArray(value) ? value : String(value || '').spl
 
 export const snapshotMetadata = snapshot.metadata
 export const fallbackAnnouncements = snapshot.announcements ?? []
+export const fallbackOfferingScores = snapshot.offeringScores ?? []
 
 export const fallbackAcademicSchools = snapshot.academicSchools
   .map((row) => ({ ...row, sort_order: Number(row.sort_order), active: row.active !== false }))
@@ -19,6 +20,7 @@ export const offerings = snapshot.offerings.map((item) => ({
   publicSubjects: asList(item.public_subjects),
   professionalSubjects: asList(item.professional_subjects),
   eligibleMajorCategories: normalizeEligibleMajorCategories(item.eligible_major_categories),
+  scores: fallbackOfferingScores.filter((score) => score.offering_id === item.offering_id),
 }))
 
 export const syllabus = snapshot.syllabusPoints.map((item) => ({

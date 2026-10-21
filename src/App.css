@@ -191,6 +191,7 @@ td small { display: block; color: var(--muted); font-size: 10px; }
 .offering-detail-grid dl div { display: grid; gap: 3px; }
 .offering-detail-grid dt { color: var(--muted); font-size: 11px; }
 .offering-detail-grid dd { margin: 0; font-size: 13px; line-height: 1.7; }
+.offering-score { margin:16px 0; padding:13px; border:1px solid #cfe1f3; border-radius:9px; background:#f6fbff; }.offering-score > b { display:block; margin-bottom:9px; color:#1556a6; font-size:12px; }.offering-score > div { display:grid; grid-template-columns:1fr auto; gap:3px 12px; padding:9px 0; border-top:1px solid #dce9f4; }.offering-score > div:first-of-type { border-top:0; }.offering-score strong { color:#334e6b; font-size:13px; }.offering-score span { color:#1556a6; font-size:20px; font-weight:800; }.offering-score small { grid-column:1 / -1; color:#657a90; font-size:10px; line-height:1.5; }.offering-score a { color:#1556a6; font-weight:700; }
 .eligible-page { padding-bottom: 52px; }
 .eligible-hero { margin-bottom: 18px; }
 .eligibility-disclaimer, .eligible-search-panel, .eligible-filters, .eligible-result-list article, .eligible-empty { border: 1px solid var(--line); border-radius: 12px; background: #fff; }

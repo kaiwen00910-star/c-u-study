@@ -16,6 +16,7 @@ export function fallbackContentForScope(scope = DEFAULT_SCOPE) {
     announcement: currentAnnouncement(fallbackAnnouncements),
     academicSchools: fallbackAcademicSchools,
     offerings: offerings.filter((item) => matchesScope(item, normalized)),
+    offeringScores: [],
     syllabusPoints: syllabus.filter((item) => matchesScope(item, normalized)),
     metadata: snapshotMetadata,
     source: 'snapshot',
@@ -35,11 +36,16 @@ export function isOnlineContentCurrent(metadata, snapshot = snapshotMetadata) {
 }
 
 function normalizeContent(next) {
+  const offeringScores = next.offeringScores ?? []
   return {
     resources: next.resources.map(normalizeResource),
     announcement: currentAnnouncement(next.announcements),
     academicSchools: next.academicSchools.map(normalizeAcademicSchool),
-    offerings: next.offerings.map(normalizeOffering),
+    offerings: next.offerings.map((offering) => normalizeOffering({
+      ...offering,
+      scores: offeringScores.filter((score) => score.offering_id === offering.offering_id),
+    })),
+    offeringScores,
     syllabusPoints: next.syllabusPoints.map(normalizeSyllabusPoint),
     metadata: next.metadata,
     source: 'database',
