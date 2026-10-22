@@ -1,5 +1,5 @@
-import { Fragment, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Fragment, lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useNavigationType, useParams, useSearchParams } from 'react-router-dom'
 import { offeringSchoolGroups, offerings as snapshotOfferings, schoolGroups, subjectNames } from './data'
 import { createLocalBackup, getCountdownTarget, importLocalBackup, saveCountdownTarget, saveLastSelection } from './storage'
 import { useContent } from './useContent'
@@ -20,6 +20,21 @@ const AdminResetPassword = lazy(() => import('./Admin').then((module) => ({ defa
 function AnalyticsRouteTracker() {
   const location = useLocation()
   useEffect(() => { trackPageview(location.pathname) }, [location.pathname])
+  return null
+}
+
+export function RouteScrollManager() {
+  const location = useLocation()
+  const navigationType = useNavigationType()
+  const previousPathname = useRef(location.pathname)
+
+  useLayoutEffect(() => {
+    const pathnameChanged = previousPathname.current !== location.pathname
+    previousPathname.current = location.pathname
+    if (!pathnameChanged || location.hash || navigationType === 'POP') return
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [location.pathname, location.hash, navigationType])
+
   return null
 }
 
@@ -313,9 +328,14 @@ export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAU
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const usedFilters = useRef(new Set())
-  const filters = { q: params.get('q') || '', type: params.get('type') || '', map: params.get('map') || '', program: params.get('program') || '', subject: params.get('subject') || '' }
+  const urlSchoolQuery = params.get('q') || ''
+  const [schoolQuery, setSchoolQuery] = useState(urlSchoolQuery)
+  const composingSchoolQuery = useRef(false)
+  const filters = { q: schoolQuery, type: params.get('type') || '', map: params.get('map') || '', program: params.get('program') || '', subject: params.get('subject') || '' }
   useEffect(() => { trackEvent('school_directory_entered', `${scope.year}:${scope.provinceSlug}:${scope.majorSlug}`) }, [scope.year, scope.provinceSlug, scope.majorSlug])
+  useEffect(() => { if (!composingSchoolQuery.current) setSchoolQuery(urlSchoolQuery) }, [urlSchoolQuery])
   const setFilter = (key, value) => {
+    if ((params.get(key) || '') === value) return
     const next = new URLSearchParams(params)
     if (value) next.set(key, value); else next.delete(key)
     setParams(next, { replace: true })
@@ -323,6 +343,22 @@ export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAU
       usedFilters.current.add(key)
       trackEvent('school_filter_used', key)
     }
+  }
+  const updateSchoolQuery = (event) => {
+    const value = event.target.value
+    setSchoolQuery(value)
+    if (!composingSchoolQuery.current) setFilter('q', value)
+  }
+  const finishSchoolQueryComposition = (event) => {
+    composingSchoolQuery.current = false
+    const value = event.currentTarget.value
+    setSchoolQuery(value)
+    setFilter('q', value)
+  }
+  const clearFilters = () => {
+    composingSchoolQuery.current = false
+    setSchoolQuery('')
+    setParams({}, { replace: true })
   }
   const filteredDirectory = filterSchoolDirectory(wallSchools, schools, filters)
   const filteredSlugs = new Set(filteredDirectory.map((school) => school.schoolSlug))
@@ -335,9 +371,9 @@ export function AnhuiHub({ schools, wallSchools, scope, publishedScopes = [DEFAU
     <div className="crumb"><Link to="/">首页</Link><span>/</span>安徽专区</div>
     <section className="page-hero compact"><div><span className="eyebrow">安徽省 · 普通高校专升本</span><h1>选择你的目标院校</h1><p>{wallSchools.length} 所院校名录中，当前 {schools.length} 所院校已开放院校专业地图。</p></div><div className="filter-box scope-summary"><strong>已发布年份</strong><label className="sr-only" htmlFor="published-year">选择年份</label><select id="published-year" value={scope.year} onChange={(event) => navigate(scopePath({ ...scope, year: Number(event.target.value) }))}>{years.map((year) => <option key={year} value={year}>{year} 年</option>)}</select><span>{MAJOR_NAMES[scope.majorSlug] ?? scope.majorSlug}</span><small>仅展示已有正式发布数据的年份</small></div></section>
     <section className="exam-structure"><div><span>安徽考试结构</span><strong>2 门公共课</strong><b>+</b><strong>2 门专业课</strong></div><p>公共课由省考试院组织；专业课由招生院校组织，因此同一专业在不同院校的科目可能不同。</p></section>
-    <section className="school-filters" aria-label="院校筛选"><label>院校名称<input type="search" value={filters.q} onChange={(event) => setFilter('q', event.target.value)} placeholder="输入院校名称" /></label><label>办学性质<select value={filters.type} onChange={(event) => setFilter('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>资料状态<select value={filters.map} onChange={(event) => setFilter('map', event.target.value)}><option value="">全部</option><option value="open">已开放专业地图</option><option value="pending">资料整理中</option></select></label><label>招生专业<select value={filters.program} onChange={(event) => setFilter('program', event.target.value)}><option value="">全部专业</option>{programs.map((program) => <option key={program}>{program}</option>)}</select></label><label>考试科目<select value={filters.subject} onChange={(event) => setFilter('subject', event.target.value)}><option value="">全部科目</option>{subjects.map((subject) => <option key={subject}>{subject}</option>)}</select></label><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>
+    <section className="school-filters" aria-label="院校筛选"><label>院校名称<input type="search" value={schoolQuery} onChange={updateSchoolQuery} onCompositionStart={() => { composingSchoolQuery.current = true }} onCompositionEnd={finishSchoolQueryComposition} placeholder="输入院校名称" /></label><label>办学性质<select value={filters.type} onChange={(event) => setFilter('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>资料状态<select value={filters.map} onChange={(event) => setFilter('map', event.target.value)}><option value="">全部</option><option value="open">已开放专业地图</option><option value="pending">资料整理中</option></select></label><label>招生专业<select value={filters.program} onChange={(event) => setFilter('program', event.target.value)}><option value="">全部专业</option>{programs.map((program) => <option key={program}>{program}</option>)}</select></label><label>考试科目<select value={filters.subject} onChange={(event) => setFilter('subject', event.target.value)}><option value="">全部科目</option>{subjects.map((subject) => <option key={subject}>{subject}</option>)}</select></label><button type="button" onClick={clearFilters}>清空筛选</button></section>
     <p className="filter-result-count" role="status">找到 {filteredDirectory.length} 所院校</p>
-    {!filteredDirectory.length && <section className="filter-empty"><h2>没有匹配的院校</h2><p>可以减少筛选条件，或清空后重新查找。</p><button type="button" onClick={() => setParams({}, { replace: true })}>清空筛选</button></section>}
+    {!filteredDirectory.length && <section className="filter-empty"><h2>没有匹配的院校</h2><p>可以减少筛选条件，或清空后重新查找。</p><button type="button" onClick={clearFilters}>清空筛选</button></section>}
     {!!openSchools.length && <><div className="section-heading"><div><span className="section-number">{openSchools.length} 所</span><h2>已开放院校专业地图</h2></div><Link to={comparePath(scope)}>查看横向对比 →</Link></div><section className="school-grid">{openSchools.map((school) => <SchoolCard key={school.school_slug} school={school} scope={scope} />)}</section></>}
     {!!pendingSchools.length && <><div className="section-heading pending-heading"><div><span className="section-number">{pendingSchools.length} 所</span><h2>资料整理中</h2></div><p>已列入院校名录，暂未开放专业地图</p></div><section className="pending-school-grid">{pendingSchools.map((school) => <article key={school.id}><strong>{school.name}</strong><span>{school.schoolType}</span><small>资料整理中 · 暂未开放专业地图</small></article>)}</section></>}
     <div className="local-tip"><span>ⓘ</span><p><strong>你的进度只保存在当前浏览器</strong><br/>不需要注册即可使用；清除浏览器数据或更换设备后，进度与收藏不会同步。</p></div>
@@ -348,7 +384,7 @@ function SchoolCard({ school, scope }) {
   return <article className="school-card" style={{ '--school-color': school.theme_color }}>
     <div className="school-head"><SchoolLogo school={school} /><div><span className="type-tag">{school.school_type}</span><h3>{school.school_name}</h3></div></div>
     <SubjectTags school={school} />
-    <dl><div><dt>培养地点</dt><dd>{school.sites.join(' / ')}</dd></div><div><dt>招生范围</dt><dd>{formatEligibleMajorCategories(school.eligible_major_categories)}</dd></div><div><dt>计划数</dt><dd>{school.totalPlan} 人</dd></div></dl>
+    <dl><div><dt>招生范围</dt><dd>{formatEligibleMajorCategories(school.eligible_major_categories)}</dd></div><div><dt>计划数</dt><dd>{school.totalPlan} 人</dd></div></dl>
     <div className="school-card-foot"><span>核验于 {school.verified_at}</span><Link onClick={() => saveLastSelection({ ...scope, school: school.school_slug })} to={schoolPath(scope, school.school_slug)}>打开专业地图 →</Link></div>
   </article>
 }
@@ -463,7 +499,7 @@ export function LearningMap({ schools, scope }) {
     <section className="school-title" style={{ '--school-color': school.theme_color }}><SchoolLogo school={school} large /><div><span className="type-tag">{school.school_type} · {scope.year}</span><h1>{school.school_name}</h1></div><div className="official-links"><a href={schoolOfferings[0]?.charter_url || school.charter_url} target="_blank" rel="noreferrer">招生章程</a><a href={schoolOfferings[0]?.syllabus_url || school.syllabus_url} target="_blank" rel="noreferrer">考试大纲</a></div></section>
   </>
 
-  const offeringOverview = <section className="school-offering-overview" aria-labelledby="offering-overview-title"><div className="section-heading"><div><span className="section-number">{schoolOfferings.length} 个招生点</span><h2 id="offering-overview-title">招生专业与培养点</h2></div><p>每张卡片均展示该专业对应的培养点、报考范围和考试方案。</p></div><div className="offering-detail-grid">{schoolOfferings.map((offering) => { const programLabel = (offering.programNames || offering.program_names || []).join('、') || (MAJOR_NAMES[offering.major_slug || scope.majorSlug] ?? (offering.major_slug || scope.majorSlug)); const scores = (offering.scores || []).filter((score) => score.candidate_category === 'ordinary' && score.score_type === 'actual_admission_minimum'); return <article key={offering.offering_id || offering.school_slug}><div><span>{programLabel}</span><strong>{offering.plan_count} 人</strong></div><dl><div><dt>培养地点与地址</dt><dd>{offering.training_site}</dd></div><div><dt>报考专业范围</dt><dd>{formatEligibleMajorCategories(offering.eligible_major_categories)}</dd></div></dl>{scores.length ? <section className="offering-score" aria-label={`${programLabel}普通考生录取分数线`}><b>普通考生实际录取最低分</b>{scores.map((score) => <div key={score.score_id || `${score.program_name}-${score.score}`}><strong>{score.program_name}</strong><span>{Number(score.score)} 分</span><small>官方公告 {score.source_published_at} · <a href={score.source_url} target="_blank" rel="noreferrer">核验来源 ↗</a></small></div>)}</section> : null}<section className="offering-exam-scheme" aria-label={`${programLabel}考试方案`}><b>考试方案</b><SubjectTags school={offering} compact /></section></article> })}</div></section>
+  const offeringOverview = <section className="school-offering-overview" aria-labelledby="offering-overview-title"><div className="section-heading"><div><span className="section-number">{schoolOfferings.length} 个招生点</span><h2 id="offering-overview-title">招生专业与培养点</h2></div><p>每张卡片均展示该专业对应的培养点、报考范围和考试方案。</p></div><div className="offering-detail-grid">{schoolOfferings.map((offering) => { const programLabel = (offering.programNames || offering.program_names || []).join('、') || (MAJOR_NAMES[offering.major_slug || scope.majorSlug] ?? (offering.major_slug || scope.majorSlug)); const scores = (offering.scores || []).filter((score) => score.candidate_category === 'ordinary' && score.score_type === 'actual_admission_minimum'); return <article key={offering.offering_id || offering.school_slug}><div><span>{programLabel}</span><strong>{offering.plan_count} 人</strong></div><dl><div><dt>培养地点与地址</dt><dd>{offering.training_site}</dd></div><div><dt>报考专业范围</dt><dd>{formatEligibleMajorCategories(offering.eligible_major_categories)}</dd></div></dl><section className="offering-exam-scheme" aria-label={`${programLabel}考试方案`}><b>考试方案</b><SubjectTags school={offering} compact />{scores.length ? <div className="offering-score-line"><small>分数线</small><div className="offering-score-values">{scores.map((score) => <div className="offering-score-entry" key={score.score_id || `${score.program_name}-${score.score}`}><strong>{Number(score.score)} 分</strong><a href={score.source_url} target="_blank" rel="noreferrer" aria-label="核验来源（在新标签页打开）">核验来源 ↗</a></div>)}</div></div> : null}</section></article> })}</div></section>
 
   return <div className="page-wrap learning-page">
     {heading}
@@ -553,7 +589,7 @@ export function PublicSite() {
 function AdminFallback() { return <div className="admin-loading">正在加载管理后台…</div> }
 
 export default function App() {
-  return <BrowserRouter><AnalyticsRouteTracker /><Suspense fallback={<AdminFallback />}><Routes>
+  return <BrowserRouter><AnalyticsRouteTracker /><RouteScrollManager /><Suspense fallback={<AdminFallback />}><Routes>
     <Route path="/admin/login" element={<AdminLogin />} />
     <Route path="/admin/reset-password" element={<AdminResetPassword />} />
     <Route path="/admin/*" element={<AdminDashboard />} />
