@@ -8,6 +8,7 @@ import { DEFAULT_SCOPE } from './contentScope'
 
 const school = {
   school_slug: 'demo', school_name: '示例学院', short_name: '示例', school_type: '公办', theme_color: '#1556a6', sites: ['校本部'],
+  logo_url: 'https://example.com/demo-logo.png',
   publicSubjects: ['英语'], professionalSubjects: ['C语言程序设计'], totalPlan: 100, eligible_major_categories: '电子信息类',
   charter_url: 'https://example.com/charter', syllabus_url: 'https://example.com/syllabus', source_status: '正式章程', verified_at: '2026-08-13',
 }
@@ -98,19 +99,59 @@ describe('收藏、筛选和可选对比', () => {
     ]
     const { container } = render(<MemoryRouter initialEntries={['/anhui/2026/computer-science/compare?program=计算机科学与技术']}><Compare offerings={offerings} academicSchools={[school, second]} scope={DEFAULT_SCOPE} /></MemoryRouter>)
     expect(screen.getByText(/再选择 2 条招生方案/)).toBeVisible()
+    const picker = screen.getByLabelText('选择对比招生方案')
+    expect(picker.querySelectorAll('.school-logo')).toHaveLength(2)
+    expect(within(picker).getByRole('img', { name: '示例学院校徽' })).toBeVisible()
     fireEvent.click(screen.getAllByRole('button', { name: '加入对比' })[0])
     fireEvent.click(screen.getAllByRole('button', { name: '加入对比' })[0])
     expect(screen.getByRole('table')).toBeVisible()
     const table = screen.getByRole('table')
     expect(within(table).getByText('C语言')).toBeVisible()
     expect(within(table).getByText('数据结构')).toBeVisible()
-    expect(within(table).getByText('核心比较信息')).toBeVisible()
-    expect(within(table).getByText('考试与报考要求')).toBeVisible()
-    expect(within(table).getByText('官方资料')).toBeVisible()
+    expect(within(table).queryByText('核心比较信息')).not.toBeInTheDocument()
+    expect(within(table).queryByText('考试与报考要求')).not.toBeInTheDocument()
+    expect(within(table).queryByText('官方资料')).not.toBeInTheDocument()
+    expect(table.querySelectorAll('.comparison-group-row')).toHaveLength(0)
+    expect(within(table).queryByText('报考专业范围')).not.toBeInTheDocument()
+    expect(within(table).getAllByRole('link', { name: '进入院校专业地图 →' })).toHaveLength(2)
     expect(within(table).queryByText('招生专业')).not.toBeInTheDocument()
     expect(within(table).getAllByText('100 人')[0]).toHaveClass('compare-plan')
-    expect(document.querySelector('.mobile-compare-cards')).toBeTruthy()
+    expect(table.querySelectorAll('thead .school-logo')).toHaveLength(2)
+    const mobileCards = document.querySelector('.mobile-compare-cards')
+    expect(mobileCards).toBeTruthy()
+    expect(mobileCards.querySelectorAll('.school-logo')).toHaveLength(2)
+    expect(within(mobileCards).queryByText('报考范围')).not.toBeInTheDocument()
+    expect(within(mobileCards).getAllByRole('link', { name: '进入院校专业地图 →' })).toHaveLength(2)
+    const brokenLogo = within(picker).getByRole('img', { name: '示例学院校徽' })
+    fireEvent.error(brokenLogo)
+    expect(within(picker).getByText('示例')).toBeVisible()
     expect(within(container).queryByText('481 分')).not.toBeInTheDocument()
     expect(within(container).queryByText('分数线')).not.toBeInTheDocument()
+  })
+
+  it('切换本科专业时保留已选方案并支持跨专业等宽对比', () => {
+    const second = { ...school, school_slug: 'demo2', school_name: '第二学院', short_name: '第二', school_type: '民办' }
+    const offerings = [
+      { offering_id: 'demo-computer', school_slug: 'demo', active: true, status: 'published', programNames: ['计算机科学与技术'], plan_count: 100, training_site: '校本部 A', publicSubjects: ['高等数学', '英语'], professionalSubjects: ['C语言'], charter_url: 'https://example.com/a', syllabus_url: 'https://example.com/a' },
+      { offering_id: 'demo-software', school_slug: 'demo2', active: true, status: 'published', programNames: ['软件工程'], plan_count: 80, training_site: '校本部 B', publicSubjects: ['高等数学', '英语'], professionalSubjects: ['数据结构'], charter_url: 'https://example.com/b', syllabus_url: 'https://example.com/b' },
+    ]
+    const { container } = render(<MemoryRouter initialEntries={['/anhui/2026/all-programs/compare?program=计算机科学与技术']}><Compare offerings={offerings} academicSchools={[school, second]} scope={DEFAULT_SCOPE} /></MemoryRouter>)
+    const view = within(container)
+
+    fireEvent.click(view.getByRole('button', { name: '加入对比' }))
+    expect(within(view.getByLabelText('已选对比招生方案')).getByText('已选 1 / 3 条招生方案')).toBeVisible()
+    fireEvent.change(view.getByRole('combobox', { name: '筛选本科招生专业' }), { target: { value: '软件工程' } })
+    expect(within(view.getByLabelText('已选对比招生方案')).getByText('计算机科学与技术')).toBeVisible()
+    fireEvent.click(view.getByRole('button', { name: '加入对比' }))
+
+    const table = view.getByRole('table')
+    expect(within(table).getByText('招生专业')).toBeVisible()
+    expect(within(table).getByText('计算机科学与技术')).toBeVisible()
+    expect(within(table).getByText('软件工程')).toBeVisible()
+    expect(table.querySelectorAll('col.compare-school-column')).toHaveLength(2)
+    expect(table.querySelectorAll('col.compare-divider-column')).toHaveLength(1)
+    expect(table.querySelectorAll('thead .school-logo')).toHaveLength(2)
+    expect(within(table.querySelector('thead')).queryByText('公办')).not.toBeInTheDocument()
+    expect(within(table.querySelector('thead')).queryByText('民办')).not.toBeInTheDocument()
   })
 })

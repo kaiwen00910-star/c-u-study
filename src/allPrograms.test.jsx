@@ -131,7 +131,7 @@ describe('页面滚动恢复', () => {
 
     fireEvent.click(screen.getByRole('link', { name: '打开院校专业地图' }))
     await waitFor(() => expect(window.scrollY).toBe(0))
-    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'auto' })
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'instant' })
 
     window.scrollY = 420
     window.scrollTo.mockClear()

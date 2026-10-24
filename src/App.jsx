@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useNavigationType, useParams, useSearchParams } from 'react-router-dom'
 import { offeringSchoolGroups, offerings as snapshotOfferings, schoolGroups, subjectNames } from './data'
 import { createLocalBackup, getCountdownTarget, importLocalBackup, saveCountdownTarget, saveLastSelection } from './storage'
@@ -10,7 +10,7 @@ import { loadPublishedScopes } from './publicApi'
 import { applyPageMetadata } from './seo'
 import { trackEvent, trackPageview } from './analytics'
 import { FeedbackForm } from './FeedbackForm'
-import { ELIGIBILITY_NOTICE, eligibleMajorSuggestions, findEligibleOfferings, sortEligibleResults } from './eligibleMajorSearch'
+import { COURSE_REFERENCE_NOTICE, ELIGIBILITY_NOTICE, PUBLIC_COURSE_TRACKS, eligibleMajorSuggestions, findEligibleOfferings, mappedEligibleMajorCategories, sortEligibleResults } from './eligibleMajorSearch'
 import './App.css'
 
 const AdminDashboard = lazy(() => import('./Admin').then((module) => ({ default: module.AdminDashboard })))
@@ -32,7 +32,7 @@ export function RouteScrollManager() {
     const pathnameChanged = previousPathname.current !== location.pathname
     previousPathname.current = location.pathname
     if (!pathnameChanged || location.hash || navigationType === 'POP') return
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [location.pathname, location.hash, navigationType])
 
   return null
@@ -213,6 +213,299 @@ export function SchoolLogoWall({ schools }) {
   </div>
 }
 
+const admissionTimelineItems = [
+  {
+    date: '1 月 30 日',
+    title: '考试招生工作安排发布',
+    summary: '年度政策、报名、考试与录取安排公开',
+    detail: '发布安徽省 2026 年普通高校专升本考试招生工作安排，明确年度报考流程、考试组织、录取批次及专项计划等要求。',
+    sourceLabel: '2026 年安徽专升本考试招生工作安排',
+    sourceUrl: 'https://edu.anhuinews.com/kszx/gk/202601/t20260129_9064933.html',
+    desktopX: 7, desktopY: 16, mobileX: 25, mobileY: 4,
+  },
+  {
+    date: '3 月 23—27 日',
+    title: '网上报名与首次志愿',
+    summary: '23 日 10:00 开始，27 日 17:00 截止',
+    detail: '考生登录省考试院报名系统完成信息填报、采像和 A、B 段志愿填报。志愿提交前应仔细核对，报名截止后不再补报。',
+    sourceLabel: '省级考试招生工作安排（高校转载）',
+    sourceUrl: 'https://www.wenda.edu.cn/zs/m/display_34096.html',
+    desktopX: 23, desktopY: 9, mobileX: 75, mobileY: 12,
+  },
+  {
+    date: '3 月 28 日 12:00',
+    title: '资格审核截止',
+    summary: '及时查看审核状态并修正材料',
+    detail: '资格审核与报名同步进行。考生应通过“安徽招生考试”微信小程序及时查看审核结果，在截止前修正未通过项目。',
+    sourceLabel: '2026 年专升本报名操作指引',
+    sourceUrl: 'https://www.cnedu.cn/shengxue/zx/wa20260323180622.shtml',
+    desktopX: 39, desktopY: 15, mobileX: 25, mobileY: 20,
+  },
+  {
+    date: '3 月 29 日 17:00',
+    title: '报名缴费截止',
+    summary: '报名考试费 120 元，逾期视为放弃',
+    detail: '资格审核通过后登录报名系统缴费。未在截止时间前完成缴费的考生视为放弃报名，后期不再组织补报名。',
+    sourceLabel: '专升本报名资格审核工作通知',
+    sourceUrl: 'https://www.acdt.edu.cn/jwc/info/1253/5926.htm',
+    desktopX: 56, desktopY: 10, mobileX: 75, mobileY: 28,
+  },
+  {
+    date: '3 月下旬',
+    title: '院校章程与考纲集中发布',
+    summary: '招生专业、专业课大纲和参考书目陆续明确',
+    detail: '各招生院校分别发布招生章程、招生专业、专业课考试大纲和参考书目。该节点为集中发布时段，并非全省统一的法定截止日。',
+    sourceLabel: '招生院校章程示例',
+    sourceUrl: 'https://www.ahstu.edu.cn/zsc/zszc/zsbzszc.htm',
+    desktopX: 74, desktopY: 13, mobileX: 25, mobileY: 36,
+  },
+  {
+    date: '4 月 11 日起',
+    title: '公共课准考证打印',
+    summary: '登录报名系统下载并核对准考证',
+    detail: '公共课准考证开放打印。专业课准考证由各招生院校另行安排，应同时关注报考院校招生网站。',
+    sourceLabel: '2026 年普通高校专升本招生章程',
+    sourceUrl: 'https://zsb.wnmc.edu.cn/__local/3/7E/D5/041BB95CFAB5989C5AD88A7B7E4_182A5F2D_3179F.pdf',
+    desktopX: 93, desktopY: 19, mobileX: 75, mobileY: 44,
+  },
+  {
+    date: '4 月 18 日',
+    title: '公共课统考',
+    summary: '专业课由各校在 4 月中下旬自主安排',
+    detail: '大学语文或高等数学为 9:00—11:00，英语为 14:00—15:30。普通专业课多集中在 4 月 19 日，特殊考查及个别安排以报考院校通知为准。',
+    sourceLabel: '安徽建筑大学 2026 年招生章程',
+    sourceUrl: 'https://www.ahjzu.edu.cn/zsw/2026/0204/c2390a263781/page.htm',
+    desktopX: 88, desktopY: 43, mobileX: 25, mobileY: 52,
+  },
+  {
+    date: '5 月上旬',
+    title: '公共课成绩与合格线',
+    summary: '开放成绩查询并划定公共课合格线',
+    detail: '省考试院公布公共课成绩和合格线。达到公共课合格线仅代表具备录取资格，不等同于院校专业实际录取。',
+    sourceLabel: '安徽省教育招生考试院合格线公告',
+    sourceUrl: 'https://www.ahzsks.cn/zyyx/8879.htm',
+    desktopX: 68, desktopY: 39, mobileX: 75, mobileY: 60,
+  },
+  {
+    date: '5 月 11—12 日',
+    title: '公共课成绩复核登记',
+    summary: '按要求向毕业院校登记，逾期不受理',
+    detail: '对公共课成绩有疑问的考生，可在规定时间携带身份证向毕业院校登记申请复核；省外院校毕业的安徽入伍退役士兵向报考院校登记。',
+    sourceLabel: '公共课合格线及成绩复核通知',
+    sourceUrl: 'https://zsb.hblgxy.edu.cn/info/1032/2384.htm',
+    desktopX: 47, desktopY: 45, mobileX: 25, mobileY: 68,
+  },
+  {
+    date: '5 月 27—28 日',
+    title: '调剂志愿填报',
+    summary: '27 日 10:00 开始，28 日 17:00 截止',
+    detail: '达到公共课合格线且一志愿未录取的考生，可按缺额计划和院校调剂规则填报。调剂志愿提交后不可修改。',
+    sourceLabel: '2026 年专升本调剂报名及计划',
+    sourceUrl: 'https://www.wjut.edu.cn/zhao-sheng-zhuan-ti/zhao-sheng-kuai-xun/pageinfo1000010000027809.html',
+    desktopX: 27, desktopY: 41, mobileX: 75, mobileY: 76,
+  },
+  {
+    date: '5 月底前',
+    title: '拟录取阶段原则上完成',
+    summary: '一志愿和调剂录取结果由院校陆续公布',
+    detail: '招生院校原则上在 5 月底前完成一志愿、调剂和拟录取工作，并向考生提供查询。拟录取不等同于省级正式投档录取。',
+    sourceLabel: '省级考试招生工作安排（高校转载）',
+    sourceUrl: 'https://www.czcvc.edu.cn/jyxxfw/info/1007/2555.htm',
+    desktopX: 10, desktopY: 69, mobileX: 25, mobileY: 84,
+  },
+  {
+    date: '7 月下旬',
+    title: '省级正式投档录取',
+    summary: '完成投档、阅档和正式录取手续',
+    detail: '专升本正式录取与普通高考录取流程衔接，由省级主管部门投档，高校完成阅档并报批。具体日期以省考试院最终安排为准。',
+    sourceLabel: '安徽建筑大学录取工作说明',
+    sourceUrl: 'https://www.ahjzu.edu.cn/zsw/2026/0520/c2435a270211/page.htm',
+    desktopX: 45, desktopY: 79, mobileX: 75, mobileY: 92,
+  },
+  {
+    date: '7 月下旬—8 月上旬',
+    title: '录取通知书陆续寄发',
+    summary: '各院校按正式录取进度分批寄出',
+    detail: '正式录取完成后，各院校通过 EMS 等方式陆续寄发录取通知书和新生入学指南，寄发时间以录取院校通知为准。',
+    sourceLabel: '专升本新生录取相关事宜',
+    sourceUrl: 'https://zs.ahut.edu.cn/info/5888/3047.htm',
+    desktopX: 83, desktopY: 74, mobileX: 25, mobileY: 96,
+  },
+]
+
+const timelineRows = [
+  [
+    { x: 76, y: 120 }, { x: 262, y: 120 }, { x: 448, y: 120 },
+    { x: 634, y: 120 }, { x: 820, y: 120 }, { x: 1006, y: 120 },
+  ],
+  [
+    { x: 1006, y: 340 }, { x: 851, y: 340 }, { x: 696, y: 340 },
+    { x: 541, y: 340 }, { x: 386, y: 340 }, { x: 231, y: 340 },
+    { x: 76, y: 340 },
+  ],
+]
+
+const timelineCurvePoints = timelineRows.flat()
+const timelineEventDates = [
+  '2026-01-30T00:00:00+08:00',
+  '2026-03-23T10:00:00+08:00',
+  '2026-03-28T12:00:00+08:00',
+  '2026-03-29T17:00:00+08:00',
+  '2026-03-31T00:00:00+08:00',
+  '2026-04-11T00:00:00+08:00',
+  '2026-04-18T09:00:00+08:00',
+  '2026-05-08T00:00:00+08:00',
+  '2026-05-11T00:00:00+08:00',
+  '2026-05-27T10:00:00+08:00',
+  '2026-05-31T00:00:00+08:00',
+  '2026-07-25T00:00:00+08:00',
+  '2026-08-01T00:00:00+08:00',
+]
+const timelineProgressStops = [0, 8.653, 17.306, 25.958, 34.611, 43.264, 56.736, 63.947, 71.157, 78.368, 85.579, 92.789, 100]
+
+function createCurveSegment(start, end) {
+  const controlX = (start.x + end.x) / 2
+  return `C ${controlX} ${start.y}, ${controlX} ${end.y}, ${end.x} ${end.y}`
+}
+
+function createCurvePath(points) {
+  return points.slice(1).reduce((path, point, index) => `${path} ${createCurveSegment(points[index], point)}`, `M ${points[0].x} ${points[0].y}`)
+}
+
+const timelineCurvePath = `${createCurvePath(timelineRows[0])} C 1100 120, 1100 340, ${timelineRows[1][0].x} ${timelineRows[1][0].y} ${timelineRows[1].slice(1).reduce((path, point, index) => `${path} ${createCurveSegment(timelineRows[1][index], point)}`, '')}`
+const timelineCurveSegments = [
+  ...timelineRows[0].slice(1).map((point, index) => ({ path: `M ${timelineRows[0][index].x} ${timelineRows[0][index].y} ${createCurveSegment(timelineRows[0][index], point)}`, nodes: [index, index + 1] })),
+  { path: 'M 1006 120 C 1100 120, 1100 340, 1006 340', nodes: [5, 6] },
+  ...timelineRows[1].slice(1).map((point, index) => ({ path: `M ${timelineRows[1][index].x} ${timelineRows[1][index].y} ${createCurveSegment(timelineRows[1][index], point)}`, nodes: [index + 6, index + 7] })),
+]
+
+function getCurrentTimelineProgress(now = new Date()) {
+  const currentTime = now.getTime()
+  const eventTimes = timelineEventDates.map((eventDate) => new Date(eventDate).getTime())
+
+  if (currentTime <= eventTimes[0]) return timelineProgressStops[0]
+  if (currentTime >= eventTimes.at(-1)) return timelineProgressStops.at(-1)
+
+  const nextIndex = eventTimes.findIndex((eventTime) => currentTime < eventTime)
+  const previousIndex = nextIndex - 1
+  const elapsedRatio = (currentTime - eventTimes[previousIndex]) / (eventTimes[nextIndex] - eventTimes[previousIndex])
+  return timelineProgressStops[previousIndex] + (timelineProgressStops[nextIndex] - timelineProgressStops[previousIndex]) * elapsedRatio
+}
+
+export function AdmissionTimeline() {
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [timelineNow, setTimelineNow] = useState(() => Date.now())
+  const [isVisible, setIsVisible] = useState(false)
+  const containerRef = useRef(null)
+  const reducedMotion = usePrefersReducedMotion()
+
+  useEffect(() => {
+    if (reducedMotion || !window.IntersectionObserver) {
+      setIsVisible(true)
+      return undefined
+    }
+    const observer = new window.IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return
+      setIsVisible(true)
+      observer.disconnect()
+    }, { threshold: 0.12 })
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [reducedMotion])
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => setTimelineNow(Date.now()), 60_000)
+    return () => window.clearInterval(timerId)
+  }, [])
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (reducedMotion || !container) return undefined
+    let frameId
+    const updateParallax = () => {
+      window.cancelAnimationFrame(frameId)
+      frameId = window.requestAnimationFrame(() => {
+        const bounds = container.getBoundingClientRect()
+        const offset = (window.innerHeight / 2 - (bounds.top + bounds.height / 2)) / window.innerHeight
+        const limitedOffset = Math.max(-1, Math.min(1, offset))
+        container.style.setProperty('--timeline-parallax', `${(limitedOffset * 5).toFixed(2)}px`)
+      })
+    }
+    updateParallax()
+    window.addEventListener('scroll', updateParallax, { passive: true })
+    window.addEventListener('resize', updateParallax)
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      window.removeEventListener('scroll', updateParallax)
+      window.removeEventListener('resize', updateParallax)
+    }
+  }, [reducedMotion])
+
+  const highlightedIndex = hoveredIndex ?? activeIndex
+  const markerProgress = getCurrentTimelineProgress(new Date(timelineNow))
+  const toggleItem = (index) => setActiveIndex((current) => current === index ? null : index)
+
+  return <section ref={containerRef} className={`timeline-experience ${isVisible ? 'is-visible' : ''}`}>
+    <div className="timeline-scroll" role="region" aria-label="时间线横向浏览区域" tabIndex="0">
+      <div className="timeline-stage">
+        <svg className="timeline-curve" viewBox="0 0 1116 460" aria-hidden="true">
+          <g className="timeline-curve-base">
+            <path d={timelineCurvePath} pathLength="1" />
+          </g>
+          <g className="timeline-curve-glow">
+            {timelineCurveSegments.map((segment, index) => <path key={`glow-${index}`} d={segment.path} className={highlightedIndex !== null && segment.nodes.includes(highlightedIndex) ? 'is-active' : ''} />)}
+          </g>
+        </svg>
+        <span
+          className="timeline-progress-dot"
+          style={{ '--timeline-progress': `${markerProgress}%`, offsetPath: `path("${timelineCurvePath}")` }}
+          aria-hidden="true"
+        />
+        <ol className="admission-timeline" aria-label="2026 年安徽普通专升本关键时间节点">
+          {admissionTimelineItems.map((item, index) => {
+            const point = timelineCurvePoints[index]
+            const rowIndex = index < 6 ? 0 : 1
+            const isAbove = index % 2 === 0
+            const tooltipShift = point.x === 76 ? '-76px' : point.x === 1006 ? 'calc(-100% + 109px)' : '-50%'
+            return <li key={`${item.date}-${item.title}`} className={`timeline-row-${rowIndex + 1} ${isAbove ? 'is-above' : 'is-below'}`} style={{ '--timeline-x': `${point.x}px`, '--timeline-y': `${point.y}px`, '--timeline-delay': `${index * 38}ms`, '--tooltip-shift': tooltipShift }}>
+              <button
+                type="button"
+                className="timeline-node"
+                aria-expanded={activeIndex === index}
+                aria-controls={`timeline-tooltip-${index}`}
+                aria-describedby={highlightedIndex === index ? `timeline-tooltip-${index}` : undefined}
+                aria-label={`${item.date}，${item.title}`}
+                onClick={() => toggleItem(index)}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                onFocus={() => setHoveredIndex(index)}
+                onBlur={() => setHoveredIndex(null)}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Escape') return
+                  setHoveredIndex(null)
+                  setActiveIndex(null)
+                }}
+              >
+                <time>{item.date}</time>
+                <strong>{item.title}</strong>
+              </button>
+              {highlightedIndex === index && <aside
+                id={`timeline-tooltip-${index}`}
+                role="tooltip"
+                className="timeline-tooltip"
+              >
+                <div><time>{item.date}</time><strong>{item.title}</strong></div>
+                <p>{item.detail}</p>
+              </aside>}
+            </li>
+          })}
+        </ol>
+      </div>
+    </div>
+  </section>
+}
+
 export function Home({ wallSchools, schoolCount, scope }) {
   return <>
     <section className="hero-section">
@@ -239,27 +532,9 @@ export function Home({ wallSchools, schoolCount, scope }) {
       </div>
     </section>
     <section className="content-section timeline-wrap" aria-labelledby="timeline-title">
-      <div className="home-section-intro"><span className="eyebrow">OFFICIAL SCHEDULE</span><h2 id="timeline-title">专升本关键时间线</h2><p>日期仅在正式公告发布后展示；其余环节请等待官方公布。</p></div>
-      <ol className="admission-timeline">{['报名', '资格审核', '缴费', '准考证', '考试', '成绩查询', '志愿填报或录取', '录取通知书'].map((item, index) => <li key={item}><span className="timeline-step">{String(index + 1).padStart(2, '0')}</span><div><h3>{item}</h3><p>时间待官方公布</p></div></li>)}</ol>
+      <div className="home-section-intro"><span className="eyebrow">OFFICIAL SCHEDULE</span><h2 id="timeline-title">专升本关键时间线</h2></div>
+      <AdmissionTimeline />
     </section>
-    <section className="content-section anhui-focus-section">
-      <div className="anhui-focus-card"><div className="province-mark">皖</div><div><span className="status-dot">专注安徽</span><h2>只做安徽专升本，把招生信息做深、做准</h2><p>持续核验安徽院校、招生专业、培养地点、报考范围和考试方案，不再扩展其他省份。</p></div><Link className="primary-btn" to="/anhui">进入安徽专区 <span>→</span></Link></div>
-    </section>
-    <section className="content-section home-services">
-      <div className="section-heading"><div><span className="section-number">01</span><h2>从择校到备考，一站理清</h2></div><p>信息层级更清楚，每一步都有可核验的来源。</p></div>
-      <div className="service-grid">
-        <Link to="/anhui/2026/eligible-programs"><span>⌕</span><small>01</small><h3>我能报哪些专业</h3><p>按专科专业查询可能对应的院校、本科专业与考试方案。</p><b>开始查询 →</b></Link>
-        <Link to="/anhui"><span>⌕</span><small>01</small><h3>院校筛选</h3><p>查看院校类型、培养地点、招生范围与考试科目。</p><b>开始筛选 →</b></Link>
-        <Link to={comparePath(scope)}><span>▦</span><small>02</small><h3>招生计划</h3><p>横向比较试点院校招生计划与专业课差异。</p><b>查看对比 →</b></Link>
-        <Link to="/sources"><span>◎</span><small>03</small><h3>报考指南</h3><p>了解资料年份、正式章程与官方考纲来源。</p><b>核验资料 →</b></Link>
-        <a href="#faq"><span>?</span><small>04</small><h3>常见问题</h3><p>快速了解网站数据、来源核验与更新方式。</p><b>查看说明 ↓</b></a>
-      </div>
-    </section>
-    <section className="content-section faq-section" id="faq">
-      <div><span className="eyebrow">QUICK GUIDE</span><h2>开始前，你可能想知道</h2></div>
-      <div className="faq-list"><details><summary>这里的信息是官方发布的吗？</summary><p>本站是非官方网站，但招生信息均尽量链接到学校或考试院原始页面，报考时仍请以最新官方通知为准。</p></details><details><summary>院校专业地图包含哪些内容？</summary><p>每所院校按正式章程和考纲展示招生专业、计划、培养地点、报考范围、公共课和专业课；知识点与学习资源功能现已暂停。</p></details><details><summary>资料会继续更新吗？</summary><p>会。进入新的招生年度后，本站将按正式资料逐校复核招生专业和考试方案。</p></details></div>
-    </section>
-    <section className="notice-strip"><strong>非官方网站</strong><span>本站仅提供招生信息与考试方案整理，所有招生信息请以官方最新发布为准。</span><Link to="/sources">查看资料来源 →</Link></section>
   </>
 }
 
@@ -274,53 +549,93 @@ function formatEligibleMajorCategories(value) {
 
 export function EligiblePrograms({ offerings, academicSchools }) {
   const [params, setParams] = useSearchParams()
+  const track = params.get('track') || ''
   const urlMajor = params.get('major') || ''
   const [major, setMajor] = useState(urlMajor)
+  const [visibleLimit, setVisibleLimit] = useState(24)
   const composing = useRef(false)
   const filters = { level: params.get('level') || '', type: params.get('type') || '', program: params.get('program') || '', sort: params.get('sort') || 'match' }
-  const setParam = (key, value) => {
+  const setParam = (key, value, replace = false) => {
     if ((params.get(key) || '') === value) return
     const next = new URLSearchParams(params)
     if (value) next.set(key, value); else next.delete(key)
-    setParams(next, { replace: true })
+    setParams(next, { replace })
   }
-  const suggestions = useMemo(() => eligibleMajorSuggestions(offerings), [offerings])
-  const matched = useMemo(() => major.trim() ? findEligibleOfferings({ offerings, academicSchools, major }) : [], [offerings, academicSchools, major])
+  const suggestions = useMemo(() => eligibleMajorSuggestions(offerings, major, 18), [offerings, major])
+  const mappedCategories = useMemo(() => mappedEligibleMajorCategories(major), [major])
+  const matched = useMemo(() => track && major.trim() ? findEligibleOfferings({ offerings, academicSchools, major, track }) : [], [offerings, academicSchools, major, track])
   const programs = useMemo(() => [...new Set(matched.flatMap((item) => item.programNames || item.program_names || []))].sort((a, b) => a.localeCompare(b, 'zh-Hans-CN')), [matched])
   const results = useMemo(() => sortEligibleResults(matched.filter((item) => (!filters.level || item.match.level === filters.level) && (!filters.type || item.school?.school_type === filters.type) && (!filters.program || (item.programNames || item.program_names || []).includes(filters.program))), filters.sort), [matched, filters.level, filters.type, filters.program, filters.sort])
+  const visibleResults = useMemo(() => results.slice(0, visibleLimit), [results, visibleLimit])
+  const metrics = useMemo(() => ({
+    offerings: new Set(results.map((item) => item.offering_id)).size,
+    schools: new Set(results.map((item) => item.school_slug)).size,
+    programs: new Set(results.flatMap((item) => item.programNames || item.program_names || [])).size,
+    basis: [...new Set(results.map((item) => item.match.label))].join(' / ') || '当前筛选无结果',
+  }), [results])
   useEffect(() => { if (!composing.current) setMajor(urlMajor) }, [urlMajor])
+  useEffect(() => { setVisibleLimit(24) }, [track, major, filters.level, filters.type, filters.program, filters.sort])
+  const updateTrack = (value) => {
+    const next = new URLSearchParams(params)
+    if (value) next.set('track', value); else next.delete('track')
+    next.delete('level')
+    next.delete('program')
+    setParams(next)
+  }
   const updateMajor = (value) => {
     setMajor(value)
-    setParam('major', value)
+    setParam('major', value, true)
   }
   const updateInput = (event) => {
     const value = event.target.value
     setMajor(value)
-    if (!composing.current) setParam('major', value)
+    if (!composing.current) setParam('major', value, true)
   }
   const finishComposition = (event) => {
     composing.current = false
     updateMajor(event.currentTarget.value)
   }
-  const clear = () => { composing.current = false; setMajor(''); setParams({}, { replace: true }) }
+  const clearMajor = () => {
+    composing.current = false
+    setMajor('')
+    const next = new URLSearchParams(params)
+    next.delete('major')
+    next.delete('level')
+    next.delete('program')
+    setParams(next)
+  }
   return <div className="page-wrap eligible-page">
     <div className="crumb"><Link to="/">首页</Link><span>/</span>我能报哪些专业</div>
-    <section className="page-hero eligible-hero"><div><span className="eyebrow">2026 安徽普通高校专升本</span><h1>我能报哪些专业</h1><p>输入你的专科专业，查看招生章程中可能对应的本科专业、院校和考试方案。</p></div></section>
-    <section className="eligibility-disclaimer" role="note"><strong>资格说明</strong><p>{ELIGIBILITY_NOTICE}</p></section>
-    <section className="eligible-search-panel" aria-labelledby="eligible-search-title"><h2 id="eligible-search-title">填写专科专业名称</h2><label className="sr-only" htmlFor="eligible-major">专科专业名称</label><div className="eligible-search-row"><input id="eligible-major" value={major} onChange={updateInput} onCompositionStart={() => { composing.current = true }} onCompositionEnd={finishComposition} placeholder="例如：计算机应用技术" autoComplete="off" /><button type="button" onClick={clear}>清空</button></div><p>可输入教育部专业目录中的正式名称，或从已有报考范围中选择。</p>{suggestions.length > 0 && <div className="eligible-suggestions" aria-label="专业名称建议">{suggestions.filter((item) => !major.trim() || item.includes(major.trim())).slice(0, 18).map((item) => <button type="button" key={item} onClick={() => updateMajor(item)}>{item}</button>)}</div>}</section>
-    {major.trim() && <>
-      <section className="eligible-filters" aria-label="查询结果筛选"><strong>找到 {matched.length} 条可能结果</strong><label>匹配等级<select value={filters.level} onChange={(event) => setParam('level', event.target.value)}><option value="">全部</option><option value="exact">明确匹配</option><option value="possible">可能匹配</option><option value="unrestricted">不限专业</option></select></label><label>院校性质<select value={filters.type} onChange={(event) => setParam('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>本科专业<select value={filters.program} onChange={(event) => setParam('program', event.target.value)}><option value="">全部</option>{programs.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><label>排序<select value={filters.sort} onChange={(event) => setParam('sort', event.target.value)}><option value="match">明确匹配优先</option><option value="public">公办优先</option><option value="plan">计划数从高到低</option><option value="school">院校默认顺序</option></select></label></section>
-      {results.length ? <section className="eligible-result-list" aria-label="查询结果">{results.map((item) => { const programNames = item.programNames || item.program_names || []; const programsLabel = programNames.join('、'); const compareTo = `${comparePath({ provinceSlug: 'anhui', year: 2026, majorSlug: 'all-programs' })}?program=${encodeURIComponent(programNames[0] || '')}&offerings=${encodeURIComponent(item.offering_id)}`; return <article key={item.offering_id}><header><div><span className={`match-level ${item.match.level}`}>{item.match.label}</span><h2>{item.school?.school_name || item.school_slug}</h2><p>{item.school?.school_type} · {programsLabel}</p></div><strong>{item.plan_count} 人</strong></header><dl><div><dt>本科招生专业</dt><dd>{programsLabel}</dd></div><div><dt>培养地点</dt><dd>{item.training_site}</dd></div><div><dt>完整培养地址</dt><dd>{item.training_site}</dd></div><div><dt>报考专业范围原文</dt><dd>{formatEligibleMajorCategories(item.eligible_major_categories)}</dd></div><div><dt>公共课</dt><dd>{(item.publicSubjects || item.public_subjects || []).join('、')}</dd></div><div><dt>专业课</dt><dd>{(item.professionalSubjects || item.professional_subjects || []).join('、')}</dd></div></dl><p className="eligibility-card-note">{ELIGIBILITY_NOTICE}</p><nav aria-label={`${item.school?.school_name || item.school_slug}官方资料`}><a href={item.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">正式考试大纲 ↗</a><Link to={schoolPath({ provinceSlug: 'anhui', year: 2026, majorSlug: 'all-programs' }, item.school_slug)}>进入院校专业地图 →</Link><Link to={compareTo}>加入专业与院校对比 →</Link></nav></article> })}</section> : <section className="eligible-empty"><h2>未找到明确匹配结果</h2><p>建议检查专业名称是否为教育部专业目录中的正式名称；也可以查看全部院校专业地图，或打开院校正式招生章程继续核实。</p><Link className="primary-btn" to="/anhui/2026/all-programs">查看全部院校专业地图</Link></section>}
+    <section className="page-hero eligible-hero"><div><span className="eyebrow">2026 安徽普通高校专升本</span><h1>我能报哪些专业</h1><p>先选择公共课科类，再填写当前专科专业，查看招生章程中可能相关的本科专业、院校和考试方案。</p></div></section>
+    <section className="eligible-search-panel" aria-labelledby="eligible-search-title">
+      <div className="eligible-step"><span>第一步</span><h2 id="eligible-search-title">选择公共课科类</h2></div>
+      <div className="eligible-track-options" role="radiogroup" aria-label="公共课科类">
+        {Object.entries(PUBLIC_COURSE_TRACKS).map(([value, option]) => <button type="button" role="radio" aria-checked={track === value} className={track === value ? 'active' : ''} key={value} onClick={() => updateTrack(value)}><strong>{option.label}</strong><small>{option.subjects.join(' + ')}</small></button>)}
+      </div>
+      <div className={`eligible-major-step${track ? '' : ' is-locked'}`}>
+        <div className="eligible-step"><span>第二步</span><h2>填写当前专科专业</h2></div>
+        <label className="sr-only" htmlFor="eligible-major">当前专科专业名称</label>
+        <div className="eligible-search-row"><input id="eligible-major" value={major} disabled={!track} onChange={updateInput} onCompositionStart={() => { composing.current = true }} onCompositionEnd={finishComposition} placeholder={track ? '例如：计算机应用技术' : '请先选择大学语文或高等数学方向'} autoComplete="off" /><button type="button" disabled={!major} onClick={clearMajor}>清空专业</button></div>
+        <p><strong>请填写你目前就读或已经毕业的专科专业</strong>，不是想报考的目标本科专业；建议优先使用专业目录中的正式名称。</p>
+        {mappedCategories.length > 0 && <p className="eligible-catalog-hint"><span>专业目录归类</span><strong>{mappedCategories.join(' · ')}</strong><small>目录分类只用于搜索建议；按类别命中的方案属于可能匹配，最终以招生章程和院校审核为准。</small></p>}
+        {track && suggestions.length > 0 && <div className="eligible-suggestions" aria-label="专业名称建议">{suggestions.map((item) => <button type="button" key={item} onClick={() => updateMajor(item)}>{item}</button>)}</div>}
+      </div>
+    </section>
+    {track && major.trim() && <>
+      <section className="eligible-filters" aria-label="查询结果筛选"><strong>当前筛选 {results.length} 条招生方案</strong><label>匹配等级<select value={filters.level} onChange={(event) => setParam('level', event.target.value)}><option value="">全部</option><option value="exact">专业名称明确匹配</option><option value="possible">专业目录类别可能匹配</option><option value="unrestricted">报考范围不限</option><option value="reference">仅科类范围参考</option></select></label><label>院校性质<select value={filters.type} onChange={(event) => setParam('type', event.target.value)}><option value="">全部</option><option value="公办">公办</option><option value="民办">民办</option></select></label><label>本科专业<select value={filters.program} onChange={(event) => setParam('program', event.target.value)}><option value="">全部</option>{programs.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><label>排序<select value={filters.sort} onChange={(event) => setParam('sort', event.target.value)}><option value="match">匹配依据优先</option><option value="public">公办优先</option><option value="plan">计划数从高到低</option><option value="school">院校默认顺序</option></select></label></section>
+      <section className="eligible-metrics" aria-label="当前查询范围指标"><article><span>招生方案</span><strong>{metrics.offerings}</strong></article><article><span>涉及院校</span><strong>{metrics.schools}</strong></article><article><span>本科专业</span><strong>{metrics.programs}</strong></article><article><span>当前匹配依据</span><strong>{metrics.basis}</strong></article><article><span>公共课方向</span><strong>{PUBLIC_COURSE_TRACKS[track].label} · {PUBLIC_COURSE_TRACKS[track].subjects.join(' + ')}</strong></article></section>
+      {results.length ? <><section className="eligible-result-list" aria-label="查询结果">{visibleResults.map((item) => { const programNames = item.programNames || item.program_names || []; const programsLabel = programNames.join('、'); const compareTo = `${comparePath({ provinceSlug: 'anhui', year: 2026, majorSlug: 'all-programs' })}?program=${encodeURIComponent(programNames[0] || '')}&offerings=${encodeURIComponent(item.offering_id)}`; return <article key={item.offering_id}><header><div className="eligible-school-identity"><SchoolLogo school={item.school} /><div><span className={`match-level ${item.match.level}`}>{item.match.label}</span><h2>{item.school?.school_name || item.school_slug}</h2><p>{item.school?.school_type} · {programsLabel}</p></div></div><strong>{item.plan_count} 人</strong></header><dl><div><dt>本科招生专业</dt><dd>{programsLabel}</dd></div><div><dt>培养地点</dt><dd>{item.training_site}</dd></div><div><dt>完整培养地址</dt><dd>{item.training_site}</dd></div><div><dt>公共课</dt><dd>{(item.publicSubjects || item.public_subjects || []).join('、')}</dd></div><div><dt>专业课</dt><dd>{(item.professionalSubjects || item.professional_subjects || []).join('、')}</dd></div></dl><p className="eligibility-card-note">{item.match.level === 'reference' ? COURSE_REFERENCE_NOTICE : ELIGIBILITY_NOTICE}</p><nav aria-label={`${item.school?.school_name || item.school_slug}官方资料`}><a href={item.charter_url} target="_blank" rel="noreferrer">正式招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">正式考试大纲 ↗</a><Link to={schoolPath({ provinceSlug: 'anhui', year: 2026, majorSlug: 'all-programs' }, item.school_slug)}>进入院校专业地图 →</Link><Link to={compareTo}>加入专业与院校对比 →</Link></nav></article> })}</section>{visibleResults.length < results.length && <button className="eligible-load-more" type="button" onClick={() => setVisibleLimit((current) => current + 24)}>显示更多（剩余 {results.length - visibleResults.length} 条）</button>}</> : <section className="eligible-empty"><h2>当前筛选没有结果</h2><p>请清除结果筛选，或打开院校专业地图与正式招生章程继续核实。</p><Link className="primary-btn" to="/anhui/2026/all-programs">查看全部院校专业地图</Link></section>}
     </>}
   </div>
 }
 
 function SchoolLogo({ school, large = false }) {
   const [imageFailed, setImageFailed] = useState(false)
-  return <span className={`school-logo school-logo-${school.school_slug}${large ? ' large' : ''}`}>
-    {school.logo_url && !imageFailed
-      ? <img src={school.logo_url} alt={`${school.short_name}校徽`} onError={() => setImageFailed(true)} />
-      : <b>{school.short_name}</b>}
+  const shortName = school?.short_name || school?.school_name || '院校'
+  return <span className={`school-logo school-logo-${school?.school_slug || 'unknown'}${large ? ' large' : ''}`}>
+    {school?.logo_url && !imageFailed
+      ? <img src={school.logo_url} alt={`${school.school_name || shortName}校徽`} onError={() => setImageFailed(true)} />
+      : <b>{shortName}</b>}
   </span>
 }
 
@@ -400,7 +715,7 @@ export function Compare({ offerings, academicSchools, scope }) {
   const selected = candidates.filter((offering) => selectedIds.includes(offering.offering_id))
   const visible = program ? candidates.filter((offering) => (offering.programNames || offering.program_names || []).includes(program)) : []
   const differences = useMemo(() => {
-    const fields = { school_type: (item) => item.school.school_type, program: (item) => (item.programNames || item.program_names || []).join('|'), plan_count: (item) => String(item.plan_count), training_site: (item) => item.training_site, eligible: (item) => String(item.eligible_major_categories), public: (item) => (item.publicSubjects || item.public_subjects || []).join('|'), professional: (item) => (item.professionalSubjects || item.professional_subjects || []).join('|') }
+    const fields = { school_type: (item) => item.school.school_type, program: (item) => (item.programNames || item.program_names || []).join('|'), plan_count: (item) => String(item.plan_count), training_site: (item) => item.training_site, public: (item) => (item.publicSubjects || item.public_subjects || []).join('|'), professional: (item) => (item.professionalSubjects || item.professional_subjects || []).join('|') }
     return new Set(Object.entries(fields).filter(([, getter]) => new Set(selected.map(getter)).size > 1).map(([key]) => key))
   }, [selected])
   const showProgram = selected.length > 0 && differences.has('program')
@@ -409,18 +724,20 @@ export function Compare({ offerings, academicSchools, scope }) {
     program: (item.programNames || item.program_names || []).join('、'),
     plan_count: `${item.plan_count} 人`,
     training_site: item.training_site,
-    eligible: formatEligibleMajorCategories(item.eligible_major_categories),
     public: (item.publicSubjects || item.public_subjects || []).join('、'),
     professional: (item.professionalSubjects || item.professional_subjects || []).join('、'),
   })[key]
-  const comparisonGroups = [
-    { label: '核心比较信息', rows: [['plan_count', '招生计划'], ['training_site', '培养地点与完整地址'], ['eligible', '报考专业范围']] },
-    { label: '考试与报考要求', rows: [['school_type', '院校性质'], ...(showProgram ? [['program', '招生专业']] : []), ['professional', '专业课'], ['public', '公共课']] },
+  const comparisonRows = [
+    ['plan_count', '招生计划'],
+    ['training_site', '培养地点与完整地址'],
+    ['school_type', '院校性质'],
+    ...(showProgram ? [['program', '招生专业']] : []),
+    ['professional', '专业课'],
+    ['public', '公共课'],
   ]
   const setProgram = (value) => {
     const next = new URLSearchParams(params)
     if (value) next.set('program', value); else next.delete('program')
-    next.delete('offerings')
     setParams(next, { replace: true })
   }
   const toggleOffering = (id) => {
@@ -431,11 +748,21 @@ export function Compare({ offerings, academicSchools, scope }) {
   }
   return <div className="page-wrap">
     <div className="crumb"><Link to="/">首页</Link><span>/</span><Link to="/anhui">安徽专区</Link><span>/</span>专业与院校对比</div>
-    <section className="page-hero"><div><span className="eyebrow">{scopeLabel(scope)}</span><h1>专业与院校对比</h1><p>先选择本科招生专业，再选择最多 3 条招生方案；培养点和考试方案会分别保留。</p></div></section>
-    <section className="compare-program-filter"><label htmlFor="compare-program">本科招生专业<select id="compare-program" value={program} onChange={(event) => setProgram(event.target.value)}><option value="">请选择专业</option>{programs.map((item) => <option key={item} value={item}>{item}</option>)}</select></label></section>
-    {program && <section className="compare-offering-picker" aria-label="选择对比招生方案">{visible.map((item) => <article key={item.offering_id}><div><span className="type-tag">{item.school.school_type}</span><h2>{item.school.school_name}</h2><strong>{(item.programNames || item.program_names || []).join('、')}</strong></div><dl><div><dt>招生计划</dt><dd>{item.plan_count} 人</dd></div><div><dt>培养地点</dt><dd>{item.training_site}</dd></div><div><dt>公共课</dt><dd>{(item.publicSubjects || item.public_subjects || []).join('、')}</dd></div><div><dt>专业课</dt><dd>{(item.professionalSubjects || item.professional_subjects || []).join('、')}</dd></div></dl><button type="button" aria-pressed={selectedIds.includes(item.offering_id)} disabled={!selectedIds.includes(item.offering_id) && selectedIds.length >= 3} onClick={() => toggleOffering(item.offering_id)}>{selectedIds.includes(item.offering_id) ? '移出对比' : '加入对比'}</button></article>)}</section>}
-    {program && selected.length < 2 ? <section className="compare-empty" role="status"><h2>再选择 {2 - selected.length} 条招生方案即可对比</h2><p>当前选择会保存在网址中，复制链接即可分享。</p></section> : null}
-    {selected.length >= 2 ? <><div className="compare-scroll desktop-compare" tabIndex="0" aria-label="招生方案对比表，可横向滚动"><table><thead><tr><th>对比项</th>{selected.map((item) => <th key={item.offering_id}>{item.school.school_name}<small>{item.school.school_type}</small></th>)}</tr></thead><tbody>{comparisonGroups.map((group) => <Fragment key={group.label}><tr className="comparison-group-row"><th colSpan={selected.length + 1}>{group.label}</th></tr>{group.rows.map(([key, label]) => <tr key={key} className={`${differences.has(key) ? 'is-different' : 'is-same'} compare-row-${key}`}><th>{label}</th>{selected.map((item) => <td key={item.offering_id}>{key === 'professional' ? <span className="compare-tag professional-tag">{value(item, key)}</span> : key === 'public' ? <span className="compare-tag public-tag">{value(item, key)}</span> : key === 'eligible' ? <span className="compare-eligible">{value(item, key)}</span> : key === 'plan_count' ? <strong className="compare-plan">{value(item, key)}</strong> : value(item, key)}</td>)}</tr>)}</Fragment>)}<tr className="comparison-group-row"><th colSpan={selected.length + 1}>官方资料</th></tr><tr className="is-same"><th>正式资料</th>{selected.map((item) => <td key={item.offering_id}><a href={item.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a></td>)}</tr></tbody></table></div><section className="mobile-compare-cards" aria-label="招生方案对比卡片">{selected.map((item) => <article key={item.offering_id}><h2>{item.school.school_name}</h2><p>{item.school.school_type}{showProgram ? ` · ${(item.programNames || item.program_names || []).join('、')}` : ''}</p><dl><div className={differences.has('plan_count') ? 'is-different' : ''}><dt>招生计划</dt><dd><strong className="compare-plan">{value(item, 'plan_count')}</strong></dd></div><div className={differences.has('training_site') ? 'is-different' : ''}><dt>培养地点与完整地址</dt><dd>{value(item, 'training_site')}</dd></div><div className={differences.has('eligible') ? 'is-different' : ''}><dt>报考范围</dt><dd><span className="compare-eligible">{value(item, 'eligible')}</span></dd></div><div className={differences.has('professional') ? 'is-different' : ''}><dt>专业课</dt><dd><span className="compare-tag professional-tag">{value(item, 'professional')}</span></dd></div><div className={differences.has('public') ? 'is-different' : ''}><dt>公共课</dt><dd><span className="compare-tag public-tag">{value(item, 'public')}</span></dd></div></dl><div className="compare-official-links"><span>官方资料</span><a href={item.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a></div></article>)}</section></> : null
+    <section className="page-hero"><div><span className="eyebrow">{scopeLabel(scope)}</span><h1>专业与院校对比</h1><p>可跨本科专业选择最多 3 条招生方案；不同培养点、考试方案和招生专业会分别保留。</p></div></section>
+    <section className="compare-program-filter"><label htmlFor="compare-program">筛选本科招生专业<select id="compare-program" aria-label="筛选本科招生专业" value={program} onChange={(event) => setProgram(event.target.value)}><option value="">请选择要浏览的专业</option>{programs.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><p>先加入当前专业的招生方案，再切换专业继续选择；已选方案不会被清空。</p></section>
+    {program && <section className="compare-offering-picker" aria-label="选择对比招生方案">{visible.map((item) => <article key={item.offering_id}><div className="compare-picker-school"><SchoolLogo school={item.school} /><div><span className="type-tag">{item.school.school_type}</span><h2>{item.school.school_name}</h2><strong>{(item.programNames || item.program_names || []).join('、')}</strong></div></div><dl><div><dt>招生计划</dt><dd>{item.plan_count} 人</dd></div><div><dt>培养地点</dt><dd>{item.training_site}</dd></div><div><dt>公共课</dt><dd>{(item.publicSubjects || item.public_subjects || []).join('、')}</dd></div><div><dt>专业课</dt><dd>{(item.professionalSubjects || item.professional_subjects || []).join('、')}</dd></div></dl><button type="button" aria-pressed={selectedIds.includes(item.offering_id)} disabled={!selectedIds.includes(item.offering_id) && selectedIds.length >= 3} onClick={() => toggleOffering(item.offering_id)}>{selectedIds.includes(item.offering_id) ? '移出对比' : '加入对比'}</button></article>)}</section>}
+    {selected.length > 0 && <section className="compare-selected" aria-label="已选对比招生方案"><div><strong>已选 {selected.length} / 3 条招生方案</strong><span>切换本科专业不会清空已选方案</span></div><div className="compare-selected-list">{selected.map((item) => <button type="button" key={item.offering_id} onClick={() => toggleOffering(item.offering_id)} aria-label={`移除${item.school.school_name}的${(item.programNames || item.program_names || []).join('、')}招生方案`}><span><b>{item.school.school_name}</b><small>{(item.programNames || item.program_names || []).join('、')}</small></span><em>移除</em></button>)}</div></section>}
+    {(program || selected.length > 0) && selected.length < 2 ? <section className="compare-empty" role="status"><h2>再选择 {2 - selected.length} 条招生方案即可对比</h2><p>可以切换本科专业继续选择；当前选择会保存在网址中，复制链接即可分享。</p></section> : null}
+    {selected.length >= 2 ? <>
+      <div className="compare-scroll desktop-compare" tabIndex="0" aria-label="招生方案对比表，可横向滚动">
+        <table>
+          <colgroup><col className="compare-label-column" />{selected.map((item, index) => <col className={`compare-school-column${index > 0 ? ' compare-divider-column' : ''}`} key={item.offering_id} />)}</colgroup>
+          <thead><tr><th>对比项</th>{selected.map((item) => <th key={item.offering_id}><div className="compare-table-school"><SchoolLogo school={item.school} /><span>{item.school.school_name}</span></div></th>)}</tr></thead>
+          <tbody>{comparisonRows.map(([key, label]) => <tr key={key} className={`${differences.has(key) ? 'is-different' : 'is-same'} compare-row-${key}`}><th>{label}</th>{selected.map((item) => <td key={item.offering_id}>{key === 'professional' ? <span className="compare-tag professional-tag">{value(item, key)}</span> : key === 'public' ? <span className="compare-tag public-tag">{value(item, key)}</span> : key === 'plan_count' ? <strong className="compare-plan">{value(item, key)}</strong> : value(item, key)}</td>)}</tr>)}<tr className="is-same"><th>正式资料</th>{selected.map((item) => <td key={item.offering_id}><a href={item.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a></td>)}</tr><tr className="is-same compare-map-row"><th>院校专业地图</th>{selected.map((item) => <td key={item.offering_id}><Link to={schoolPath(scope, item.school_slug)}>进入院校专业地图 →</Link></td>)}</tr></tbody>
+        </table>
+      </div>
+      <section className="mobile-compare-cards" aria-label="招生方案对比卡片">{selected.map((item) => <article key={item.offering_id}><div className="mobile-compare-school"><SchoolLogo school={item.school} /><div><h2>{item.school.school_name}</h2><p>{item.school.school_type}{showProgram ? ` · ${(item.programNames || item.program_names || []).join('、')}` : ''}</p></div></div><dl><div className={differences.has('plan_count') ? 'is-different' : ''}><dt>招生计划</dt><dd><strong className="compare-plan">{value(item, 'plan_count')}</strong></dd></div><div className={differences.has('training_site') ? 'is-different' : ''}><dt>培养地点与完整地址</dt><dd>{value(item, 'training_site')}</dd></div><div className={differences.has('professional') ? 'is-different' : ''}><dt>专业课</dt><dd><span className="compare-tag professional-tag">{value(item, 'professional')}</span></dd></div><div className={differences.has('public') ? 'is-different' : ''}><dt>公共课</dt><dd><span className="compare-tag public-tag">{value(item, 'public')}</span></dd></div></dl><div className="compare-official-links"><span>官方资料</span><a href={item.charter_url} target="_blank" rel="noreferrer">招生章程 ↗</a><a href={item.syllabus_url} target="_blank" rel="noreferrer">考试大纲 ↗</a><Link to={schoolPath(scope, item.school_slug)}>进入院校专业地图 →</Link></div></article>)}</section>
+    </> : null
     }
   </div>
 }

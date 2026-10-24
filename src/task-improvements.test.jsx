@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Home, LearningMap, MobileNavigation } from './App'
@@ -64,7 +64,7 @@ describe('移动端更多菜单', () => {
 })
 
 describe('首页公共课合格线与时间线', () => {
-  it('仅展示普通类文理科公共课合格线与官方说明，不猜测时间线日期', () => {
+  it('展示普通类文理科公共课合格线和完整的已核验时间线', () => {
     const { unmount } = render(<MemoryRouter><Home wallSchools={[]} schoolCount={0} scope={DEFAULT_SCOPE} /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: '2026 年普通高校专升本公共课合格线' })).toBeVisible()
     expect(screen.getByText('文科')).toBeVisible()
@@ -75,10 +75,67 @@ describe('首页公共课合格线与时间线', () => {
     expect(screen.getByText(/公共课合格线不等同于院校专业实际录取分数/)).toBeVisible()
     expect(screen.getByRole('link', { name: /安徽省教育招生考试院《安徽省2026年普通高校专升本公共课合格线公布》/ })).toHaveAttribute('href', 'https://www.ahzsks.cn/zyyx/8879.htm')
     expect(screen.getByRole('heading', { name: '专升本关键时间线' })).toBeVisible()
-    expect(screen.getAllByText('时间待官方公布')).toHaveLength(8)
-    expect(screen.queryByText(/退役士兵|建档立卡/)).not.toBeInTheDocument()
+    const timeline = screen.getByRole('list', { name: '2026 年安徽普通专升本关键时间节点' })
+    expect(timeline).toBeVisible()
+    expect(within(timeline).getAllByRole('button', { expanded: false })).toHaveLength(13)
+    expect(screen.queryByText('时间待官方公布')).not.toBeInTheDocument()
+    expect(screen.getByText('3 月 23—27 日')).toBeVisible()
+    expect(screen.getByText('3 月 28 日 12:00')).toBeVisible()
+    expect(screen.getByText('3 月 29 日 17:00')).toBeVisible()
+    expect(screen.getByText('4 月 11 日起')).toBeVisible()
+    expect(screen.getByText('4 月 18 日')).toBeVisible()
+    expect(screen.getByText('5 月 27—28 日')).toBeVisible()
+    expect(screen.getByText('7 月下旬—8 月上旬')).toBeVisible()
+    expect(screen.queryByRole('heading', { name: '只做安徽专升本，把招生信息做深、做准' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: '从择校到备考，一站理清' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: '开始前，你可能想知道' })).not.toBeInTheDocument()
     unmount()
   })
+
+    it('按上六下七双行排列，并在悬浮或点按时显示详情 tooltip', () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2026-04-14T16:30:00+08:00'))
+      const { container, unmount } = render(<MemoryRouter><Home wallSchools={[]} schoolCount={0} scope={DEFAULT_SCOPE} /></MemoryRouter>)
+      const timeline = screen.getByRole('list', { name: '2026 年安徽普通专升本关键时间节点' })
+      const examNode = within(timeline).getByRole('button', { name: /公共课统考/ })
+      expect(examNode).toHaveAttribute('aria-expanded', 'false')
+      expect(container.querySelector('.timeline-step')).not.toBeInTheDocument()
+      expect(container.querySelectorAll('.timeline-row-1')).toHaveLength(6)
+      expect(container.querySelectorAll('.timeline-row-2')).toHaveLength(7)
+      expect(new Set([...container.querySelectorAll('.timeline-row-1')].map((node) => node.style.getPropertyValue('--timeline-y'))).size).toBe(1)
+      expect(new Set([...container.querySelectorAll('.timeline-row-2')].map((node) => node.style.getPropertyValue('--timeline-y'))).size).toBe(1)
+      const firstRowY = Number.parseFloat(container.querySelector('.timeline-row-1').style.getPropertyValue('--timeline-y'))
+      const secondRowY = Number.parseFloat(container.querySelector('.timeline-row-2').style.getPropertyValue('--timeline-y'))
+      expect(secondRowY - firstRowY).toBeGreaterThanOrEqual(170)
+      const secondRowX = [...container.querySelectorAll('.timeline-row-2')].map((node) => Number.parseFloat(node.style.getPropertyValue('--timeline-x')))
+      expect(secondRowX.every((value, index) => index === 0 || value < secondRowX[index - 1])).toBe(true)
+      const progressDot = container.querySelector('.timeline-progress-dot')
+      expect(progressDot).toBeInTheDocument()
+      expect(progressDot.style.getPropertyValue('--timeline-progress')).toBe('50%')
+      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+      expect(within(examNode).queryByText(/专业课由各校/)).not.toBeInTheDocument()
+
+      fireEvent.mouseEnter(examNode)
+      expect(screen.getByRole('tooltip')).toBeVisible()
+      expect(examNode.parentElement.querySelector('[role="tooltip"]')).toBe(screen.getByRole('tooltip'))
+      expect(progressDot.style.getPropertyValue('--timeline-progress')).toBe('50%')
+      expect(screen.getByText('公共课统考', { selector: '.timeline-tooltip strong' })).toBeVisible()
+      expect(screen.getByText(/大学语文或高等数学为 9:00—11:00/)).toBeVisible()
+      fireEvent.mouseLeave(examNode)
+      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+
+      fireEvent.click(examNode)
+      expect(examNode).toHaveAttribute('aria-expanded', 'true')
+      expect(screen.getByRole('tooltip')).toBeVisible()
+      expect(screen.queryByText('核验来源 ↗')).not.toBeInTheDocument()
+      expect(container.querySelector('.notice-strip')).not.toBeInTheDocument()
+
+      fireEvent.click(examNode)
+      expect(examNode).toHaveAttribute('aria-expanded', 'false')
+      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+      unmount()
+      vi.useRealTimers()
+    })
 })
 
 describe('专业地图与学习内容下线状态', () => {
