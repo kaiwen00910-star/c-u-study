@@ -41,7 +41,6 @@ describe('搜索深链接和刷新恢复', () => {
     expect(within(title).getAllByRole('link')).toHaveLength(2)
     expect(within(title).getByRole('link', { name: '招生章程' })).toBeVisible()
     expect(within(title).getByRole('link', { name: '考试大纲' })).toBeVisible()
-    expect(screen.queryByText('内容纠错 / 链接失效')).not.toBeInTheDocument()
     const cards = container.querySelectorAll('.offering-detail-grid article')
     expect(cards).toHaveLength(2)
     const card = cards[0]

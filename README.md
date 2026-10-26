@@ -97,12 +97,6 @@ npm run build
 
 平台目前支持文件验证和 HTML 标签验证，CNAME 新验证已暂停。推荐文件验证：在平台添加正式 HTTPS 地址，下载平台生成的唯一验证文件，将原文件放入 `public/` 根目录，部署后先确认 `https://splendid-duckanoo-926f44.netlify.app/验证文件名` 可直接访问，再点击完成验证。也可将平台给出的完整 meta 标签原样放进 `index.html` 的 `<head>`。验证成功后必须保留文件或标签；仓库没有验证码时不会生成伪造文件或标签。
 
-### Netlify Forms 内容反馈
-
-构建时 `public/__forms.html` 让 Netlify 识别 `content-feedback` 表单，前台异步提交到该静态页面。查看反馈：Netlify 项目 → Forms → `content-feedback` → Form submissions。配置通知：进入该表单的 Form notifications，选择 Email notification 或已连接的通知方式，指定接收人后保存。建议先在 Deploy Preview 提交一条测试反馈，再在 Production 验证成功提示和通知。
-
-表单只提交反馈类型、当前页面地址、关联院校/资源 ID、500 字内说明和可选联系方式，并使用 `bot-field` honeypot。联系方式只在用户主动填写时提交；没有另建反馈数据库或管理后台。
-
 ## 第二专业扩展评估
 
 详见 [`docs/major-expansion-assessment.md`](docs/major-expansion-assessment.md)。结论是数据层和公开路由已基本按 `year + province_slug + major_slug + school_slug` 隔离，资源也能通过全局 `canonical_topic` 复用；但专业切换入口、后台按专业筛选、年度复制参数化和可抓取的静态 SEO 页面尚未完成。下一阶段应先补这些窄范围能力，再试录一个专业，不需要现在重构表结构。

@@ -8,7 +8,11 @@ import { DEFAULT_SCOPE } from './contentScope'
 import { fallbackAcademicSchools, offerings, schoolGroups, syllabus } from './data'
 import { createSchoolWallSchools } from './schoolWallData'
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  sessionStorage.clear()
+  vi.restoreAllMocks()
+})
 
 const schools = [
   {
@@ -142,5 +146,36 @@ describe('页面滚动恢复', () => {
     fireEvent.click(screen.getByRole('link', { name: '打开合法锚点' }))
     await waitFor(() => expect(window.scrollY).toBe(420))
     expect(window.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it('从院校专业地图返回时恢复原院校卡片位置和键盘焦点', async () => {
+    Object.defineProperty(window, 'scrollY', { configurable: true, writable: true, value: 1380 })
+    window.scrollTo = vi.fn(({ top }) => { window.scrollY = top })
+    window.requestAnimationFrame = vi.fn((callback) => { callback(); return 1 })
+    window.cancelAnimationFrame = vi.fn()
+
+    function SchoolDetailFixture() {
+      const navigate = useNavigate()
+      const location = useLocation()
+      return <><output data-testid="detail-state">{JSON.stringify(location.state)}</output><button type="button" onClick={() => navigate(-1)}>返回院校列表</button></>
+    }
+
+    render(<MemoryRouter initialEntries={['/anhui/2026/all-programs?q=%E5%90%88%E8%82%A5']}><Routes>
+      <Route path="/anhui/2026/all-programs" element={<AnhuiHub schools={schools} wallSchools={wallSchools} scope={DEFAULT_SCOPE} publishedScopes={[DEFAULT_SCOPE]} />} />
+      <Route path="/anhui/2026/schools/:schoolSlug" element={<SchoolDetailFixture />} />
+    </Routes></MemoryRouter>)
+
+    const card = screen.getByRole('heading', { name: '合肥示范学院' }).closest('article')
+    fireEvent.click(within(card).getByRole('link', { name: '打开专业地图 →' }))
+    expect(screen.getByTestId('detail-state')).toHaveTextContent('demo-hefei')
+    expect(screen.getByTestId('detail-state')).toHaveTextContent('%E5%90%88%E8%82%A5')
+    window.scrollY = 0
+    window.scrollTo.mockClear()
+    fireEvent.click(screen.getByRole('button', { name: '返回院校列表' }))
+
+    await waitFor(() => expect(window.scrollTo).toHaveBeenCalledWith({ top: 1380, left: 0, behavior: 'instant' }))
+    const restoredCard = screen.getByRole('heading', { name: '合肥示范学院' }).closest('article')
+    expect(within(restoredCard).getByRole('link', { name: '打开专业地图 →' })).toHaveFocus()
+    expect(sessionStorage.getItem('zsb:v1:schoolDirectoryReturn')).toBeNull()
   })
 })

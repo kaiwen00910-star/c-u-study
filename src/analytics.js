@@ -6,7 +6,6 @@ const EVENT_NAMES = new Set([
   'external_resource_clicked',
   'resource_favorited',
   'syllabus_point_completed',
-  'content_feedback_submitted',
 ])
 
 const TRACKING_SCRIPT_ID = 'baidu-tongji-script'
