@@ -146,7 +146,7 @@ describe('院校主导型学习地图', () => {
     const xml = fs.readFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), 'utf8')
     const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
     expect(locations).toHaveLength(47)
-    expect(locations).toContain('https://splendid-duckanoo-926f44.netlify.app/anhui/2026/eligible-programs')
+    expect(locations).toContain('https://ahzsb.work/anhui/2026/eligible-programs')
     expect(locations.some((url) => url.includes('eligible-programs?'))).toBe(false)
     expect(locations.filter((url) => /\/anhui\/2026\/schools\//.test(url))).toHaveLength(42)
     expect(locations.some((url) => /\/anhui\/2026\/computer-science\/(?!compare$)[a-z0-9-]+$/.test(url))).toBe(false)

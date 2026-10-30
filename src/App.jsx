@@ -136,7 +136,7 @@ function Layout({ children, announcement, content }) {
     <footer>
       <div><Logo /><p>专注安徽专升本，集中整理院校、招生专业、培养地点与考试方案。</p></div>
       <div><strong>重要说明</strong><p>本站为非官方学习导航，不组织招生与考试。报考前请以省考试院和招生院校最新通知为准。</p></div>
-      <div><strong>访问统计与隐私</strong><p>仅在正式站启用百度统计，用于汇总页面访问和固定功能点击。事件参数不含搜索框自由文本、姓名、邮箱或主动采集的 IP；反馈联系方式仅在你自愿填写时提交给 Netlify Forms。</p></div>
+      <div><strong>访问统计与隐私</strong><p>仅在正式站配置有效站点 ID 时启用百度统计，用于汇总页面访问和固定功能点击。事件参数不含搜索框自由文本、姓名、邮箱或主动采集的 IP。</p></div>
     </footer>
   </div>
 }

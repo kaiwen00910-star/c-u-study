@@ -1,7 +1,7 @@
 import { DEFAULT_SCOPE, MAJOR_NAMES, normalizeScope, schoolPath, scopePath } from './contentScope'
 
 const SITE_NAME = '安徽升本导航'
-const SITE_ORIGIN = 'https://splendid-duckanoo-926f44.netlify.app'
+const SITE_ORIGIN = 'https://ahzsb.work'
 
 export function metadataForPath(pathname, schoolName = '') {
   const schoolRouteMatch = pathname.match(/^\/([a-z0-9-]+)\/(\d{4})\/schools\/([a-z0-9-]+)/)

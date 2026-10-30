@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const snapshot = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content', 'public-content.snapshot.json'), 'utf8'))
-const origin = 'https://splendid-duckanoo-926f44.netlify.app'
+const origin = 'https://ahzsb.work'
 const published = (row) => row.status ? row.status === 'published' : row.active !== false
 const scopes = [...new Map(snapshot.offerings.filter(published).map((row) => [`${row.year}:${row.province_slug}`, row])).values()]
 const urls = new Set(['/', '/sources', '/anhui/2026/eligible-programs'])

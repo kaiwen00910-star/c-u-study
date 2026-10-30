@@ -1,6 +1,30 @@
 # 升本导航
 
-专注安徽省的专升本考纲学习资源导航站。当前覆盖 2026 年计算机类，已开放安徽工业大学、安徽师范大学、安徽建筑大学、安徽科技工程大学、铜陵学院、蚌埠学院、合肥大学、池州学院、皖西学院、淮南师范学院、合肥师范学院、马鞍山学院、安徽新华学院、合肥经济学院、安徽三联学院、安徽信息工程学院、淮北理工学院、皖江工学院、安徽文达信息工程学院、芜湖学院、阜阳理工学院、安徽财经大学和安徽职业技术大学 23 所学习地图；不扩展其他省份。
+专注安徽省普通专升本的院校、专业、培养地点、考试方案和官方来源导航站。当前公开快照覆盖 2026 年安徽 42 所院校、465 条招生方案，并提供院校专业地图、报考范围检索、院校对比、分数参考和静态快照回退。
+
+本站不是安徽省教育招生考试院或招生院校的官方网站，不提供报名、录取或成绩查询服务。报考前请回到页面标注的官方来源复核。
+
+## 在线访问
+
+- 正式站点：[安徽升本导航](https://ahzsb.work/)
+- 项目源码：[kaiwen00910-star/c-u-study](https://github.com/kaiwen00910-star/c-u-study)
+
+## 核心功能
+
+- 按院校查看招生专业、培养地点、考试科目、计划数和报考范围；
+- 根据高职专业反查可报考的本科专业；
+- 对比不同院校和招生方案，并提供第三方地图导航入口；
+- 展示可核验的普通考生录取最低分与官方来源；
+- 在线数据不可用时回退到版本化公开快照，并明确显示快照状态；
+- 学习进度、收藏和最近选择仅保存在当前浏览器，不要求普通访客注册。
+
+## 开源与贡献
+
+原创程序代码以 [MIT License](LICENSE) 发布。院校名称、校徽、照片、官方招生文件及外部第三方内容不因收录在仓库中而获得 MIT 授权，具体边界见 [NOTICE.md](NOTICE.md)。
+
+欢迎提交 Issue 和 Pull Request。涉及招生事实的改动必须提供可核验的官方来源，并遵守 [贡献指南](CONTRIBUTING.md)。安全问题请不要公开披露利用细节，按 [安全政策](SECURITY.md) 私下报告。
+
+首次以“开源项目”名义公开推广前，请逐项完成 [开源发布清单](docs/open-source-release-checklist.md)。
 
 ## 本地运行
 
@@ -8,6 +32,8 @@
 npm ci
 npm run dev
 ```
+
+普通公开页面可直接使用仓库内的版本化快照。需要连接自己的 Supabase 项目时，将 `.env.example` 复制为 `.env.local`，只填写项目 URL 与 Publishable Key；`.env.local` 已被 Git 忽略，不得提交。
 
 ## 内容维护
 
@@ -35,6 +61,8 @@ npm run snapshot:export
 修改后先执行：
 
 ```powershell
+npm run lint
+npm run check:migrations
 npm run validate:data
 npm test
 npm run build
@@ -57,18 +85,20 @@ npm run build
 
 1. 将 `supabase/migrations` 中的迁移应用到 Supabase 项目；校徽迁移会创建公开读取、仅管理员可上传的 `school-logos` Storage bucket。
 2. 运行 `supabase/seed.sql`，可重复导入内置资源而不产生重复记录。
-3. 在 Supabase Auth 预先创建管理员 `3130708522@qq.com`，再将其 `auth.users.id` 写入 `public.admin_users`。
+3. 在 Supabase Auth 预先创建专用管理员账号，再将其 `auth.users.id` 写入 `public.admin_users`；不要在仓库或登录页公开管理员邮箱。
 4. 复制 `.env.example` 为 `.env.local`，填写项目 URL 和 Publishable Key。
 5. 在 Supabase URL Configuration 中加入本地与线上 `/admin/reset-password` 跳转地址。
 
-浏览器端和快照脚本只使用 Publishable Key，不得填写或提交 `service_role` / secret key。登录页可以预填常用管理员邮箱，但授权最终只由 `public.admin_users` 成员表及其 RLS policy 决定；不在成员表的已认证账号会立即退出。
+浏览器端和快照脚本只使用 Publishable Key，不得填写或提交 `service_role` / secret key。授权只由 `public.admin_users` 成员表及其 RLS policy 决定；不在成员表的已认证账号会立即退出。
 
 ### Supabase 控制台安全清单
 
-- Auth → Password Security：最低密码长度至少 8，建议更高。Free 方案不处理 Pro 才提供的 leaked-password protection。
-- 管理员账号：启用 TOTP MFA；如后续要求强制 MFA，再将 AAL2 要求加入管理员 RLS 与登录挑战流程。
-- Auth → URL Configuration：生产 `Site URL` 使用正式站精确地址；生产 Redirect URL 精确允许 `https://splendid-duckanoo-926f44.netlify.app/admin/reset-password`，仅为本地/Netlify Preview 使用受限通配符。
+- Auth → General Configuration：如果站点只允许管理员登录，关闭 **Allow new users to sign up** 和匿名注册。
+- Auth → Bot and Abuse Protection：为登录和密码重置配置 CAPTCHA，并复核 Auth Rate Limits。
+- Auth → Password Security：使用足够长且唯一的密码；管理员启用 TOTP MFA。当前代码尚未强制 AAL2，启用强制 MFA 前还需补充登录挑战和限制性 RLS policy。
+- Auth → URL Configuration：生产 `Site URL` 使用正式站精确地址；Redirect URL 只允许正式域名的 `/admin/reset-password`，仅为本地或 Netlify Preview 使用受限通配符。
 - Auth → Users / Sessions：管理员离职或疑似泄露时先撤销会话，再移出 `admin_users`；不要只删除前端邮箱。
+- Database → Advisors：发布涉及表、RLS、函数或 Storage 的迁移前后均检查 Security Advisor；公开 schema 的每张表都必须同时配置最小权限 GRANT 和 RLS。
 
 ## Netlify
 
@@ -78,6 +108,7 @@ npm run build
 - Publish directory：`dist`
 - `/assets/*` 的 hash 资源使用一年 `immutable` 缓存
 - HTML 与 SPA 深层路由保持 `max-age=0, must-revalidate`
+- 全站配置 CSP、点击劫持防护、MIME 嗅探防护、权限策略和跨域来源隔离等安全响应头
 - 所有深层路由回退至 `index.html`
 
 连接 GitHub 仓库后，Netlify 可以在每次推送时自动发布。
@@ -95,7 +126,7 @@ npm run build
 
 ### 百度搜索资源平台验证
 
-平台目前支持文件验证和 HTML 标签验证，CNAME 新验证已暂停。推荐文件验证：在平台添加正式 HTTPS 地址，下载平台生成的唯一验证文件，将原文件放入 `public/` 根目录，部署后先确认 `https://splendid-duckanoo-926f44.netlify.app/验证文件名` 可直接访问，再点击完成验证。也可将平台给出的完整 meta 标签原样放进 `index.html` 的 `<head>`。验证成功后必须保留文件或标签；仓库没有验证码时不会生成伪造文件或标签。
+平台目前支持文件验证和 HTML 标签验证，CNAME 新验证已暂停。推荐文件验证：在平台添加正式 HTTPS 地址，下载平台生成的唯一验证文件，将原文件放入 `public/` 根目录，部署后先确认 `https://ahzsb.work/验证文件名` 可直接访问，再点击完成验证。也可将平台给出的完整 meta 标签原样放进 `index.html` 的 `<head>`。验证成功后必须保留文件或标签；仓库没有验证码时不会生成伪造文件或标签。
 
 ## 第二专业扩展评估
 

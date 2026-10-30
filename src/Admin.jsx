@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { ADMIN_EMAIL, validateAnnouncement, validateResource } from './resourceValidation'
+import { validateAnnouncement, validateResource } from './resourceValidation'
 import { normalizeAcademicSchool, normalizeOffering, normalizeResource, normalizeSyllabusPoint, supabase, supabaseConfigured } from './supabase'
 import { announcementStatus } from './announcements'
 import { mapAvailableSchoolSlugs } from './data'
@@ -56,7 +56,7 @@ export function AdminLogin() {
   useAdminMeta()
   const [message, setMessage] = useState({ type: '', text: '' })
   const [sending, setSending] = useState(false)
-  const [email, setEmail] = useState(ADMIN_EMAIL)
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 

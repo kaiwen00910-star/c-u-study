@@ -1,5 +1,3 @@
-export const ADMIN_EMAIL = '3130708522@qq.com'
-
 export function validateResource(resource, validTopics) {
   const errors = []
   const required = ['resource_id', 'title', 'platform', 'creator', 'url', 'resource_type', 'difficulty', 'duration_text', 'recommendation_reason', 'verified_at']

@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://splendid-duckanoo-926f44.netlify.app/sitemap.xml
+Sitemap: https://ahzsb.work/sitemap.xml
