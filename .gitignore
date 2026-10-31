@@ -25,3 +25,5 @@ work/
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*

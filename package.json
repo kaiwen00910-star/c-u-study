@@ -10,7 +10,7 @@
   },
   "homepage": "https://ahzsb.work/",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "vite",
